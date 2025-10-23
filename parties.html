@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Набор в партии — Kazan & Dragons</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo-sidebar">
+      <div class="logo-icon"></div>
+      <span>KAZAN & DRAGONS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="#" class="active">Набор в партии</a></li>
+      <li><a href="rules.html">Правила D&D</a></li>
+      <li><a href="characters.html">Персонажи</a></li>
+      <li><a href="tabletop.html">Игровое поле</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <div style="font-weight: 700;">K&D</div>
+    </header>
+
+    <div class="page-header">
+      <h1>Набор в партии</h1>
+      <p>Найдите игру или создайте свою — для мастеров и игроков всех уровней</p>
+    </div>
+
+    <div class="controls">
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="all">Все</button>
+        <button class="filter-btn" data-filter="free">Бесплатные</button>
+        <button class="filter-btn" data-filter="paid">Платные</button>
+      </div>
+      <button class="post-btn" id="postBtn">Создать объявление</button>
+    </div>
+
+    <div class="listings" id="listingsContainer">
+      <!-- Объявления будут загружаться сюда -->
+    </div>
+
+    <footer>
+      <p>© 2025 Kazan & Dragons (K&D)</p>
+    </footer>
+  </div>
+
+  <script>
+    // DOM elements
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuToggle = document.getElementById('menuToggle');
+    const postBtn = document.getElementById('postBtn');
+    const listingsContainer = document.getElementById('listingsContainer');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    // Toggle sidebar
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+      mainContent.classList.toggle('sidebar-hidden');
+    });
+
+    // Close sidebar on mobile
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
+          !sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.add('hidden');
+        mainContent.classList.add('sidebar-hidden');
+      }
+    });
+
+    // Check auth
+    function isUserLoggedIn() {
+      return !!localStorage.getItem('kdUser');
+    }
+
+    function getUser() {
+      return JSON.parse(localStorage.getItem('kdUser')) || null;
+    }
+
+    // Initialize parties data
+    function initParties() {
+      if (!localStorage.getItem('kdParties')) {
+        const sampleParties = [
+          {
+            id: 1,
+            title: "Тайна Оберхарфа",
+            world: "KAZANA",
+            master: "Странник",
+            dates: "13 / 20 / 27 февраля",
+            description: "Вас нанял очень странный Дворянин низкого роста в Г.Элден, чтобы вы разобрались с проблемой местных жителей отдалённой деревушки Оберхаф. Судя по последним письмам, у них начали частенько пропадать люди. А несколько отрядов авантюристов, посланных туда, не вернулись.\n\nВ окутанной туманом ложбине располагается захолустная деревенька с мрачной репутацией. Вы прибыли сюда с заданием, но с каждым ударом грома и отблеском молнии ваша уверенность в себе улетучивается, а туман сгущается.",
+            level: "3–5",
+            players: "3–5",
+            reward: "800 зм",
+            isPaid: true,
+            applicants: []
+          }
+        ];
+        localStorage.setItem('kdParties', JSON.stringify(sampleParties));
+      }
+    }
+
+    // Render parties
+    function renderParties(filter = 'all') {
+      const parties = JSON.parse(localStorage.getItem('kdParties') || '[]');
+      const user = getUser();
+      
+      let filtered = parties;
+      if (filter === 'free') filtered = parties.filter(p => !p.isPaid);
+      if (filter === 'paid') filtered = parties.filter(p => p.isPaid);
+
+      if (filtered.length === 0) {
+        listingsContainer.innerHTML = '<div class="login-prompt">Нет объявлений. Будьте первым!</div>';
+        return;
+      }
+
+      listingsContainer.innerHTML = filtered.map(party => {
+        const isApplied = user && party.applicants.includes(user.username);
+        return `
+          <div class="listing-card">
+            <div class="listing-header">
+              <div class="listing-avatar">${party.master.charAt(0)}</div>
+              <div class="listing-info">
+                <div class="listing-title">${party.title}</div>
+                <div class="listing-meta">
+                  <span>${party.dates}</span>
+                  <span>Мир: ${party.world}</span>
+                  <span>Мастер: ${party.master}</span>
+                </div>
+              </div>
+            </div>
+            <div class="listing-body">
+              <p class="listing-description">${party.description.replace(/\n/g, '<br>')}</p>
+              <div class="listing-details">
+                <div class="detail-item">
+                  <span class="detail-label">Уровень:</span>
+                  <span>${party.level}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Игроков:</span>
+                  <span>${party.players}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Награда:</span>
+                  <span>${party.reward}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Формат:</span>
+                  <span>${party.isPaid ? 'Платная' : 'Бесплатная'}</span>
+                </div>
+              </div>
+              <div class="listing-actions">
+                ${user 
+                  ? `<button class="apply-btn" data-id="${party.id}" ${isApplied ? 'disabled' : ''}>
+                      ${isApplied ? 'Записан' : 'Записаться'}
+                    </button>`
+                  : `<button class="apply-btn" onclick="alert('Требуется регистрация!')">Записаться</button>`
+                }
+                <button class="chat-btn">Чат партии</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Add event listeners to Apply buttons
+      if (user) {
+        document.querySelectorAll('.apply-btn[data-id]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = parseInt(btn.dataset.id);
+            applyToParty(id, user.username);
+          });
+        });
+      }
+    }
+
+    // Apply to party
+    function applyToParty(partyId, username) {
+      const parties = JSON.parse(localStorage.getItem('kdParties'));
+      const party = parties.find(p => p.id === partyId);
+      if (party && !party.applicants.includes(username)) {
+        party.applicants.push(username);
+        localStorage.setItem('kdParties', JSON.stringify(parties));
+        renderParties();
+      }
+    }
+
+    // Post new party (mock)
+    postBtn.addEventListener('click', () => {
+      if (!isUserLoggedIn()) {
+        if (confirm('Требуется регистрация. Перейти на страницу регистрации?')) {
+          window.location.href = 'register.html';
+        }
+        return;
+      }
+
+      const user = getUser();
+      if (user.role !== 'dm') {
+        alert('Только Мастера могут создавать объявления!');
+        return;
+      }
+
+      alert('Форма создания объявления будет добавлена в будущем.\nПока что вы можете редактировать localStorage вручную.');
+    });
+
+    // Filter buttons
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderParties(btn.dataset.filter);
+      });
+    });
+
+    // Initialize
+    initParties();
+    renderParties();
+  </script>
+
+</body>
+</html>

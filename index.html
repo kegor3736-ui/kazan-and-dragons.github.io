@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kazan & Dragons (K&D)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo-sidebar">
+      <div class="logo-icon"></div>
+      <span>KAZAN & DRAGONS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#" class="active">Главная</a></li>
+      <li><a href="parties.html">Набор в партии</a></li>
+      <li><a href="rules.html">Правила D&D</a></li>
+      <li><a href="characters.html">Персонажи</a></li>
+      <li><a href="tabletop.html">Игровое поле</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      
+      <div class="account-widget">
+        <div class="account-info" id="accountInfo">
+          <div class="account-name" id="accountName">—</div>
+          <div class="account-role" id="accountRole">—</div>
+        </div>
+        <button class="auth-btn" id="authButton">Войти / Регистрация</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1>Kazan & Dragons</h1>
+        <p>Создавайте персонажей, находите партии, играйте онлайн и погружайтесь в магию Dungeons & Dragons — всё в одном месте.</p>
+        <div class="cta-buttons" id="heroButtons">
+          <a href="register.html" class="btn btn-primary">Начать как игрок</a>
+          <a href="register.html?role=dm" class="btn btn-secondary">Стать мастером</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <h2>Возможности K&D</h2>
+      <div class="features-grid">
+        <a href="parties.html" class="feature-card">
+          <div class="feature-icon">
+            <img src="https://media.istockphoto.com/id/2210041186/ru/векторная/иллюстрация-дизайна-татуировки-племенного-искусства-абстрактной-летучей-мыши.jpg?s=612x612&w=0&k=20&c=NGiNrcM4Mc7UFkAXsG5q6OCJW3JYUUFgmqEiXmQ5ixI=" alt="Набор в партии">
+          </div>
+          <h3>Набор в партии</h3>
+          <p>Мастера публикуют объявления, игроки записываются и общаются в чате до и во время игры.</p>
+        </a>
+
+        <a href="rules.html" class="feature-card">
+          <div class="feature-icon">
+            <img src="https://f95zone.to/data/avatars/l/188/188584.jpg?1663171369" alt="Правила D&D">
+          </div>
+          <h3>Правила D&D</h3>
+          <p>Классы, заклинания, снаряжение — всё по официальным правилам 2014 и 2024 годов.</p>
+        </a>
+
+        <a href="characters.html" class="feature-card">
+          <div class="feature-icon">
+            <img src="https://i.pinimg.com/736x/8d/54/17/8d54172ea8f2668695c4b11e35d189d4.jpg" alt="Хранилище персонажей">
+          </div>
+          <h3>Хранилище персонажей</h3>
+          <p>Создавайте, редактируйте и храните своих героев в личном кабинете.</p>
+        </a>
+
+        <a href="tabletop.html" class="feature-card">
+          <div class="feature-icon">
+            <img src="https://i.pinimg.com/736x/77/89/c4/7789c4934be4e45e9208dea13e2a6616.jpg" alt="Игровое поле">
+          </div>
+          <h3>Игровое поле</h3>
+          <p>Интерактивная карта с фишками, инструментами и чатом для живой онлайн-игры.</p>
+        </a>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2025 Kazan & Dragons (K&D) — создано для любителей Dungeons & Dragons</p>
+    </footer>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuToggle = document.getElementById('menuToggle');
+    const authButton = document.getElementById('authButton');
+    const accountInfo = document.getElementById('accountInfo');
+    const accountName = document.getElementById('accountName');
+    const accountRole = document.getElementById('accountRole');
+    const heroButtons = document.getElementById('heroButtons');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+      mainContent.classList.toggle('sidebar-hidden');
+    });
+
+    function checkAuth() {
+      const user = JSON.parse(localStorage.getItem('kdUser'));
+      if (user) {
+        accountName.textContent = user.username;
+        accountRole.textContent = user.role === 'player' ? 'Игрок' : 'Мастер';
+        accountInfo.classList.add('active');
+        authButton.textContent = 'Выйти';
+        authButton.onclick = () => {
+          localStorage.removeItem('kdUser');
+          checkAuth();
+        };
+        // Скрыть кнопки после входа
+        if (heroButtons) heroButtons.style.display = 'none';
+      } else {
+        accountInfo.classList.remove('active');
+        authButton.textContent = 'Войти / Регистрация';
+        authButton.onclick = () => window.location.href = 'register.html';
+        // Показать кнопки
+        if (heroButtons) heroButtons.style.display = 'flex';
+      }
+    }
+
+    checkAuth();
+
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
+          !sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.add('hidden');
+        mainContent.classList.add('sidebar-hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>
+
+
+

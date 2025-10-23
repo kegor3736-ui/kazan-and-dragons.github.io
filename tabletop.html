@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Игровое поле — Kazan & Dragons</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo-sidebar">
+      <div class="logo-icon"></div>
+      <span>KAZAN & DRAGONS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="parties.html">Набор в партии</a></li>
+      <li><a href="rules.html">Правила D&D</a></li>
+      <li><a href="characters.html">Персонажи</a></li>
+      <li><a href="#" class="active">Игровое поле</a></li>
+    </ul>
+
+    <div class="tools">
+      <button class="tool-btn active" data-tool="token">Фишка</button>
+      <button class="tool-btn" data-tool="eraser">Ластик</button>
+      <button class="tool-btn" id="clearBoard">Очистить поле</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <header class="tabletop-header">
+      <div>Игровое поле</div>
+      <div class="map-selector">
+        <div class="map-option active" data-map="forest">Лес</div>
+        <div class="map-option" data-map="dungeon">Подземелье</div>
+        <div class="map-option" data-map="city">Город</div>
+      </div>
+    </header>
+
+    <div class="game-board" id="gameBoard">
+      <img src="https://placehold.co/1920x1080/2a1a4d/8a2be2?text=Лесной+Ландшафт" class="board-image" id="boardImage">
+      <!-- Tokens will be added here -->
+    </div>
+
+    <div class="chat-panel">
+      <div class="chat-header">Чат партии</div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="message"><strong>Система:</strong> Игровое поле загружено.</div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Введите сообщение..." maxlength="100">
+        <button id="sendChat">Отправить</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DOM elements
+    const gameBoard = document.getElementById('gameBoard');
+    const boardImage = document.getElementById('boardImage');
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
+    const sendChatBtn = document.getElementById('sendChat');
+    const mapOptions = document.querySelectorAll('.map-option');
+    const toolBtns = document.querySelectorAll('.tool-btn[data-tool]');
+    const clearBoardBtn = document.getElementById('clearBoard');
+
+    // State
+    let currentTool = 'token';
+    let tokenCounter = 1;
+
+    // Map backgrounds
+    const maps = {
+      forest: 'https://placehold.co/1920x1080/2a1a4d/8a2be2?text=Лес',
+      dungeon: 'https://placehold.co/1920x1080/1a0a2d/e0b0ff?text=Подземелье',
+      city: 'https://placehold.co/1920x1080/3a2a5d/c9a0dc?text=Город'
+    };
+
+    // Change map
+    mapOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        mapOptions.forEach(o => o.classList.remove('active'));
+        option.classList.add('active');
+        const map = option.dataset.map;
+        boardImage.src = maps[map];
+      });
+    });
+
+    // Select tool
+    toolBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        toolBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTool = btn.dataset.tool;
+      });
+    });
+
+    // Clear board
+    clearBoardBtn.addEventListener('click', () => {
+      if (confirm('Очистить всё поле?')) {
+        document.querySelectorAll('.token').forEach(t => t.remove());
+        tokenCounter = 1;
+      }
+    });
+
+    // Add token on click
+    gameBoard.addEventListener('click', (e) => {
+      if (currentTool !== 'token') return;
+      
+      const rect = gameBoard.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const token = document.createElement('div');
+      token.className = 'token';
+      token.textContent = tokenCounter++;
+      token.style.left = `${x}px`;
+      token.style.top = `${y}px`;
+      
+      gameBoard.appendChild(token);
+    });
+
+    // Eraser (remove token on click)
+    gameBoard.addEventListener('click', (e) => {
+      if (currentTool !== 'eraser') return;
+      
+      const token = e.target.closest('.token');
+      if (token) {
+        token.remove();
+      }
+    });
+
+    // Chat
+    sendChatBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      
+      const user = JSON.parse(localStorage.getItem('kdUser'));
+      const username = user ? user.username : 'Гость';
+      
+      const message = document.createElement('div');
+      message.className = 'message';
+      message.innerHTML = `<strong>${username}:</strong> ${text}`;
+      
+      chatMessages.appendChild(message);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      chatInput.value = '';
+    }
+  </script>
+
+</body>
+</html>
+

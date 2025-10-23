@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Регистрация — Kazan & Dragons</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Логотип в левом верхнем углу -->
+  <div class="logo-top">
+    <div class="logo-icon"></div>
+    <span>KAZAN & DRAGONS</span>
+  </div>
+
+  <!-- Центрированная форма -->
+  <div class="form">
+    <h2 style="text-align: center; margin-bottom: 1.8rem; color: var(--accent);">Регистрация</h2>
+
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="username">Имя пользователя</label>
+        <input type="text" id="username" class="form-control" placeholder="Ваше имя в игре" required minlength="3">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" class="form-control" placeholder="example@mail.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Пароль</label>
+        <input type="password" id="password" class="form-control" placeholder="Минимум 8 символов" required minlength="8">
+      </div>
+
+      <div class="form-group">
+        <label>Выберите роль</label>
+        <div class="role-select">
+          <div class="role-option" data-role="player">
+            <h4>Игрок</h4>
+            <p>Создаю персонажей и ищу партии</p>
+          </div>
+          <div class="role-option" data-role="dm">
+            <h4>Мастер</h4>
+            <p>Веду игры и набираю игроков</p>
+          </div>
+        </div>
+        <input type="hidden" id="userRole" value="player">
+      </div>
+
+      <div id="registerMessage" class="message"></div>
+
+      <button type="submit" class="submit-btn">Зарегистрироваться</button>
+
+      <div class="back-link">
+        Уже есть аккаунт? <a href="index.html">Вернуться на главную</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Определяем роль из URL
+    function getRoleFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('role') === 'dm' ? 'dm' : 'player';
+    }
+
+    // Устанавливаем роль при загрузке
+    document.addEventListener('DOMContentLoaded', () => {
+      const initialRole = getRoleFromUrl();
+      document.getElementById('userRole').value = initialRole;
+
+      // Обновляем визуальный выбор
+      document.querySelectorAll('.role-option').forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.role === initialRole);
+      });
+    });
+
+    // Выбор роли вручную
+    document.querySelectorAll('.role-option').forEach(option => {
+      option.addEventListener('click', () => {
+        document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        document.getElementById('userRole').value = option.dataset.role;
+      });
+    });
+
+    // Отправка формы
+    document.getElementById('registerForm').onsubmit = function(e) {
+      e.preventDefault();
+      
+      // Сброс ошибок
+      document.querySelectorAll('.form-control').forEach(el => el.classList.remove('error'));
+      const msg = document.getElementById('registerMessage');
+      msg.className = 'message';
+      
+      // Данные
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('userRole').value;
+      
+      // Валидация
+      let valid = true;
+      if (username.length < 3) {
+        document.getElementById('username').classList.add('error');
+        valid = false;
+      }
+      if (!email.includes('@') || email.length < 5) {
+        document.getElementById('email').classList.add('error');
+        valid = false;
+      }
+      if (password.length < 8) {
+        document.getElementById('password').classList.add('error');
+        valid = false;
+      }
+      
+      if (!valid) {
+        msg.textContent = 'Пожалуйста, исправьте ошибки в форме.';
+        msg.classList.add('error');
+        return;
+      }
+
+      // Сохранение
+      localStorage.setItem('kdUser', JSON.stringify({ username, email, role }));
+
+      // Успех
+      msg.innerHTML = `✅ Успешная регистрация!<br>Добро пожаловать, <strong>${username}</strong>!`;
+      msg.classList.add('success');
+
+      // Редирект
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 500);
+    };
+  </script>
+
+</body>
+</html>
+
+
+

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Персонажи — Kazan & Dragons</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo-sidebar">
+      <div class="logo-icon"></div>
+      <span>KAZAN & DRAGONS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="parties.html">Набор в партии</a></li>
+      <li><a href="rules.html">Правила D&D</a></li>
+      <li><a href="#" class="active">Персонажи</a></li>
+      <li><a href="tabletop.html">Игровое поле</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <div style="font-weight: 700;">K&D</div>
+    </header>
+
+    <div class="page-header">
+      <h1>Хранилище персонажей</h1>
+      <p>Создавайте и управляйте своими героями</p>
+    </div>
+
+    <div class="controls">
+      <button class="new-char-btn" id="newCharBtn">+ Новый персонаж</button>
+    </div>
+
+    <div class="characters-grid" id="charactersGrid">
+      <!-- Персонажи будут отображаться здесь -->
+    </div>
+
+    <footer>
+      <p>© 2025 Kazan & Dragons (K&D)</p>
+    </footer>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuToggle = document.getElementById('menuToggle');
+    const newCharBtn = document.getElementById('newCharBtn');
+    const charactersGrid = document.getElementById('charactersGrid');
+
+    // Toggle sidebar
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+      mainContent.classList.toggle('sidebar-hidden');
+    });
+
+    // Close sidebar on mobile
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
+          !sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.add('hidden');
+        mainContent.classList.add('sidebar-hidden');
+      }
+    });
+
+    // Auth check
+    function checkAuth() {
+      const user = JSON.parse(localStorage.getItem('kdUser'));
+      if (!user) {
+        alert('Требуется регистрация для доступа к персонажам.');
+        window.location.href = 'register.html';
+        return false;
+      }
+      return true;
+    }
+
+    // Initialize characters storage
+    function initCharacters() {
+      if (!localStorage.getItem('kdCharacters')) {
+        localStorage.setItem('kdCharacters', JSON.stringify([]));
+      }
+    }
+
+    // Get user's characters
+    function getUserCharacters() {
+      const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
+      const user = JSON.parse(localStorage.getItem('kdUser'));
+      return allChars.filter(char => char.owner === user.username);
+    }
+
+    // Save character
+    function saveCharacter(char) {
+      const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
+      char.id = Date.now();
+      allChars.push(char);
+      localStorage.setItem('kdCharacters', JSON.stringify(allChars));
+    }
+
+    // Delete character
+    function deleteCharacter(id) {
+      let allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
+      allChars = allChars.filter(char => char.id !== id);
+      localStorage.setItem('kdCharacters', JSON.stringify(allChars));
+      renderCharacters();
+    }
+
+    // Render characters
+    function renderCharacters() {
+      const chars = getUserCharacters();
+      if (chars.length === 0) {
+        charactersGrid.innerHTML = `
+          <div class="empty-state">
+            <p>У вас пока нет персонажей.</p>
+            <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.8;">
+              Нажмите «+ Новый персонаж», чтобы создать первого героя!
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      charactersGrid.innerHTML = chars.map(char => `
+        <div class="char-card">
+          <div class="char-avatar">${char.name.charAt(0)}</div>
+          <div class="char-name">${char.name}</div>
+          <div class="char-class-level">${char.class}, ${char.level} ур.</div>
+          <div class="char-details">
+            Раса: ${char.race}<br>
+            Мир: ${char.world || '—'}<br>
+            Очки жизни: ${char.hp}
+          </div>
+          <div class="char-actions">
+            <button class="char-btn edit-btn" onclick="alert('Редактирование будет добавлено позже')">Редактировать</button>
+            <button class="char-btn delete-btn" data-id="${char.id}">Удалить</button>
+          </div>
+        </div>
+      `).join('');
+
+      // Add delete listeners
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (confirm('Удалить персонажа? Это действие нельзя отменить.')) {
+            deleteCharacter(parseInt(btn.dataset.id));
+          }
+        });
+      });
+    }
+
+    // Create new character (mock form)
+    newCharBtn.addEventListener('click', () => {
+      if (!checkAuth()) return;
+
+      const name = prompt('Имя персонажа:');
+      if (!name) return;
+
+      const race = prompt('Раса (например, Эльф, Дварф):', 'Человек');
+      const charClass = prompt('Класс (например, Воин, Волшебник):', 'Воин');
+      const level = parseInt(prompt('Уровень:', '1')) || 1;
+      const hp = parseInt(prompt('Очки жизни:', '10')) || 10;
+      const world = prompt('Мир (опционально):', 'KAZANA');
+
+      const user = JSON.parse(localStorage.getItem('kdUser'));
+      saveCharacter({
+        name,
+        race,
+        class: charClass,
+        level,
+        hp,
+        world,
+        owner: user.username
+      });
+
+      renderCharacters();
+    });
+
+    // Initialize
+    if (checkAuth()) {
+      initCharacters();
+      renderCharacters();
+    }
+  </script>
+
+</body>
+</html>

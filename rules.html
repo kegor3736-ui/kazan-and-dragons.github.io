@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Правила D&D — Kazan & Dragons</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo-sidebar">
+      <div class="logo-icon"></div>
+      <span>KAZAN & DRAGONS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="parties.html">Набор в партии</a></li>
+      <li><a href="#" class="active">Правила D&D</a></li>
+      <li><a href="characters.html">Персонажи</a></li>
+      <li><a href="tabletop.html">Игровое поле</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <div style="font-weight: 700;">K&D</div>
+    </header>
+
+    <div class="page-header">
+      <h1>Правила Dungeons & Dragons</h1>
+      <p>Официальные правила 2014 и 2024 годов — всё в одном месте</p>
+    </div>
+
+    <div class="content">
+      <div class="rules-grid">
+        <div class="rule-card">
+          <h3>Классы</h3>
+          <p>Полное описание всех классов персонажей по правилам D&D 5e (2014) и One D&D (2024).</p>
+          <ul>
+            <li>Воин</li>
+            <li>Волшебник</li>
+            <li>Следопыт</li>
+            <li>Плут</li>
+            <li>Жрец</li>
+            <li>и другие...</li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <h3>Заклинания</h3>
+          <p>База всех заклинаний с описанием, школами магии и уровнями.</p>
+          <ul>
+            <li>Заговоры</li>
+            <li>1–9 уровни</li>
+            <li>Поиск по школе</li>
+            <li>Фильтр по классу</li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <h3>Снаряжение</h3>
+          <p>Оружие, доспехи, инструменты и предметы для приключений.</p>
+          <ul>
+            <li>Оружие и доспехи</li>
+            <li>Инструменты</li>
+            <li>Торговые товары</li>
+            <li>Магические предметы</li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <h3>Бестиарий</h3>
+          <p>Справочник монстров с характеристиками и тактикой.</p>
+          <ul>
+            <li>Гуманоиды</li>
+            <li>Драконы</li>
+            <li>Нежить</li>
+            <li>Элементали</li>
+            <li>и сотни других</li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <h3>Расы</h3>
+          <p>Описание рас и их особенностей в игре.</p>
+          <ul>
+            <li>Люди</li>
+            <li>Эльфы</li>
+            <li>Дварфы</li>
+            <li>Халфлинги</li>
+            <li>Тифлинги</li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <h3>Механики</h3>
+          <p>Основные правила игры: проверки, броски, боёвка, отдых.</p>
+          <ul>
+            <li>Броски атаки</li>
+            <li>Спасброски</li>
+            <li>Инициатива</li>
+            <li>Движение</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 Kazan & Dragons (K&D) — создано для любителей D&D</p>
+    </footer>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuToggle = document.getElementById('menuToggle');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+      mainContent.classList.toggle('sidebar-hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
+          !sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.add('hidden');
+        mainContent.classList.add('sidebar-hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>
