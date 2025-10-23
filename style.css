@@ -86,7 +86,7 @@ a {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .nav-links a {
@@ -938,6 +938,7 @@ footer::before {
     grid-template-columns: 1fr !important;
   }
 }
+
 
 
 
