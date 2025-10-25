@@ -5,6 +5,131 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Персонажи — Kazan & Dragons</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Дополнительные стили для редактора персонажей */
+    .character-editor {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      z-index: 2000;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .editor-header {
+      display: flex;
+      justify-content: between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .editor-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      border: 1px solid var(--primary-light);
+    }
+
+    .char-sheet-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .char-section {
+      margin-bottom: 2rem;
+    }
+
+    .char-section h3 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--primary);
+      padding-bottom: 0.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-group-full {
+      grid-column: 1 / -1;
+    }
+
+    .abilities-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .ability-card {
+      background: rgba(10, 8, 29, 0.7);
+      border: 1px solid var(--primary);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .ability-name {
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .ability-score {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .ability-mod {
+      background: var(--primary);
+      border-radius: 4px;
+      padding: 0.25rem;
+      font-weight: bold;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .skill-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--primary);
+    }
+
+    .export-btn {
+      background: var(--success);
+      color: white;
+    }
+
+    .export-btn:hover {
+      background: #22c55e;
+    }
+  </style>
 </head>
 <body>
 
@@ -49,12 +174,186 @@
     </footer>
   </div>
 
+  <!-- Редактор персонажа -->
+  <div class="character-editor" id="characterEditor">
+    <div class="editor-content">
+      <div class="editor-header">
+        <h2 id="editorTitle">Создание персонажа</h2>
+        <button class="btn btn-secondary" id="closeEditor">✕ Закрыть</button>
+      </div>
+
+      <form id="characterForm">
+        <div class="char-sheet-grid">
+          <!-- Левая колонка -->
+          <div>
+            <!-- Основная информация -->
+            <div class="char-section">
+              <h3>Основная информация</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Имя персонажа</label>
+                  <input type="text" id="charName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Игрок</label>
+                  <input type="text" id="playerName" class="form-control">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Раса</label>
+                  <input type="text" id="charRace" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Класс</label>
+                  <input type="text" id="charClass" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Уровень</label>
+                  <input type="number" id="charLevel" class="form-control" min="1" max="20" value="1">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Предыстория</label>
+                  <input type="text" id="charBackground" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Мировоззрение</label>
+                  <input type="text" id="charAlignment" class="form-control">
+                </div>
+              </div>
+            </div>
+
+            <!-- Характеристики -->
+            <div class="char-section">
+              <h3>Характеристики</h3>
+              <div class="abilities-grid" id="abilitiesGrid">
+                <!-- JavaScript заполнит это -->
+              </div>
+            </div>
+
+            <!-- Боевые параметры -->
+            <div class="char-section">
+              <h3>Боевые параметры</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Кость хитов</label>
+                  <input type="text" id="hitDice" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Макс. HP</label>
+                  <input type="number" id="maxHP" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Текущие HP</label>
+                  <input type="number" id="currentHP" class="form-control">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Класс доспеха</label>
+                  <input type="number" id="armorClass" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Скорость</label>
+                  <input type="number" id="speed" class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Правая колонка -->
+          <div>
+            <!-- Навыки -->
+            <div class="char-section">
+              <h3>Навыки</h3>
+              <div class="skills-grid" id="skillsGrid">
+                <!-- JavaScript заполнит это -->
+              </div>
+            </div>
+
+            <!-- Черты и особенности -->
+            <div class="char-section">
+              <h3>Черты и особенности</h3>
+              <div class="form-group-full">
+                <textarea id="features" class="form-control" rows="6" placeholder="Расовая черты, классовые особенности..."></textarea>
+              </div>
+            </div>
+
+            <!-- Снаряжение -->
+            <div class="char-section">
+              <h3>Снаряжение</h3>
+              <div class="form-group-full">
+                <textarea id="equipment" class="form-control" rows="6" placeholder="Оружие, доспехи, предметы..."></textarea>
+              </div>
+            </div>
+
+            <!-- Внешность и описание -->
+            <div class="char-section">
+              <h3>Внешность и описание</h3>
+              <div class="form-group-full">
+                <textarea id="appearance" class="form-control" rows="4" placeholder="Внешность, характер, история..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-actions">
+          <button type="button" class="btn export-btn" id="exportJson">Экспорт в JSON</button>
+          <button type="submit" class="btn btn-primary">Сохранить персонажа</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.getElementById('mainContent');
     const menuToggle = document.getElementById('menuToggle');
     const newCharBtn = document.getElementById('newCharBtn');
     const charactersGrid = document.getElementById('charactersGrid');
+    const characterEditor = document.getElementById('characterEditor');
+    const characterForm = document.getElementById('characterForm');
+    const closeEditor = document.getElementById('closeEditor');
+    const exportJsonBtn = document.getElementById('exportJson');
+    const editorTitle = document.getElementById('editorTitle');
+    const abilitiesGrid = document.getElementById('abilitiesGrid');
+    const skillsGrid = document.getElementById('skillsGrid');
+
+    let currentCharacterId = null;
+    let editingCharacter = null;
+
+    // Данные для характеристик и навыков
+    const abilities = [
+      { id: 'str', name: 'Сила', short: 'СИЛ' },
+      { id: 'dex', name: 'Ловкость', short: 'ЛОВ' },
+      { id: 'con', name: 'Телосложение', short: 'ТЕЛ' },
+      { id: 'int', name: 'Интеллект', short: 'ИНТ' },
+      { id: 'wis', name: 'Мудрость', short: 'МДР' },
+      { id: 'cha', name: 'Харизма', short: 'ХАР' }
+    ];
+
+    const skills = [
+      { id: 'acrobatics', name: 'Акробатика', ability: 'dex' },
+      { id: 'animal', name: 'Уход за животными', ability: 'wis' },
+      { id: 'arcana', name: 'Магия', ability: 'int' },
+      { id: 'athletics', name: 'Атлетика', ability: 'str' },
+      { id: 'deception', name: 'Обман', ability: 'cha' },
+      { id: 'history', name: 'История', ability: 'int' },
+      { id: 'insight', name: 'Проницательность', ability: 'wis' },
+      { id: 'intimidation', name: 'Запугивание', ability: 'cha' },
+      { id: 'investigation', name: 'Расследование', ability: 'int' },
+      { id: 'medicine', name: 'Медицина', ability: 'wis' },
+      { id: 'nature', name: 'Природа', ability: 'int' },
+      { id: 'perception', name: 'Внимательность', ability: 'wis' },
+      { id: 'performance', name: 'Выступление', ability: 'cha' },
+      { id: 'persuasion', name: 'Убеждение', ability: 'cha' },
+      { id: 'religion', name: 'Религия', ability: 'int' },
+      { id: 'sleight', name: 'Ловкость рук', ability: 'dex' },
+      { id: 'stealth', name: 'Скрытность', ability: 'dex' },
+      { id: 'survival', name: 'Выживание', ability: 'wis' }
+    ];
 
     // Toggle sidebar
     menuToggle.addEventListener('click', () => {
@@ -97,11 +396,25 @@
     }
 
     // Save character
-    function saveCharacter(char) {
+    function saveCharacter(charData) {
       const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
-      char.id = Date.now();
-      allChars.push(char);
+      const user = JSON.parse(localStorage.getItem('kdUser'));
+      
+      if (currentCharacterId) {
+        // Редактирование существующего персонажа
+        const index = allChars.findIndex(char => char.id === currentCharacterId);
+        if (index !== -1) {
+          allChars[index] = { ...charData, id: currentCharacterId, owner: user.username };
+        }
+      } else {
+        // Создание нового персонажа
+        charData.id = Date.now();
+        charData.owner = user.username;
+        allChars.push(charData);
+      }
+      
       localStorage.setItem('kdCharacters', JSON.stringify(allChars));
+      return charData.id;
     }
 
     // Delete character
@@ -112,7 +425,7 @@
       renderCharacters();
     }
 
-    // Render characters
+    // Render characters grid
     function renderCharacters() {
       const chars = getUserCharacters();
       if (chars.length === 0) {
@@ -131,20 +444,23 @@
         <div class="char-card">
           <div class="char-avatar">${char.name.charAt(0)}</div>
           <div class="char-name">${char.name}</div>
-          <div class="char-class-level">${char.class}, ${char.level} ур.</div>
+          <div class="char-class-level">${char.class || '—'}, ${char.level || 1} ур.</div>
           <div class="char-details">
-            Раса: ${char.race}<br>
-            Мир: ${char.world || '—'}<br>
-            Очки жизни: ${char.hp}
+            Раса: ${char.race || '—'}<br>
+            Очки жизни: ${char.currentHP || 0}/${char.maxHP || 0}
           </div>
           <div class="char-actions">
-            <button class="char-btn edit-btn" onclick="alert('Редактирование будет добавлено позже')">Редактировать</button>
+            <button class="char-btn edit-btn" data-id="${char.id}">Редактировать</button>
             <button class="char-btn delete-btn" data-id="${char.id}">Удалить</button>
           </div>
         </div>
       `).join('');
 
-      // Add delete listeners
+      // Add event listeners
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => editCharacter(parseInt(btn.dataset.id)));
+      });
+
       document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           if (confirm('Удалить персонажа? Это действие нельзя отменить.')) {
@@ -154,37 +470,200 @@
       });
     }
 
-    // Create new character (mock form)
+    // Open character editor
+    function openCharacterEditor(character = null) {
+      currentCharacterId = character ? character.id : null;
+      editingCharacter = character;
+      
+      editorTitle.textContent = character ? 'Редактирование персонажа' : 'Создание персонажа';
+      
+      // Заполняем форму данными, если редактируем
+      if (character) {
+        document.getElementById('charName').value = character.name || '';
+        document.getElementById('playerName').value = character.playerName || '';
+        document.getElementById('charRace').value = character.race || '';
+        document.getElementById('charClass').value = character.class || '';
+        document.getElementById('charLevel').value = character.level || 1;
+        document.getElementById('charBackground').value = character.background || '';
+        document.getElementById('charAlignment').value = character.alignment || '';
+        document.getElementById('hitDice').value = character.hitDice || '';
+        document.getElementById('maxHP').value = character.maxHP || '';
+        document.getElementById('currentHP').value = character.currentHP || '';
+        document.getElementById('armorClass').value = character.armorClass || '';
+        document.getElementById('speed').value = character.speed || '';
+        document.getElementById('features').value = character.features || '';
+        document.getElementById('equipment').value = character.equipment || '';
+        document.getElementById('appearance').value = character.appearance || '';
+        
+        // Заполняем характеристики
+        abilities.forEach(ability => {
+          const scoreInput = document.getElementById(`${ability.id}Score`);
+          if (scoreInput && character.abilities && character.abilities[ability.id]) {
+            scoreInput.value = character.abilities[ability.id].score || 10;
+          }
+        });
+        
+        // Заполняем навыки
+        skills.forEach(skill => {
+          const skillCheckbox = document.getElementById(`${skill.id}Proficient`);
+          if (skillCheckbox && character.skills) {
+            skillCheckbox.checked = character.skills[skill.id] || false;
+          }
+        });
+      } else {
+        // Сброс формы для нового персонажа
+        characterForm.reset();
+        document.getElementById('charLevel').value = 1;
+        
+        // Устанавливаем характеристики по умолчанию
+        abilities.forEach(ability => {
+          const scoreInput = document.getElementById(`${ability.id}Score`);
+          if (scoreInput) scoreInput.value = 10;
+        });
+      }
+      
+      characterEditor.style.display = 'block';
+    }
+
+    // Edit character
+    function editCharacter(id) {
+      const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
+      const character = allChars.find(char => char.id === id);
+      if (character) {
+        openCharacterEditor(character);
+      }
+    }
+
+    // Close editor
+    function closeCharacterEditor() {
+      characterEditor.style.display = 'none';
+      currentCharacterId = null;
+      editingCharacter = null;
+    }
+
+    // Calculate ability modifier
+    function calculateModifier(score) {
+      return Math.floor((score - 10) / 2);
+    }
+
+    // Update ability modifier display
+    function updateAbilityModifier(abilityId) {
+      const score = parseInt(document.getElementById(`${abilityId}Score`).value) || 10;
+      const modifier = calculateModifier(score);
+      const modElement = document.getElementById(`${abilityId}Mod`);
+      if (modElement) {
+        modElement.textContent = modifier >= 0 ? `+${modifier}` : modifier;
+      }
+    }
+
+    // Export to JSON
+    function exportToJson() {
+      const formData = getFormData();
+      const jsonString = JSON.stringify(formData, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${formData.name || 'character'}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Get form data
+    function getFormData() {
+      const abilitiesData = {};
+      abilities.forEach(ability => {
+        const score = parseInt(document.getElementById(`${ability.id}Score`).value) || 10;
+        abilitiesData[ability.id] = {
+          name: ability.name,
+          score: score,
+          modifier: calculateModifier(score)
+        };
+      });
+      
+      const skillsData = {};
+      skills.forEach(skill => {
+        skillsData[skill.id] = document.getElementById(`${skill.id}Proficient`).checked;
+      });
+      
+      return {
+        name: document.getElementById('charName').value,
+        playerName: document.getElementById('playerName').value,
+        race: document.getElementById('charRace').value,
+        class: document.getElementById('charClass').value,
+        level: parseInt(document.getElementById('charLevel').value) || 1,
+        background: document.getElementById('charBackground').value,
+        alignment: document.getElementById('charAlignment').value,
+        abilities: abilitiesData,
+        hitDice: document.getElementById('hitDice').value,
+        maxHP: parseInt(document.getElementById('maxHP').value) || 0,
+        currentHP: parseInt(document.getElementById('currentHP').value) || 0,
+        armorClass: parseInt(document.getElementById('armorClass').value) || 0,
+        speed: parseInt(document.getElementById('speed').value) || 0,
+        skills: skillsData,
+        features: document.getElementById('features').value,
+        equipment: document.getElementById('equipment').value,
+        appearance: document.getElementById('appearance').value,
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    // Initialize ability cards
+    function initAbilityCards() {
+      abilitiesGrid.innerHTML = abilities.map(ability => `
+        <div class="ability-card">
+          <div class="ability-name">${ability.short}</div>
+          <input type="number" id="${ability.id}Score" class="ability-score" 
+                 min="1" max="30" value="10" 
+                 onchange="updateAbilityModifier('${ability.id}')">
+          <div class="ability-mod" id="${ability.id}Mod">+0</div>
+        </div>
+      `).join('');
+    }
+
+    // Initialize skills grid
+    function initSkillsGrid() {
+      skillsGrid.innerHTML = skills.map(skill => {
+        const ability = abilities.find(a => a.id === skill.ability);
+        return `
+          <div class="skill-item">
+            <input type="checkbox" id="${skill.id}Proficient">
+            <label for="${skill.id}Proficient">${skill.name} (${ability.short})</label>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Event listeners
     newCharBtn.addEventListener('click', () => {
       if (!checkAuth()) return;
+      openCharacterEditor();
+    });
 
-      const name = prompt('Имя персонажа:');
-      if (!name) return;
+    closeEditor.addEventListener('click', closeCharacterEditor);
 
-      const race = prompt('Раса (например, Эльф, Дварф):', 'Человек');
-      const charClass = prompt('Класс (например, Воин, Волшебник):', 'Воин');
-      const level = parseInt(prompt('Уровень:', '1')) || 1;
-      const hp = parseInt(prompt('Очки жизни:', '10')) || 10;
-      const world = prompt('Мир (опционально):', 'KAZANA');
-
-      const user = JSON.parse(localStorage.getItem('kdUser'));
-      saveCharacter({
-        name,
-        race,
-        class: charClass,
-        level,
-        hp,
-        world,
-        owner: user.username
-      });
-
+    characterForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const charData = getFormData();
+      saveCharacter(charData);
+      closeCharacterEditor();
       renderCharacters();
     });
+
+    exportJsonBtn.addEventListener('click', exportToJson);
 
     // Initialize
     if (checkAuth()) {
       initCharacters();
+      initAbilityCards();
+      initSkillsGrid();
       renderCharacters();
+      
+      // Initialize modifiers
+      abilities.forEach(ability => updateAbilityModifier(ability.id));
     }
   </script>
 
