@@ -48,12 +48,85 @@
     </footer>
   </div>
 
+  <!-- Модальное окно создания персонажа -->
+  <div id="charModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; overflow-y: auto;">
+    <div class="modal-content" style="max-width: 600px; margin: 2rem auto; padding: 2rem;">
+      <h2 style="text-align: center; margin-bottom: 1.5rem; color: var(--accent);">Создать персонажа</h2>
+      <form id="charForm">
+        <div class="form-group">
+          <label>Имя</label>
+          <input type="text" name="name" class="form-control" required minlength="1" placeholder="Напр., Элиандра">
+        </div>
+        <div class="form-group">
+          <label>Раса</label>
+          <input type="text" name="race" class="form-control" value="Человек" required placeholder="Эльф, Дварф, Полурослик...">
+        </div>
+        <div class="form-group">
+          <label>Класс</label>
+          <input type="text" name="class" class="form-control" value="Воин" required placeholder="Волшебник, Плут, Жрец...">
+        </div>
+        <div class="form-group">
+          <label>Уровень</label>
+          <input type="number" name="level" class="form-control" min="1" max="20" value="1" required>
+        </div>
+        <div class="form-group">
+          <label>Очки жизни (HP)</label>
+          <input type="number" name="hp" class="form-control" min="1" value="10" required>
+        </div>
+        <div class="form-group">
+          <label>Мир (опционально)</label>
+          <input type="text" name="world" class="form-control" placeholder="Фаэрун, Казана, Эберрон...">
+        </div>
+
+        <h3 style="margin: 1.5rem 0 1rem; color: var(--accent); font-size: 1.2rem;">Характеристики</h3>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+          <div class="form-group">
+            <label>Сила (STR)</label>
+            <input type="number" name="str" class="form-control" min="1" max="30" value="10">
+          </div>
+          <div class="form-group">
+            <label>Ловкость (DEX)</label>
+            <input type="number" name="dex" class="form-control" min="1" max="30" value="10">
+          </div>
+          <div class="form-group">
+            <label>Телосложение (CON)</label>
+            <input type="number" name="con" class="form-control" min="1" max="30" value="10">
+          </div>
+          <div class="form-group">
+            <label>Интеллект (INT)</label>
+            <input type="number" name="int" class="form-control" min="1" max="30" value="10">
+          </div>
+          <div class="form-group">
+            <label>Мудрость (WIS)</label>
+            <input type="number" name="wis" class="form-control" min="1" max="30" value="10">
+          </div>
+          <div class="form-group">
+            <label>Харизма (CHA)</label>
+            <input type="number" name="cha" class="form-control" min="1" max="30" value="10">
+          </div>
+        </div>
+
+        <div id="charMessage" class="message" style="margin: 1rem 0;"></div>
+
+        <div style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;">
+          <button type="submit" class="submit-btn">Создать персонажа</button>
+          <button type="button" id="cancelCharBtn" class="btn btn-secondary">Отмена</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
+    // DOM элементы
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.getElementById('mainContent');
     const menuToggle = document.getElementById('menuToggle');
     const newCharBtn = document.getElementById('newCharBtn');
     const charactersGrid = document.getElementById('charactersGrid');
+    const charModal = document.getElementById('charModal');
+    const charForm = document.getElementById('charForm');
+    const cancelCharBtn = document.getElementById('cancelCharBtn');
+    const charMessage = document.getElementById('charMessage');
 
     // Toggle sidebar
     menuToggle.addEventListener('click', () => {
@@ -95,10 +168,9 @@
       return allChars.filter(char => char.owner === user.username);
     }
 
-    // Save character
-    function saveCharacter(char) {
+    // Save character to localStorage
+    function saveCharacterToStorage(char) {
       const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
-      char.id = Date.now();
       allChars.push(char);
       localStorage.setItem('kdCharacters', JSON.stringify(allChars));
     }
@@ -134,7 +206,8 @@
           <div class="char-details">
             Раса: ${char.race}<br>
             Мир: ${char.world || '—'}<br>
-            Очки жизни: ${char.hp}
+            HP: ${char.hp}<br>
+            STR ${char.abilities.str} | DEX ${char.abilities.dex} | CON ${char.abilities.con}
           </div>
           <div class="char-actions">
             <button class="char-btn edit-btn" onclick="alert('Редактирование будет добавлено позже')">Редактировать</button>
@@ -153,31 +226,91 @@
       });
     }
 
-    // Create new character (mock form)
+    // === Создание персонажа ===
     newCharBtn.addEventListener('click', () => {
       if (!checkAuth()) return;
+      charMessage.className = 'message';
+      charMessage.textContent = '';
+      charForm.reset();
+      // Сброс значений по умолчанию
+      charForm.querySelector('[name="race"]').value = 'Человек';
+      charForm.querySelector('[name="class"]').value = 'Воин';
+      charForm.querySelector('[name="level"]').value = '1';
+      charForm.querySelector('[name="hp"]').value = '10';
+      ['str','dex','con','int','wis','cha'].forEach(stat => {
+        charForm.querySelector(`[name="${stat}"]`).value = '10';
+      });
+      charModal.style.display = 'block';
+    });
 
-      const name = prompt('Имя персонажа:');
-      if (!name) return;
+    cancelCharBtn.addEventListener('click', () => {
+      charModal.style.display = 'none';
+    });
 
-      const race = prompt('Раса (например, Эльф, Дварф):', 'Человек');
-      const charClass = prompt('Класс (например, Воин, Волшебник):', 'Воин');
-      const level = parseInt(prompt('Уровень:', '1')) || 1;
-      const hp = parseInt(prompt('Очки жизни:', '10')) || 10;
-      const world = prompt('Мир (опционально):', 'KAZANA');
+    charForm.addEventListener('submit', (e) => {
+      e.preventDefault();
 
       const user = JSON.parse(localStorage.getItem('kdUser'));
-      saveCharacter({
-        name,
-        race,
-        class: charClass,
-        level,
-        hp,
-        world,
-        owner: user.username
-      });
+      const formData = new FormData(charForm);
 
-      renderCharacters();
+      const character = {
+        id: Date.now(),
+        owner: user.username,
+        name: formData.get('name'),
+        race: formData.get('race'),
+        class: formData.get('class'),
+        level: parseInt(formData.get('level')),
+        hp: parseInt(formData.get('hp')),
+        world: formData.get('world') || null,
+        abilities: {
+          str: parseInt(formData.get('str')) || 10,
+          dex: parseInt(formData.get('dex')) || 10,
+          con: parseInt(formData.get('con')) || 10,
+          int: parseInt(formData.get('int')) || 10,
+          wis: parseInt(formData.get('wis')) || 10,
+          cha: parseInt(formData.get('cha')) || 10
+        },
+        createdAt: new Date().toISOString()
+      };
+
+      // === СОХРАНЕНИЕ (временно в localStorage) ===
+      saveCharacterToStorage(character);
+
+      charMessage.textContent = '✅ Персонаж успешно создан!';
+      charMessage.className = 'message success';
+
+      setTimeout(() => {
+        charModal.style.display = 'none';
+        renderCharacters();
+      }, 800);
+
+      // === БУДУЩАЯ ОТПРАВКА НА СЕРВЕР (раскомментировать позже) ===
+      /*
+      fetch('/api/characters', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(character)
+      })
+      .then(res => res.json())
+      .then(() => {
+        charMessage.textContent = '✅ Персонаж сохранён на сервере!';
+        charMessage.className = 'message success';
+        setTimeout(() => {
+          charModal.style.display = 'none';
+          renderCharacters();
+        }, 800);
+      })
+      .catch(err => {
+        console.error(err);
+        charMessage.textContent = '⚠️ Ошибка сервера. Сохранено локально.';
+        charMessage.className = 'message error';
+        saveCharacterToStorage(character); // fallback
+        setTimeout(() => {
+          charModal.style.display = 'none';
+          renderCharacters();
+        }, 1200);
+      });
+      */
     });
 
     // Initialize
@@ -189,5 +322,4 @@
 
 </body>
 </html>
-
 
