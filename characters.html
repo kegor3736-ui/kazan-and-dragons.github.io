@@ -97,7 +97,7 @@
   </div>
 
   <!-- Модальное окно создания персонажа -->
-  <div id="charModal" class="modal">
+  <div id="charModal" class="modal hidden">
     <div class="modal-content">
       <h2>Создать персонажа</h2>
       <form id="charForm">
@@ -182,16 +182,19 @@
     let selectedCharacter = null;
 
     // Toggle sidebar
-    menuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('hidden');
-      mainContent.classList.toggle('sidebar-hidden');
-    });
+    if (menuToggle && sidebar && mainContent) {
+      menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');
+        mainContent.classList.toggle('sidebar-hidden');
+      });
+    }
 
+    // Close sidebar on mobile
     document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
+      if (window.innerWidth <= 576 && sidebar && !sidebar.classList.contains('hidden') && 
           !sidebar.contains(e.target) && e.target !== menuToggle) {
         sidebar.classList.add('hidden');
-        mainContent.classList.add('sidebar-hidden');
+        mainContent?.classList.add('sidebar-hidden');
       }
     });
 
@@ -206,28 +209,28 @@
       return true;
     }
 
-    // Init storage
+    // Init characters storage
     function initCharacters() {
       if (!localStorage.getItem('kdCharacters')) {
         localStorage.setItem('kdCharacters', JSON.stringify([]));
       }
     }
 
-    // Get user chars
+    // Get user's characters
     function getUserCharacters() {
       const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
       const user = JSON.parse(localStorage.getItem('kdUser'));
       return allChars.filter(char => char.owner === user.username);
     }
 
-    // Save char
+    // Save character
     function saveCharacterToStorage(char) {
       const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
       allChars.push(char);
       localStorage.setItem('kdCharacters', JSON.stringify(allChars));
     }
 
-    // Delete char
+    // Delete character
     function deleteCharacter(id) {
       let allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
       allChars = allChars.filter(char => char.id !== id);
@@ -238,7 +241,14 @@
       }
     }
 
-    // Render list (2 cols, max 20)
+    // Clear detail panel
+    function clearDetailPanel() {
+      selectedCharacter = null;
+      emptyDetail.classList.remove('hidden');
+      detailContent.classList.add('hidden');
+    }
+
+    // Render characters list
     function renderCharacters() {
       const chars = getUserCharacters();
       if (chars.length === 0) {
@@ -271,7 +281,7 @@
       });
     }
 
-    // Show detail
+    // Show character detail
     function showCharacterDetail(char) {
       if (!char) return;
       document.getElementById('detailAvatar').textContent = char.name.charAt(0);
@@ -294,93 +304,99 @@
       detailContent.classList.remove('hidden');
     }
 
-    // Clear detail
-    function clearDetailPanel() {
-      selectedCharacter = null;
-      emptyDetail.classList.remove('hidden');
-      detailContent.classList.add('hidden');
+    // Modal handlers
+    if (newCharBtn) {
+      newCharBtn.addEventListener('click', () => {
+        if (!checkAuth()) return;
+        if (charMessage) {
+          charMessage.className = 'message';
+          charMessage.textContent = '';
+        }
+        if (charForm) {
+          charForm.reset();
+          charForm.querySelector('[name="race"]').value = 'Человек';
+          charForm.querySelector('[name="class"]').value = 'Воин';
+          charForm.querySelector('[name="level"]').value = '1';
+          charForm.querySelector('[name="hp"]').value = '10';
+          ['str','dex','con','int','wis','cha'].forEach(stat => {
+            charForm.querySelector(`[name="${stat}"]`).value = '10';
+          });
+        }
+        charModal.classList.remove('hidden');
+      });
     }
 
-    // Modal handlers
-    newCharBtn.addEventListener('click', () => {
-      if (!checkAuth()) return;
-      charMessage.className = 'message';
-      charMessage.textContent = '';
-      charForm.reset();
-      charForm.querySelector('[name="race"]').value = 'Человек';
-      charForm.querySelector('[name="class"]').value = 'Воин';
-      charForm.querySelector('[name="level"]').value = '1';
-      charForm.querySelector('[name="hp"]').value = '10';
-      ['str','dex','con','int','wis','cha'].forEach(stat => {
-        charForm.querySelector(`[name="${stat}"]`).value = '10';
+    if (cancelCharBtn && charModal) {
+      cancelCharBtn.addEventListener('click', () => {
+        charModal.classList.add('hidden');
       });
-      charModal.classList.remove('hidden');
-    });
 
-    cancelCharBtn.addEventListener('click', () => {
-      charModal.classList.add('hidden');
-    });
+      charModal.addEventListener('click', (e) => {
+        if (e.target === charModal) {
+          charModal.classList.add('hidden');
+        }
+      });
+    }
 
-    // Close modal on outside click
-    charModal.addEventListener('click', (e) => {
-      if (e.target === charModal) {
-        charModal.classList.add('hidden');
-      }
-    });
+    if (charForm) {
+      charForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const user = JSON.parse(localStorage.getItem('kdUser'));
+        const formData = new FormData(charForm);
 
-    charForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const user = JSON.parse(localStorage.getItem('kdUser'));
-      const formData = new FormData(charForm);
+        const character = {
+          id: Date.now(),
+          owner: user.username,
+          name: formData.get('name'),
+          race: formData.get('race'),
+          class: formData.get('class'),
+          level: parseInt(formData.get('level')),
+          hp: parseInt(formData.get('hp')),
+          world: formData.get('world') || null,
+          abilities: {
+            str: parseInt(formData.get('str')) || 10,
+            dex: parseInt(formData.get('dex')) || 10,
+            con: parseInt(formData.get('con')) || 10,
+            int: parseInt(formData.get('int')) || 10,
+            wis: parseInt(formData.get('wis')) || 10,
+            cha: parseInt(formData.get('cha')) || 10
+          },
+          backstory: '',
+          createdAt: new Date().toISOString()
+        };
 
-      const character = {
-        id: Date.now(),
-        owner: user.username,
-        name: formData.get('name'),
-        race: formData.get('race'),
-        class: formData.get('class'),
-        level: parseInt(formData.get('level')),
-        hp: parseInt(formData.get('hp')),
-        world: formData.get('world') || null,
-        abilities: {
-          str: parseInt(formData.get('str')) || 10,
-          dex: parseInt(formData.get('dex')) || 10,
-          con: parseInt(formData.get('con')) || 10,
-          int: parseInt(formData.get('int')) || 10,
-          wis: parseInt(formData.get('wis')) || 10,
-          cha: parseInt(formData.get('cha')) || 10
-        },
-        backstory: '',
-        createdAt: new Date().toISOString()
-      };
+        saveCharacterToStorage(character);
+        if (charMessage) {
+          charMessage.textContent = '✅ Персонаж успешно создан!';
+          charMessage.className = 'message success';
+        }
 
-      saveCharacterToStorage(character);
-      charMessage.textContent = '✅ Персонаж успешно создан!';
-      charMessage.className = 'message success';
+        setTimeout(() => {
+          charModal.classList.add('hidden');
+          renderCharacters();
+          selectedCharacter = character;
+          showCharacterDetail(character);
+        }, 800);
+      });
+    }
 
-      setTimeout(() => {
-        charModal.classList.add('hidden');
-        renderCharacters();
-        selectedCharacter = character;
-        showCharacterDetail(character);
-      }, 800);
-    });
+    if (deleteCurrentChar) {
+      deleteCurrentChar.addEventListener('click', () => {
+        if (!selectedCharacter) return;
+        if (confirm('Удалить персонажа? Это действие нельзя отменить.')) {
+          deleteCharacter(selectedCharacter.id);
+        }
+      });
+    }
 
-    deleteCurrentChar.addEventListener('click', () => {
-      if (!selectedCharacter) return;
-      if (confirm('Удалить персонажа? Это действие нельзя отменить.')) {
-        deleteCharacter(selectedCharacter.id);
-      }
-    });
-
-    // Init
+    // Initialize
     if (checkAuth()) {
       initCharacters();
       renderCharacters();
     }
   </script>
-  <script src="main.js" defer></script>
 
 </body>
 </html>
+
 
