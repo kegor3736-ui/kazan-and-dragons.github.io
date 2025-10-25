@@ -39,8 +39,56 @@
       <button class="new-char-btn" id="newCharBtn">+ Новый персонаж</button>
     </div>
 
-    <div class="characters-grid" id="charactersGrid">
-      <!-- Персонажи будут отображаться здесь -->
+    <!-- Двухпанельный макет -->
+    <div class="characters-layout">
+      <div class="characters-list" id="charactersList">
+        <!-- Список персонажей -->
+      </div>
+      <div class="character-detail-panel" id="characterDetailPanel">
+        <div id="detailContent" class="detail-content hidden">
+          <div class="detail-header">
+            <div class="char-avatar" id="detailAvatar">?</div>
+            <h2 id="detailName">—</h2>
+            <div id="detailClassLevel" class="char-class-level">—</div>
+          </div>
+
+          <div class="detail-section">
+            <h3>Основная информация</h3>
+            <div class="detail-grid">
+              <div><strong>Раса:</strong> <span id="detailRace">—</span></div>
+              <div><strong>Мир:</strong> <span id="detailWorld">—</span></div>
+              <div><strong>HP:</strong> <span id="detailHP">—</span></div>
+              <div><strong>Уровень:</strong> <span id="detailLevel">—</span></div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3>Характеристики</h3>
+            <div class="detail-grid abilities-grid">
+              <div><strong>СИЛ:</strong> <span id="detailSTR">—</span></div>
+              <div><strong>ЛОВ:</strong> <span id="detailDEX">—</span></div>
+              <div><strong>ТЕЛ:</strong> <span id="detailCON">—</span></div>
+              <div><strong>ИНТ:</strong> <span id="detailINT">—</span></div>
+              <div><strong>МУД:</strong> <span id="detailWIS">—</span></div>
+              <div><strong>ХАР:</strong> <span id="detailCHA">—</span></div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3>Описание</h3>
+            <p id="detailBackstory" class="backstory-text">—</p>
+          </div>
+
+          <div class="char-actions">
+            <button class="char-btn edit-btn">Редактировать</button>
+            <button class="char-btn delete-btn" id="deleteCurrentChar">Удалить</button>
+          </div>
+        </div>
+
+        <div id="emptyDetail" class="empty-detail">
+          <p>Выберите персонажа слева, чтобы посмотреть его лист.</p>
+        </div>
+      </div>
     </div>
 
     <footer>
@@ -49,9 +97,9 @@
   </div>
 
   <!-- Модальное окно создания персонажа -->
-  <div id="charModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; overflow-y: auto;">
-    <div class="modal-content" style="max-width: 600px; margin: 2rem auto; padding: 2rem;">
-      <h2 style="text-align: center; margin-bottom: 1.5rem; color: var(--accent);">Создать персонажа</h2>
+  <div id="charModal" class="modal">
+    <div class="modal-content">
+      <h2>Создать персонажа</h2>
       <form id="charForm">
         <div class="form-group">
           <label>Имя</label>
@@ -59,11 +107,11 @@
         </div>
         <div class="form-group">
           <label>Раса</label>
-          <input type="text" name="race" class="form-control" value="Человек" required placeholder="Эльф, Дварф, Полурослик...">
+          <input type="text" name="race" class="form-control" value="Человек" required placeholder="Эльф, Дварф...">
         </div>
         <div class="form-group">
           <label>Класс</label>
-          <input type="text" name="class" class="form-control" value="Воин" required placeholder="Волшебник, Плут, Жрец...">
+          <input type="text" name="class" class="form-control" value="Воин" required placeholder="Волшебник, Плут...">
         </div>
         <div class="form-group">
           <label>Уровень</label>
@@ -75,11 +123,11 @@
         </div>
         <div class="form-group">
           <label>Мир (опционально)</label>
-          <input type="text" name="world" class="form-control" placeholder="Фаэрун, Казана, Эберрон...">
+          <input type="text" name="world" class="form-control" placeholder="Фаэрун, Казана...">
         </div>
 
-        <h3 style="margin: 1.5rem 0 1rem; color: var(--accent); font-size: 1.2rem;">Характеристики</h3>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+        <h3>Характеристики</h3>
+        <div class="form-grid">
           <div class="form-group">
             <label>Сила (STR)</label>
             <input type="number" name="str" class="form-control" min="1" max="30" value="10">
@@ -106,9 +154,9 @@
           </div>
         </div>
 
-        <div id="charMessage" class="message" style="margin: 1rem 0;"></div>
+        <div id="charMessage" class="message"></div>
 
-        <div style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;">
+        <div class="modal-buttons">
           <button type="submit" class="submit-btn">Создать персонажа</button>
           <button type="button" id="cancelCharBtn" class="btn btn-secondary">Отмена</button>
         </div>
@@ -122,11 +170,16 @@
     const mainContent = document.getElementById('mainContent');
     const menuToggle = document.getElementById('menuToggle');
     const newCharBtn = document.getElementById('newCharBtn');
-    const charactersGrid = document.getElementById('charactersGrid');
+    const charactersList = document.getElementById('charactersList');
     const charModal = document.getElementById('charModal');
     const charForm = document.getElementById('charForm');
     const cancelCharBtn = document.getElementById('cancelCharBtn');
     const charMessage = document.getElementById('charMessage');
+    const detailContent = document.getElementById('detailContent');
+    const emptyDetail = document.getElementById('emptyDetail');
+    const deleteCurrentChar = document.getElementById('deleteCurrentChar');
+
+    let selectedCharacter = null;
 
     // Toggle sidebar
     menuToggle.addEventListener('click', () => {
@@ -134,7 +187,6 @@
       mainContent.classList.toggle('sidebar-hidden');
     });
 
-    // Close sidebar on mobile
     document.addEventListener('click', (e) => {
       if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
           !sidebar.contains(e.target) && e.target !== menuToggle) {
@@ -154,43 +206,43 @@
       return true;
     }
 
-    // Initialize characters storage
+    // Init storage
     function initCharacters() {
       if (!localStorage.getItem('kdCharacters')) {
         localStorage.setItem('kdCharacters', JSON.stringify([]));
       }
     }
 
-    // Get user's characters
+    // Get user chars
     function getUserCharacters() {
       const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
       const user = JSON.parse(localStorage.getItem('kdUser'));
       return allChars.filter(char => char.owner === user.username);
     }
 
-    // Save character
-    function saveCharacter(char) {
-    // Save character to localStorage
+    // Save char
     function saveCharacterToStorage(char) {
       const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
-      char.id = Date.now();
       allChars.push(char);
       localStorage.setItem('kdCharacters', JSON.stringify(allChars));
     }
 
-    // Delete character
+    // Delete char
     function deleteCharacter(id) {
       let allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
       allChars = allChars.filter(char => char.id !== id);
       localStorage.setItem('kdCharacters', JSON.stringify(allChars));
       renderCharacters();
+      if (selectedCharacter && selectedCharacter.id === id) {
+        clearDetailPanel();
+      }
     }
 
-    // Render characters
+    // Render list (2 cols, max 20)
     function renderCharacters() {
       const chars = getUserCharacters();
       if (chars.length === 0) {
-        charactersGrid.innerHTML = `
+        charactersList.innerHTML = `
           <div class="empty-state">
             <p>У вас пока нет персонажей.</p>
             <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.8;">
@@ -201,43 +253,60 @@
         return;
       }
 
-      charactersGrid.innerHTML = chars.map(char => `
-        <div class="char-card">
+      const displayChars = chars.slice(0, 20);
+      charactersList.innerHTML = displayChars.map(char => `
+        <div class="char-card" data-id="${char.id}">
           <div class="char-avatar">${char.name.charAt(0)}</div>
           <div class="char-name">${char.name}</div>
           <div class="char-class-level">${char.class}, ${char.level} ур.</div>
-          <div class="char-details">
-            Раса: ${char.race}<br>
-            Мир: ${char.world || '—'}<br>
-            Очки жизни: ${char.hp}
-            HP: ${char.hp}<br>
-            STR ${char.abilities.str} | DEX ${char.abilities.dex} | CON ${char.abilities.con}
-          </div>
-          <div class="char-actions">
-            <button class="char-btn edit-btn" onclick="alert('Редактирование будет добавлено позже')">Редактировать</button>
-            <button class="char-btn delete-btn" data-id="${char.id}">Удалить</button>
-          </div>
         </div>
       `).join('');
 
-      // Add delete listeners
-      document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          if (confirm('Удалить персонажа? Это действие нельзя отменить.')) {
-            deleteCharacter(parseInt(btn.dataset.id));
-          }
+      document.querySelectorAll('.char-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const id = parseInt(card.dataset.id);
+          selectedCharacter = getUserCharacters().find(c => c.id === id);
+          showCharacterDetail(selectedCharacter);
         });
       });
     }
 
-    // Create new character (mock form)
-    // === Создание персонажа ===
+    // Show detail
+    function showCharacterDetail(char) {
+      if (!char) return;
+      document.getElementById('detailAvatar').textContent = char.name.charAt(0);
+      document.getElementById('detailName').textContent = char.name;
+      document.getElementById('detailClassLevel').textContent = `${char.class}, ${char.level} ур.`;
+      document.getElementById('detailRace').textContent = char.race;
+      document.getElementById('detailWorld').textContent = char.world || '—';
+      document.getElementById('detailHP').textContent = char.hp;
+      document.getElementById('detailLevel').textContent = char.level;
+      document.getElementById('detailSTR').textContent = char.abilities.str;
+      document.getElementById('detailDEX').textContent = char.abilities.dex;
+      document.getElementById('detailCON').textContent = char.abilities.con;
+      document.getElementById('detailINT').textContent = char.abilities.int;
+      document.getElementById('detailWIS').textContent = char.abilities.wis;
+      document.getElementById('detailCHA').textContent = char.abilities.cha;
+      document.getElementById('detailBackstory').textContent = char.backstory || 'Без описания...';
+      deleteCurrentChar.dataset.id = char.id;
+
+      emptyDetail.classList.add('hidden');
+      detailContent.classList.remove('hidden');
+    }
+
+    // Clear detail
+    function clearDetailPanel() {
+      selectedCharacter = null;
+      emptyDetail.classList.remove('hidden');
+      detailContent.classList.add('hidden');
+    }
+
+    // Modal handlers
     newCharBtn.addEventListener('click', () => {
       if (!checkAuth()) return;
       charMessage.className = 'message';
       charMessage.textContent = '';
       charForm.reset();
-      // Сброс значений по умолчанию
       charForm.querySelector('[name="race"]').value = 'Человек';
       charForm.querySelector('[name="class"]').value = 'Воин';
       charForm.querySelector('[name="level"]').value = '1';
@@ -245,36 +314,25 @@
       ['str','dex','con','int','wis','cha'].forEach(stat => {
         charForm.querySelector(`[name="${stat}"]`).value = '10';
       });
-      charModal.style.display = 'block';
+      charModal.classList.remove('hidden');
     });
 
-      const name = prompt('Имя персонажа:');
-      if (!name) return;
     cancelCharBtn.addEventListener('click', () => {
-      charModal.style.display = 'none';
+      charModal.classList.add('hidden');
     });
 
-      const race = prompt('Раса (например, Эльф, Дварф):', 'Человек');
-      const charClass = prompt('Класс (например, Воин, Волшебник):', 'Воин');
-      const level = parseInt(prompt('Уровень:', '1')) || 1;
-      const hp = parseInt(prompt('Очки жизни:', '10')) || 10;
-      const world = prompt('Мир (опционально):', 'KAZANA');
+    // Close modal on outside click
+    charModal.addEventListener('click', (e) => {
+      if (e.target === charModal) {
+        charModal.classList.add('hidden');
+      }
+    });
+
     charForm.addEventListener('submit', (e) => {
       e.preventDefault();
-
       const user = JSON.parse(localStorage.getItem('kdUser'));
-      saveCharacter({
-        name,
-        race,
-        class: charClass,
-        level,
-        hp,
-        world,
-        owner: user.username
-      });
       const formData = new FormData(charForm);
 
-      renderCharacters();
       const character = {
         id: Date.now(),
         owner: user.username,
@@ -292,50 +350,30 @@
           wis: parseInt(formData.get('wis')) || 10,
           cha: parseInt(formData.get('cha')) || 10
         },
+        backstory: '',
         createdAt: new Date().toISOString()
       };
 
-      // === СОХРАНЕНИЕ (временно в localStorage) ===
       saveCharacterToStorage(character);
-
       charMessage.textContent = '✅ Персонаж успешно создан!';
       charMessage.className = 'message success';
 
       setTimeout(() => {
-        charModal.style.display = 'none';
+        charModal.classList.add('hidden');
         renderCharacters();
+        selectedCharacter = character;
+        showCharacterDetail(character);
       }, 800);
-
-      // === БУДУЩАЯ ОТПРАВКА НА СЕРВЕР (раскомментировать позже) ===
-      /*
-      fetch('/api/characters', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(character)
-      })
-      .then(res => res.json())
-      .then(() => {
-        charMessage.textContent = '✅ Персонаж сохранён на сервере!';
-        charMessage.className = 'message success';
-        setTimeout(() => {
-          charModal.style.display = 'none';
-          renderCharacters();
-        }, 800);
-      })
-      .catch(err => {
-        console.error(err);
-        charMessage.textContent = '⚠️ Ошибка сервера. Сохранено локально.';
-        charMessage.className = 'message error';
-        saveCharacterToStorage(character); // fallback
-        setTimeout(() => {
-          charModal.style.display = 'none';
-          renderCharacters();
-        }, 1200);
-      });
-      */
     });
 
-    // Initialize
+    deleteCurrentChar.addEventListener('click', () => {
+      if (!selectedCharacter) return;
+      if (confirm('Удалить персонажа? Это действие нельзя отменить.')) {
+        deleteCharacter(selectedCharacter.id);
+      }
+    });
+
+    // Init
     if (checkAuth()) {
       initCharacters();
       renderCharacters();
