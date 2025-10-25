@@ -1067,6 +1067,9 @@ footer::before {
 .hidden {
   display: none !important;
 }
+.hidden {
+  display: none !important;
+}
 
 
 
