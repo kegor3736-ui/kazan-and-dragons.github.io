@@ -1063,6 +1063,11 @@ footer::before {
     grid-template-columns: 1fr;
   }
 }
+/* Универсальный класс для скрытия элементов */
+.hidden {
+  display: none !important;
+}
+
 
 
 
