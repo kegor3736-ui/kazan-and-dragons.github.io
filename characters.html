@@ -394,9 +394,266 @@
       initCharacters();
       renderCharacters();
     }
-  </script>
+  <script>
+  // === НАСТРОЙКИ ===
+  const REQUIRE_AUTH = true; // ← измените на false, чтобы отключить проверку входа
+
+  // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
+  function log(...args) {
+    console.log('[K&D]', ...args);
+  }
+
+  function checkAuth() {
+    if (!REQUIRE_AUTH) return true;
+    try {
+      const user = JSON.parse(localStorage.getItem('kdUser'));
+      if (user && user.username) {
+        log('Пользователь авторизован:', user.username);
+        return true;
+      }
+    } catch (e) {
+      log('Ошибка при чтении kdUser из localStorage');
+    }
+    alert('Требуется регистрация для доступа к персонажам.');
+    window.location.href = 'register.html';
+    return false;
+  }
+
+  function initStorage() {
+    if (!localStorage.getItem('kdCharacters')) {
+      localStorage.setItem('kdCharacters', '[]');
+      log('Создано пустое хранилище персонажей');
+    }
+  }
+
+  function getUserCharacters() {
+    try {
+      const all = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
+      const user = JSON.parse(localStorage.getItem('kdUser') || '{}');
+      return all.filter(c => c.owner === user.username);
+    } catch (e) {
+      log('Ошибка при загрузке персонажей:', e);
+      return [];
+    }
+  }
+
+  function saveCharacter(char) {
+    try {
+      const all = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
+      all.push(char);
+      localStorage.setItem('kdCharacters', JSON.stringify(all));
+      log('Персонаж сохранён:', char.name);
+    } catch (e) {
+      log('Ошибка сохранения персонажа:', e);
+      alert('Не удалось сохранить персонажа. Проверьте консоль (F12).');
+    }
+  }
+
+  function deleteCharacter(id) {
+    try {
+      let all = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
+      all = all.filter(c => c.id !== id);
+      localStorage.setItem('kdCharacters', JSON.stringify(all));
+      renderCharacters();
+      clearDetailPanel();
+      log('Персонаж удалён:', id);
+    } catch (e) {
+      log('Ошибка удаления персонажа:', e);
+    }
+  }
+
+  // === DOM ЭЛЕМЕНТЫ ===
+  const newCharBtn = document.getElementById('newCharBtn');
+  const charModal = document.getElementById('charModal');
+  const charForm = document.getElementById('charForm');
+  const cancelCharBtn = document.getElementById('cancelCharBtn');
+  const charMessage = document.getElementById('charMessage');
+  const charactersList = document.getElementById('charactersList');
+  const detailContent = document.getElementById('detailContent');
+  const emptyDetail = document.getElementById('emptyDetail');
+  const deleteCurrentChar = document.getElementById('deleteCurrentChar');
+
+  let selectedCharacter = null;
+
+  // === МОДАЛЬНОЕ ОКНО ===
+  function openModal() {
+    log('Открытие модального окна');
+    if (charMessage) charMessage.className = 'message';
+    if (charForm) charForm.reset();
+    if (charForm) {
+      const defaults = { race: 'Человек', class: 'Воин', level: '1', hp: '10' };
+      for (const [name, value] of Object.entries(defaults)) {
+        const el = charForm.querySelector(`[name="${name}"]`);
+        if (el) el.value = value;
+      }
+      ['str','dex','con','int','wis','cha'].forEach(stat => {
+        const el = charForm.querySelector(`[name="${stat}"]`);
+        if (el) el.value = '10';
+      });
+    }
+    if (charModal) charModal.classList.remove('hidden');
+  }
+
+  function closeModal() {
+    if (charModal) charModal.classList.add('hidden');
+  }
+
+  // === ОТОБРАЖЕНИЕ ===
+  function renderCharacters() {
+    const chars = getUserCharacters();
+    if (!charactersList) return;
+
+    if (chars.length === 0) {
+      charactersList.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1;text-align:center;padding:2rem;">
+          <p>У вас пока нет персонажей.</p>
+          <p style="margin-top:1rem;font-size:0.95rem;opacity:0.8;">
+            Нажмите «+ Новый персонаж», чтобы создать первого героя!
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    const display = chars.slice(0, 20);
+    charactersList.innerHTML = display.map(c => `
+      <div class="char-card" data-id="${c.id}" style="cursor:pointer;">
+        <div class="char-avatar">${c.name.charAt(0)}</div>
+        <div class="char-name">${c.name}</div>
+        <div class="char-class-level">${c.class}, ${c.level} ур.</div>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('.char-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = Number(card.dataset.id);
+        selectedCharacter = chars.find(c => c.id === id);
+        showDetail(selectedCharacter);
+      });
+    });
+  }
+
+  function showDetail(char) {
+    if (!char) return;
+    log('Показ деталей персонажа:', char.name);
+
+    const fields = {
+      detailAvatar: char.name.charAt(0),
+      detailName: char.name,
+      detailClassLevel: `${char.class}, ${char.level} ур.`,
+      detailRace: char.race,
+      detailWorld: char.world || '—',
+      detailHP: String(char.hp),
+      detailLevel: String(char.level),
+      detailSTR: String(char.abilities.str),
+      detailDEX: String(char.abilities.dex),
+      detailCON: String(char.abilities.con),
+      detailINT: String(char.abilities.int),
+      detailWIS: String(char.abilities.wis),
+      detailCHA: String(char.abilities.cha),
+      detailBackstory: char.backstory || 'Без описания...'
+    };
+
+    for (const [id, text] of Object.entries(fields)) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
+    if (deleteCurrentChar) deleteCurrentChar.dataset.id = char.id;
+
+    if (emptyDetail) emptyDetail.classList.add('hidden');
+    if (detailContent) detailContent.classList.remove('hidden');
+  }
+
+  function clearDetailPanel() {
+    selectedCharacter = null;
+    if (emptyDetail) emptyDetail.classList.remove('hidden');
+    if (detailContent) detailContent.classList.add('hidden');
+  }
+
+  // === ОБРАБОТЧИКИ ===
+  if (newCharBtn) {
+    newCharBtn.addEventListener('click', () => {
+      log('Нажата кнопка "Новый персонаж"');
+      if (REQUIRE_AUTH && !checkAuth()) return;
+      openModal();
+    });
+  }
+
+  if (cancelCharBtn) {
+    cancelCharBtn.addEventListener('click', closeModal);
+  }
+
+  if (charModal) {
+    charModal.addEventListener('click', (e) => {
+      if (e.target === charModal) closeModal();
+    });
+  }
+
+  if (charForm) {
+    charForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      log('Отправка формы создания персонажа');
+
+      const user = JSON.parse(localStorage.getItem('kdUser') || '{"username":"guest"}');
+      const fd = new FormData(charForm);
+
+      const char = {
+        id: Date.now(),
+        owner: user.username,
+        name: fd.get('name') || 'Безымянный',
+        race: fd.get('race') || 'Человек',
+        class: fd.get('class') || 'Воин',
+        level: parseInt(fd.get('level')) || 1,
+        hp: parseInt(fd.get('hp')) || 10,
+        world: fd.get('world') || null,
+        abilities: {
+          str: parseInt(fd.get('str')) || 10,
+          dex: parseInt(fd.get('dex')) || 10,
+          con: parseInt(fd.get('con')) || 10,
+          int: parseInt(fd.get('int')) || 10,
+          wis: parseInt(fd.get('wis')) || 10,
+          cha: parseInt(fd.get('cha')) || 10
+        },
+        backstory: '',
+        createdAt: new Date().toISOString()
+      };
+
+      saveCharacter(char);
+
+      if (charMessage) {
+        charMessage.textContent = '✅ Персонаж успешно создан!';
+        charMessage.className = 'message success';
+      }
+
+      setTimeout(() => {
+        closeModal();
+        renderCharacters();
+        showDetail(char);
+      }, 800);
+    });
+  }
+
+  if (deleteCurrentChar) {
+    deleteCurrentChar.addEventListener('click', () => {
+      if (!selectedCharacter) return;
+      if (confirm('Удалить персонажа? Это нельзя отменить.')) {
+        deleteCharacter(selectedCharacter.id);
+      }
+    });
+  }
+
+  // === ИНИЦИАЛИЗАЦИЯ ===
+  log('Инициализация страницы персонажей');
+  if (!REQUIRE_AUTH || checkAuth()) {
+    initStorage();
+    renderCharacters();
+    clearDetailPanel();
+  }
+</script>
 
 </body>
 </html>
+
 
 
