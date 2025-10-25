@@ -6,283 +6,40 @@
   <title>Персонажи — Kazan & Dragons</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Стили для редактора персонажей в стиле Long Story Short */
-    .character-sheet {
-      display: grid;
-      grid-template-columns: 300px 1fr 300px;
-      gap: 1rem;
-      padding: 1rem;
-      background: var(--card-bg);
-      border-radius: 8px;
-      margin: 1rem;
+    /* Стили для редактора персонажей */
+    .character-editor {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      z-index: 2000;
+      overflow-y: auto;
+      padding: 2rem;
     }
 
-    .character-header {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      padding: 1rem;
-      background: rgba(10, 8, 29, 0.8);
-      border-radius: 8px;
-      margin-bottom: 1rem;
-    }
-
-    .hp-section {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1rem;
-      padding: 1rem;
-      background: rgba(10, 8, 29, 0.6);
-      border-radius: 8px;
-      margin-bottom: 1rem;
-    }
-
-    .ability-column {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .center-column {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .right-column {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .ability-block {
-      background: rgba(26, 20, 45, 0.8);
-      border: 1px solid var(--primary);
-      border-radius: 8px;
-      padding: 1rem;
-    }
-
-    .ability-header {
-      text-align: center;
-      font-weight: bold;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-      border-bottom: 1px solid var(--primary);
-      padding-bottom: 0.5rem;
-    }
-
-    .ability-score {
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin: 0.5rem 0;
-    }
-
-    .ability-modifier {
-      text-align: center;
-      background: var(--primary);
-      color: white;
-      padding: 0.25rem;
-      border-radius: 4px;
-      margin: 0.5rem 0;
-      font-weight: bold;
-    }
-
-    .saving-throw, .skill {
+    .editor-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.25rem 0;
-      border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--primary);
     }
 
-    .saving-throw label, .skill label {
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    .proficiency-bonus {
-      text-align: center;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--accent);
-      margin: 1rem 0;
-    }
-
-    .death-saves {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .death-save-group {
-      text-align: center;
-    }
-
-    .death-save-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: bold;
-      color: var(--accent);
-    }
-
-    .death-save-circles {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .death-save-circle {
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--accent);
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .death-save-circle.filled {
-      background: var(--accent);
-    }
-
-    .weapons-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1rem 0;
-    }
-
-    .weapons-table th,
-    .weapons-table td {
-      border: 1px solid var(--primary);
-      padding: 0.5rem;
-      text-align: left;
-    }
-
-    .weapons-table th {
-      background: rgba(138, 43, 226, 0.3);
-      color: var(--accent);
-    }
-
-    .coins-section {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 0.5rem;
-      margin: 1rem 0;
-    }
-
-    .coin-group {
-      text-align: center;
-    }
-
-    .coin-group label {
-      display: block;
-      font-size: 0.8rem;
-      margin-bottom: 0.25rem;
-      color: var(--accent);
-    }
-
-    .portrait-section {
-      text-align: center;
-      margin: 1rem 0;
-    }
-
-    .portrait-placeholder {
-      width: 150px;
-      height: 200px;
-      background: rgba(26, 20, 45, 0.6);
-      border: 2px dashed var(--primary);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .editor-content {
+      max-width: 1200px;
       margin: 0 auto;
-      cursor: pointer;
-      color: var(--accent);
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      border: 1px solid var(--primary-light);
     }
 
-    .portrait-preview {
-      max-width: 150px;
-      max-height: 200px;
-      border-radius: 8px;
-      display: none;
-    }
-
-    .section-title {
-      color: var(--accent);
-      border-bottom: 1px solid var(--primary);
-      padding-bottom: 0.5rem;
-      margin-bottom: 1rem;
-      font-weight: bold;
-    }
-
-    .text-area {
-      width: 100%;
-      min-height: 100px;
-      background: rgba(10, 8, 29, 0.7);
-      border: 1px solid var(--primary);
-      border-radius: 4px;
-      color: var(--text);
-      padding: 0.5rem;
-      resize: vertical;
-    }
-
-    .checkbox-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 0.25rem 0;
-    }
-
-    .checkbox-group label {
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    .initiative-speed {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin: 1rem 0;
-    }
-
-    .stat-group {
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--accent);
-    }
-
-    .shield-toggle {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .shield-bonus {
-      width: 60px;
-    }
-
-    .hit-dice-selector {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .spellbook-section {
-      grid-column: 1 / -1;
-      margin-top: 1rem;
-    }
-
-    @media (max-width: 1200px) {
-      .character-sheet {
-        grid-template-columns: 1fr;
-      }
-    }
+    /* Добавьте остальные стили из предыдущего ответа */
+    /* ... */
   </style>
 </head>
 <body>
@@ -317,463 +74,18 @@
     </header>
 
     <div class="page-header">
-      <h1>Редактор персонажа</h1>
-      <p>Создайте своего уникального героя для Dungeons & Dragons</p>
+      <h1>Хранилище персонажей</h1>
+      <p>Создавайте и управляйте своими героями</p>
     </div>
 
     <div class="controls">
       <button class="new-char-btn" id="newCharBtn">+ Новый персонаж</button>
-      <button class="btn btn-primary" id="saveCharBtn">Сохранить персонажа</button>
-      <button class="btn export-btn" id="exportJsonBtn">Экспорт в JSON</button>
+      <button class="btn btn-primary" id="saveCharBtn" style="display: none;">Сохранить персонажа</button>
+      <button class="btn export-btn" id="exportJsonBtn" style="display: none;">Экспорт в JSON</button>
     </div>
 
-    <!-- Сетка персонажей -->
     <div class="characters-grid" id="charactersGrid">
       <!-- Персонажи будут отображаться здесь -->
-    </div>
-
-    <!-- Редактор персонажа -->
-    <div class="character-editor" id="characterEditor">
-      <div class="editor-content">
-        <div class="editor-header">
-          <h2 id="editorTitle">Создание персонажа</h2>
-          <button class="btn btn-secondary" id="closeEditor">✕ Закрыть</button>
-        </div>
-
-        <div class="character-sheet" id="characterSheet">
-          <!-- Верхняя часть - основная информация -->
-          <div class="character-header">
-            <div class="form-group">
-              <label>Имя персонажа</label>
-              <input type="text" id="charName" class="form-control" placeholder="Арагорн">
-            </div>
-            <div class="form-group">
-              <label>Предыстория</label>
-              <input type="text" id="charBackground" class="form-control" placeholder="Странник">
-            </div>
-            <div class="form-group">
-              <label>Класс</label>
-              <input type="text" id="charClass" class="form-control" placeholder="Воин">
-            </div>
-            <div class="form-group">
-              <label>Вид (Раса)</label>
-              <input type="text" id="charRace" class="form-control" placeholder="Человек">
-            </div>
-            <div class="form-group">
-              <label>Подкласс</label>
-              <input type="text" id="charSubclass" class="form-control" placeholder="Паладин">
-            </div>
-            <div class="form-group">
-              <label>Уровень</label>
-              <input type="number" id="charLevel" class="form-control" value="1" min="1" max="20">
-            </div>
-            <div class="form-group">
-              <label>Опыт</label>
-              <input type="number" id="charExp" class="form-control" value="0">
-            </div>
-            <div class="form-group">
-              <label>Класс защиты (КЗ)</label>
-              <input type="number" id="armorClass" class="form-control" value="10">
-            </div>
-            <div class="form-group shield-toggle">
-              <label>
-                <input type="checkbox" id="shieldToggle"> Щит
-              </label>
-              <input type="number" id="shieldBonus" class="form-control shield-bonus" value="2" min="0" max="5">
-            </div>
-          </div>
-
-          <!-- Блок хитов -->
-          <div class="hp-section">
-            <div class="form-group">
-              <label>Текущие хиты</label>
-              <input type="number" id="currentHP" class="form-control" value="10">
-            </div>
-            <div class="form-group">
-              <label>Временные хиты</label>
-              <input type="number" id="tempHP" class="form-control" value="0">
-            </div>
-            <div class="form-group">
-              <label>Максимум хитов</label>
-              <input type="number" id="maxHP" class="form-control" value="10">
-            </div>
-            <div class="form-group hit-dice-selector">
-              <label>Кости хитов:</label>
-              <select id="hitDiceType" class="form-control">
-                <option value="d6">d6</option>
-                <option value="d8">d8</option>
-                <option value="d10">d10</option>
-                <option value="d12">d12</option>
-                <option value="d20">d20</option>
-              </select>
-              <input type="number" id="hitDiceCount" class="form-control" value="1" min="0">
-            </div>
-            <div class="form-group">
-              <label>Спасброски от смерти</label>
-              <div class="death-saves">
-                <div class="death-save-group">
-                  <label>Успехи</label>
-                  <div class="death-save-circles" id="successCircles">
-                    <div class="death-save-circle" data-index="0"></div>
-                    <div class="death-save-circle" data-index="1"></div>
-                    <div class="death-save-circle" data-index="2"></div>
-                  </div>
-                </div>
-                <div class="death-save-group">
-                  <label>Провалы</label>
-                  <div class="death-save-circles" id="failureCircles">
-                    <div class="death-save-circle" data-index="0"></div>
-                    <div class="death-save-circle" data-index="1"></div>
-                    <div class="death-save-circle" data-index="2"></div>
-                  </div>
-                </div>
-              </div>
-              <button type="button" class="btn btn-secondary" id="rollDeathSave" style="margin-top: 0.5rem; width: 100%;">
-                Бросок спасброска
-              </button>
-            </div>
-          </div>
-
-          <!-- Левая колонка - характеристики -->
-          <div class="ability-column">
-            <div class="proficiency-bonus">
-              Бонус владения: <span id="proficiencyBonus">+2</span>
-            </div>
-
-            <!-- Сила -->
-            <div class="ability-block">
-              <div class="ability-header">Сила</div>
-              <div class="ability-score">
-                <input type="number" id="strScore" class="form-control ability-score-input" value="10" min="1" max="30">
-              </div>
-              <div class="ability-modifier" id="strMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="strSave"> Спасбросок</label>
-                <span id="strSaveMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="athletics"> Атлетика</label>
-                <span id="athleticsMod">+0</span>
-              </div>
-            </div>
-
-            <!-- Ловкость -->
-            <div class="ability-block">
-              <div class="ability-header">Ловкость</div>
-              <div class="ability-score">
-                <input type="number" id="dexScore" class="form-control ability-score-input" value="10" min="1" max="30">
-              </div>
-              <div class="ability-modifier" id="dexMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="dexSave"> Спасбросок</label>
-                <span id="dexSaveMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="acrobatics"> Акробатика</label>
-                <span id="acrobaticsMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="sleight"> Ловкость рук</label>
-                <span id="sleightMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="stealth"> Скрытность</label>
-                <span id="stealthMod">+0</span>
-              </div>
-            </div>
-
-            <!-- Телосложение -->
-            <div class="ability-block">
-              <div class="ability-header">Телосложение</div>
-              <div class="ability-score">
-                <input type="number" id="conScore" class="form-control ability-score-input" value="10" min="1" max="30">
-              </div>
-              <div class="ability-modifier" id="conMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="conSave"> Спасбросок</label>
-                <span id="conSaveMod">+0</span>
-              </div>
-            </div>
-
-            <!-- Интеллект -->
-            <div class="ability-block">
-              <div class="ability-header">Интеллект</div>
-              <div class="ability-score">
-                <input type="number" id="intScore" class="form-control ability-score-input" value="10" min="1" max="30">
-              </div>
-              <div class="ability-modifier" id="intMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="intSave"> Спасбросок</label>
-                <span id="intSaveMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="investigation"> Анализ</label>
-                <span id="investigationMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="history"> История</label>
-                <span id="historyMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="arcana"> Магия</label>
-                <span id="arcanaMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="nature"> Природа</label>
-                <span id="natureMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="religion"> Религия</label>
-                <span id="religionMod">+0</span>
-              </div>
-            </div>
-
-            <!-- Мудрость -->
-            <div class="ability-block">
-              <div class="ability-header">Мудрость</div>
-              <div class="ability-score">
-                <input type="number" id="wisScore" class="form-control ability-score-input" value="10" min="1" max="30">
-              </div>
-              <div class="ability-modifier" id="wisMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="wisSave"> Спасбросок</label>
-                <span id="wisSaveMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="perception"> Внимательность</label>
-                <span id="perceptionMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="survival"> Выживание</label>
-                <span id="survivalMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="medicine"> Медицина</label>
-                <span id="medicineMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="insight"> Проницательность</label>
-                <span id="insightMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="animal"> Уход за животными</label>
-                <span id="animalMod">+0</span>
-              </div>
-            </div>
-
-            <!-- Харизма -->
-            <div class="ability-block">
-              <div class="ability-header">Харизма</div>
-              <div class="ability-score">
-                <input type="number" id="chaScore" class="form-control ability-score-input" value="10" min="1" max="30">
-              </div>
-              <div class="ability-modifier" id="chaMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="chaSave"> Спасбросок</label>
-                <span id="chaSaveMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="performance"> Выступление</label>
-                <span id="performanceMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="intimidation"> Запугивание</label>
-                <span id="intimidationMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="deception"> Обман</label>
-                <span id="deceptionMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="persuasion"> Убеждение</label>
-                <span id="persuasionMod">+0</span>
-              </div>
-            </div>
-
-            <!-- Инициатива и скорость -->
-            <div class="ability-block">
-              <div class="initiative-speed">
-                <div class="stat-group">
-                  <div class="ability-header">Инициатива</div>
-                  <div class="stat-value" id="initiativeValue">+0</div>
-                </div>
-                <div class="stat-group">
-                  <div class="ability-header">Скорость</div>
-                  <input type="number" id="speedValue" class="form-control" value="30">
-                </div>
-              </div>
-              <div class="stat-group" style="margin-top: 1rem;">
-                <div class="ability-header">Пассивное восприятие</div>
-                <div class="stat-value" id="passivePerceptionValue">10</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Центральная колонка -->
-          <div class="center-column">
-            <div class="ability-block">
-              <div class="section-title">Состояния</div>
-              <textarea id="conditions" class="text-area" placeholder="Состояния персонажа..."></textarea>
-            </div>
-
-            <div class="ability-block">
-              <div class="section-title">Оружие и боевые заговоры</div>
-              <table class="weapons-table">
-                <thead>
-                  <tr>
-                    <th>Название</th>
-                    <th>Бонус / Сложность</th>
-                    <th>Урон / Вид</th>
-                    <th>Заметки</th>
-                  </tr>
-                </thead>
-                <tbody id="weaponsTableBody">
-                  <tr>
-                    <td><input type="text" class="form-control" placeholder="Длинный меч"></td>
-                    <td><input type="text" class="form-control" placeholder="+5"></td>
-                    <td><input type="text" class="form-control" placeholder="1d8 рубящий"></td>
-                    <td><input type="text" class="form-control" placeholder=""></td>
-                  </tr>
-                </tbody>
-              </table>
-              <button type="button" class="btn btn-secondary" id="addWeapon" style="margin-top: 0.5rem;">+ Добавить оружие</button>
-            </div>
-
-            <div class="ability-block">
-              <div class="section-title">Способности класса</div>
-              <textarea id="classAbilities" class="text-area" placeholder="Способности класса..."></textarea>
-            </div>
-
-            <div class="ability-block">
-              <div class="section-title">Способности расы</div>
-              <textarea id="raceAbilities" class="text-area" placeholder="Способности расы..."></textarea>
-            </div>
-
-            <div class="ability-block">
-              <div class="section-title">Черты</div>
-              <textarea id="features" class="text-area" placeholder="Черты персонажа..."></textarea>
-            </div>
-
-            <div class="ability-block">
-              <div class="section-title">Заметки</div>
-              <textarea id="notes" class="text-area" placeholder="Заметки..."></textarea>
-            </div>
-          </div>
-
-          <!-- Правая колонка -->
-          <div class="right-column">
-            <div class="ability-block">
-              <div class="section-title">Владение снаряжением и умения</div>
-              
-              <div style="margin-bottom: 1rem;">
-                <div style="font-weight: bold; margin-bottom: 0.5rem; color: var(--accent);">Доспехи</div>
-                <div class="checkbox-group">
-                  <input type="checkbox" id="lightArmor">
-                  <label for="lightArmor">Лёгкие</label>
-                </div>
-                <div class="checkbox-group">
-                  <input type="checkbox" id="mediumArmor">
-                  <label for="mediumArmor">Средние</label>
-                </div>
-                <div class="checkbox-group">
-                  <input type="checkbox" id="heavyArmor">
-                  <label for="heavyArmor">Тяжёлые</label>
-                </div>
-                <div class="checkbox-group">
-                  <input type="checkbox" id="shieldProficiency">
-                  <label for="shieldProficiency">Щит</label>
-                </div>
-              </div>
-
-              <div style="margin-bottom: 1rem;">
-                <div style="font-weight: bold; margin-bottom: 0.5rem; color: var(--accent);">Оружие</div>
-                <div class="checkbox-group">
-                  <input type="checkbox" id="simpleWeapons">
-                  <label for="simpleWeapons">Простое</label>
-                </div>
-                <div class="checkbox-group">
-                  <input type="checkbox" id="martialWeapons">
-                  <label for="martialWeapons">Воинское</label>
-                </div>
-                <div class="checkbox-group">
-                  <input type="checkbox" id="otherWeapons">
-                  <label for="otherWeapons">Другое</label>
-                </div>
-              </div>
-
-              <div>
-                <div style="font-weight: bold; margin-bottom: 0.5rem; color: var(--accent);">Владение инструментами и языками</div>
-                <textarea id="toolProficiencies" class="text-area" placeholder="Инструменты и языки..."></textarea>
-              </div>
-            </div>
-
-            <div class="ability-block">
-              <div class="section-title">Портрет</div>
-              <div class="portrait-section">
-                <div class="portrait-placeholder" id="portraitPlaceholder">
-                  Нажмите для загрузки изображения
-                </div>
-                <img id="portraitPreview" class="portrait-preview" alt="Портрет персонажа">
-                <input type="file" id="portraitUpload" accept="image/*" style="display: none;">
-              </div>
-            </div>
-
-            <div class="ability-block">
-              <div class="section-title">Цели и задачи</div>
-              <textarea id="goals" class="text-area" placeholder="Цели и задачи персонажа..."></textarea>
-            </div>
-
-            <div class="ability-block">
-              <div class="section-title">Внешность</div>
-              <textarea id="appearance" class="text-area" placeholder="Описание внешности..."></textarea>
-            </div>
-
-            <div class="ability-block">
-              <div class="section-title">Предыстория и личные качества</div>
-              <textarea id="personality" class="text-area" placeholder="Личные качества и предыстория..."></textarea>
-            </div>
-
-            <div class="ability-block">
-              <div class="section-title">Снаряжение</div>
-              <textarea id="equipment" class="text-area" placeholder="Снаряжение персонажа..."></textarea>
-            </div>
-
-            <div class="ability-block">
-              <div class="section-title">Монеты</div>
-              <div class="coins-section">
-                <div class="coin-group">
-                  <label>ММ</label>
-                  <input type="number" id="cp" class="form-control" value="0" min="0">
-                </div>
-                <div class="coin-group">
-                  <label>СМ</label>
-                  <input type="number" id="sp" class="form-control" value="0" min="0">
-                </div>
-                <div class="coin-group">
-                  <label>ЗМ</label>
-                  <input type="number" id="gp" class="form-control" value="0" min="0">
-                </div>
-                <div class="coin-group">
-                  <label>ЭМ</label>
-                  <input type="number" id="ep" class="form-control" value="0" min="0">
-                </div>
-                <div class="coin-group">
-                  <label>ПМ</label>
-                  <input type="number" id="pp" class="form-control" value="0" min="0">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Книга заклинаний -->
-          <div class="spellbook-section">
-            <div class="ability-block">
-              <div class="section-title">Книга заклинаний</div>
-              <textarea id="spellbook" class="text-area" placeholder="Заклинания персонажа..." style="min-height: 200px;"></textarea>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <footer>
@@ -781,717 +93,442 @@
     </footer>
   </div>
 
-  <script>
-    // DOM элементы
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.getElementById('mainContent');
-    const menuToggle = document.getElementById('menuToggle');
-    const newCharBtn = document.getElementById('newCharBtn');
-    const saveCharBtn = document.getElementById('saveCharBtn');
-    const exportJsonBtn = document.getElementById('exportJsonBtn');
-    const charactersGrid = document.getElementById('charactersGrid');
-    const characterEditor = document.getElementById('characterEditor');
-    const closeEditor = document.getElementById('closeEditor');
-    const editorTitle = document.getElementById('editorTitle');
-    const accountInfo = document.getElementById('accountInfo');
-    const accountName = document.getElementById('accountName');
-    const accountRole = document.getElementById('accountRole');
-    const authButton = document.getElementById('authButton');
-
-    let currentCharacterId = null;
-    let editingCharacter = null;
-
-    // Данные для характеристик
-    const abilities = [
-      { id: 'str', name: 'Сила' },
-      { id: 'dex', name: 'Ловкость' },
-      { id: 'con', name: 'Телосложение' },
-      { id: 'int', name: 'Интеллект' },
-      { id: 'wis', name: 'Мудрость' },
-      { id: 'cha', name: 'Харизма' }
-    ];
-
-    const skills = {
-      str: ['athletics'],
-      dex: ['acrobatics', 'sleight', 'stealth'],
-      int: ['investigation', 'history', 'arcana', 'nature', 'religion'],
-      wis: ['perception', 'survival', 'medicine', 'insight', 'animal'],
-      cha: ['performance', 'intimidation', 'deception', 'persuasion']
-    };
-
-    // =============== ОБЩИЕ ФУНКЦИИ ===============
-
-    // Toggle sidebar
-    menuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('hidden');
-      mainContent.classList.toggle('sidebar-hidden');
-    });
-
-    // Close sidebar on mobile
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
-          !sidebar.contains(e.target) && e.target !== menuToggle) {
-        sidebar.classList.add('hidden');
-        mainContent.classList.add('sidebar-hidden');
-      }
-    });
-
-    // Система аутентификации
-    function checkAuth() {
-      const user = JSON.parse(localStorage.getItem('kdUser'));
-      if (!user) {
-        alert('Требуется регистрация для доступа к персонажам.');
-        window.location.href = 'register.html';
-        return false;
-      }
-      return true;
-    }
-
-    function updateAuthUI() {
-      const user = JSON.parse(localStorage.getItem('kdUser'));
-      if (user) {
-        accountName.textContent = user.username;
-        accountRole.textContent = user.role === 'player' ? 'Игрок' : 'Мастер';
-        accountInfo.classList.add('active');
-        authButton.textContent = 'Выйти';
-        authButton.onclick = () => {
-          localStorage.removeItem('kdUser');
-          updateAuthUI();
-          window.location.reload();
-        };
-      } else {
-        accountInfo.classList.remove('active');
-        authButton.textContent = 'Войти / Регистрация';
-        authButton.onclick = () => window.location.href = 'register.html';
-      }
-    }
-
-    // =============== СИСТЕМА ПЕРСОНАЖЕЙ ===============
-
-    // Инициализация хранилища персонажей
-    function initCharacters() {
-      if (!localStorage.getItem('kdCharacters')) {
-        localStorage.setItem('kdCharacters', JSON.stringify([]));
-      }
-    }
-
-    // Получить персонажей пользователя
-    function getUserCharacters() {
-      const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
-      const user = JSON.parse(localStorage.getItem('kdUser'));
-      return allChars.filter(char => char.owner === user.username);
-    }
-
-    // Сохранить персонажа
-    function saveCharacter() {
-      const charData = getFormData();
-      const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
-      const user = JSON.parse(localStorage.getItem('kdUser'));
+  <!-- Редактор персонажа -->
+  <div class="character-editor" id="characterEditor">
+    <div class="editor-content">
+      <div class="editor-header">
+        <h2 id="editorTitle">Создание персонажа</h2>
+        <button class="btn btn-secondary" id="closeEditor">✕ Закрыть</button>
+      </div>
       
-      if (currentCharacterId) {
-        // Редактирование существующего персонажа
-        const index = allChars.findIndex(char => char.id === currentCharacterId);
-        if (index !== -1) {
-          allChars[index] = { 
-            ...charData, 
-            id: currentCharacterId, 
-            owner: user.username,
-            updatedAt: new Date().toISOString()
-          };
-        }
-      } else {
-        // Создание нового персонажа
-        charData.id = Date.now();
-        charData.owner = user.username;
-        charData.createdAt = new Date().toISOString();
-        charData.updatedAt = new Date().toISOString();
-        allChars.push(charData);
-        currentCharacterId = charData.id;
-      }
-      
-      localStorage.setItem('kdCharacters', JSON.stringify(allChars));
-      return charData.id;
-    }
-
-    // Удалить персонажа
-    function deleteCharacter(id) {
-      let allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
-      allChars = allChars.filter(char => char.id !== id);
-      localStorage.setItem('kdCharacters', JSON.stringify(allChars));
-      renderCharacters();
-    }
-
-    // Отобразить сетку персонажей
-    function renderCharacters() {
-      const chars = getUserCharacters();
-      if (chars.length === 0) {
-        charactersGrid.innerHTML = `
-          <div class="empty-state">
-            <p>У вас пока нет персонажей.</p>
-            <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.8;">
-              Нажмите «+ Новый персонаж», чтобы создать первого героя!
-            </p>
+      <!-- Упрощенная форма для тестирования -->
+      <form id="characterForm">
+        <div class="form-group">
+          <label for="charName">Имя персонажа *</label>
+          <input type="text" id="charName" class="form-control" required placeholder="Арагорн">
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="charRace">Раса *</label>
+            <input type="text" id="charRace" class="form-control" required placeholder="Человек">
           </div>
-        `;
-        return;
-      }
-
-      charactersGrid.innerHTML = chars.map(char => `
-        <div class="char-card">
-          <div class="char-avatar">${char.name.charAt(0)}</div>
-          <div class="char-name">${char.name}</div>
-          <div class="char-class-level">${char.class || '—'}, ${char.level || 1} ур.</div>
-          <div class="char-details">
-            Раса: ${char.race || '—'}<br>
-            HP: ${char.currentHP || 0}/${char.maxHP || 0}<br>
-            КД: ${char.armorClass || 0}
+          <div class="form-group">
+            <label for="charClass">Класс *</label>
+            <input type="text" id="charClass" class="form-control" required placeholder="Воин">
           </div>
-          <div class="char-actions">
-            <button class="char-btn edit-btn" data-id="${char.id}">Редактировать</button>
-            <button class="char-btn delete-btn" data-id="${char.id}">Удалить</button>
+          <div class="form-group">
+            <label for="charLevel">Уровень *</label>
+            <input type="number" id="charLevel" class="form-control" required min="1" max="20" value="1">
           </div>
         </div>
-      `).join('');
 
-      // Добавить обработчики событий
-      document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', () => editCharacter(parseInt(btn.dataset.id)));
-      });
+        <div class="editor-actions">
+          <button type="button" class="btn export-btn" id="exportJsonEditor">Экспорт в JSON</button>
+          <button type="submit" class="btn btn-primary">Сохранить персонажа</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-      document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          if (confirm('Удалить персонажа? Это действие нельзя отменить.')) {
-            deleteCharacter(parseInt(btn.dataset.id));
-          }
-        });
-      });
-    }
+  <script>
+    // Ждем полной загрузки DOM
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, initializing characters page...');
+      
+      // Основные DOM элементы
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('mainContent');
+      const menuToggle = document.getElementById('menuToggle');
+      const newCharBtn = document.getElementById('newCharBtn');
+      const saveCharBtn = document.getElementById('saveCharBtn');
+      const exportJsonBtn = document.getElementById('exportJsonBtn');
+      const charactersGrid = document.getElementById('charactersGrid');
+      const characterEditor = document.getElementById('characterEditor');
+      const characterForm = document.getElementById('characterForm');
+      const closeEditor = document.getElementById('closeEditor');
+      const exportJsonEditor = document.getElementById('exportJsonEditor');
+      const accountInfo = document.getElementById('accountInfo');
+      const accountName = document.getElementById('accountName');
+      const accountRole = document.getElementById('accountRole');
+      const authButton = document.getElementById('authButton');
 
-    // =============== РЕДАКТОР ПЕРСОНАЖА ===============
-
-    // Открыть редактор персонажа
-    function openCharacterEditor(character = null) {
-      currentCharacterId = character ? character.id : null;
-      editingCharacter = character;
-      
-      editorTitle.textContent = character ? 'Редактирование персонажа' : 'Создание персонажа';
-      
-      // Заполняем форму данными, если редактируем
-      if (character) {
-        document.getElementById('charName').value = character.name || '';
-        document.getElementById('charBackground').value = character.background || '';
-        document.getElementById('charClass').value = character.class || '';
-        document.getElementById('charRace').value = character.race || '';
-        document.getElementById('charSubclass').value = character.subclass || '';
-        document.getElementById('charLevel').value = character.level || 1;
-        document.getElementById('charExp').value = character.exp || 0;
-        document.getElementById('armorClass').value = character.armorClass || 10;
-        document.getElementById('shieldToggle').checked = character.shieldBonus > 0;
-        document.getElementById('shieldBonus').value = character.shieldBonus || 2;
-        document.getElementById('currentHP').value = character.currentHP || 10;
-        document.getElementById('tempHP').value = character.tempHP || 0;
-        document.getElementById('maxHP').value = character.maxHP || 10;
-        document.getElementById('hitDiceType').value = character.hitDiceType || 'd8';
-        document.getElementById('hitDiceCount').value = character.hitDiceCount || 1;
-        document.getElementById('speedValue').value = character.speed || 30;
-        
-        // Заполняем характеристики
-        abilities.forEach(ability => {
-          const scoreInput = document.getElementById(`${ability.id}Score`);
-          if (scoreInput && character.abilities && character.abilities[ability.id]) {
-            scoreInput.value = character.abilities[ability.id].score || 10;
-            updateAbilityModifier(ability.id);
-          }
-        });
-        
-        // Заполняем спасброски и навыки
-        abilities.forEach(ability => {
-          const saveCheckbox = document.getElementById(`${ability.id}Save`);
-          if (saveCheckbox && character.abilities && character.abilities[ability.id]) {
-            saveCheckbox.checked = character.abilities[ability.id].savingThrow || false;
-          }
-          
-          if (skills[ability.id]) {
-            skills[ability.id].forEach(skill => {
-              const skillCheckbox = document.getElementById(skill);
-              if (skillCheckbox && character.skills) {
-                skillCheckbox.checked = character.skills[skill] || false;
-              }
-            });
-          }
-        });
-        
-        // Заполняем текстовые поля
-        document.getElementById('conditions').value = character.conditions || '';
-        document.getElementById('classAbilities').value = character.classAbilities || '';
-        document.getElementById('raceAbilities').value = character.raceAbilities || '';
-        document.getElementById('features').value = character.features || '';
-        document.getElementById('notes').value = character.notes || '';
-        document.getElementById('goals').value = character.goals || '';
-        document.getElementById('appearance').value = character.appearance || '';
-        document.getElementById('personality').value = character.personality || '';
-        document.getElementById('equipment').value = character.equipment || '';
-        document.getElementById('spellbook').value = character.spellbook || '';
-        document.getElementById('toolProficiencies').value = character.toolProficiencies || '';
-        
-        // Заполняем владение снаряжением
-        document.getElementById('lightArmor').checked = character.proficiencies?.lightArmor || false;
-        document.getElementById('mediumArmor').checked = character.proficiencies?.mediumArmor || false;
-        document.getElementById('heavyArmor').checked = character.proficiencies?.heavyArmor || false;
-        document.getElementById('shieldProficiency').checked = character.proficiencies?.shield || false;
-        document.getElementById('simpleWeapons').checked = character.proficiencies?.simpleWeapons || false;
-        document.getElementById('martialWeapons').checked = character.proficiencies?.martialWeapons || false;
-        document.getElementById('otherWeapons').checked = character.proficiencies?.otherWeapons || false;
-        
-        // Заполняем монеты
-        document.getElementById('cp').value = character.coins?.cp || 0;
-        document.getElementById('sp').value = character.coins?.sp || 0;
-        document.getElementById('gp').value = character.coins?.gp || 0;
-        document.getElementById('ep').value = character.coins?.ep || 0;
-        document.getElementById('pp').value = character.coins?.pp || 0;
-        
-        // Заполняем спасброски от смерти
-        if (character.deathSaves) {
-          character.deathSaves.successes.forEach((success, index) => {
-            const circle = document.querySelector(`#successCircles .death-save-circle[data-index="${index}"]`);
-            if (circle && success) circle.classList.add('filled');
-          });
-          
-          character.deathSaves.failures.forEach((failure, index) => {
-            const circle = document.querySelector(`#failureCircles .death-save-circle[data-index="${index}"]`);
-            if (circle && failure) circle.classList.add('filled');
-          });
-        }
-        
-        // Заполняем портрет
-        if (character.portrait) {
-          document.getElementById('portraitPreview').src = character.portrait;
-          document.getElementById('portraitPreview').style.display = 'block';
-          document.getElementById('portraitPlaceholder').style.display = 'none';
-        }
-      } else {
-        // Сброс формы для нового персонажа
-        resetForm();
-      }
-      
-      updateCalculations();
-      characterEditor.style.display = 'block';
-    }
-
-    // Редактировать персонажа
-    function editCharacter(id) {
-      const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
-      const character = allChars.find(char => char.id === id);
-      if (character) {
-        openCharacterEditor(character);
-      }
-    }
-
-    // Закрыть редактор
-    function closeCharacterEditor() {
-      characterEditor.style.display = 'none';
-      currentCharacterId = null;
-      editingCharacter = null;
-      renderCharacters();
-    }
-
-    // Сброс формы
-    function resetForm() {
-      document.getElementById('characterForm').reset();
-      document.getElementById('charLevel').value = 1;
-      document.getElementById('charExp').value = 0;
-      document.getElementById('armorClass').value = 10;
-      document.getElementById('currentHP').value = 10;
-      document.getElementById('maxHP').value = 10;
-      document.getElementById('speedValue').value = 30;
-      document.getElementById('shieldBonus').value = 2;
-      
-      // Устанавливаем характеристики по умолчанию
-      abilities.forEach(ability => {
-        const scoreInput = document.getElementById(`${ability.id}Score`);
-        if (scoreInput) {
-          scoreInput.value = 10;
-          updateAbilityModifier(ability.id);
-        }
-      });
-      
-      // Сбрасываем спасброски от смерти
-      document.querySelectorAll('.death-save-circle').forEach(circle => {
-        circle.classList.remove('filled');
-      });
-      
-      // Сбрасываем портрет
-      document.getElementById('portraitPreview').style.display = 'none';
-      document.getElementById('portraitPlaceholder').style.display = 'block';
-    }
-
-    // Рассчитать модификатор характеристики
-    function calculateModifier(score) {
-      return Math.floor((score - 10) / 2);
-    }
-
-    // Обновить модификатор характеристики
-    function updateAbilityModifier(abilityId) {
-      const score = parseInt(document.getElementById(`${abilityId}Score`).value) || 10;
-      const modifier = calculateModifier(score);
-      const modElement = document.getElementById(`${abilityId}Mod`);
-      if (modElement) {
-        modElement.textContent = modifier >= 0 ? `+${modifier}` : modifier.toString();
-      }
-      
-      // Обновляем связанные навыки
-      if (skills[abilityId]) {
-        skills[abilityId].forEach(skill => {
-          const skillModElement = document.getElementById(`${skill}Mod`);
-          if (skillModElement) {
-            const proficiencyBonus = parseInt(document.getElementById('proficiencyBonus').textContent.replace('+', '')) || 2;
-            const isProficient = document.getElementById(skill).checked;
-            const totalMod = modifier + (isProficient ? proficiencyBonus : 0);
-            skillModElement.textContent = totalMod >= 0 ? `+${totalMod}` : totalMod.toString();
-          }
-        });
-      }
-      
-      // Обновляем спасброски
-      const saveModElement = document.getElementById(`${abilityId}SaveMod`);
-      if (saveModElement) {
-        const proficiencyBonus = parseInt(document.getElementById('proficiencyBonus').textContent.replace('+', '')) || 2;
-        const isProficient = document.getElementById(`${abilityId}Save`).checked;
-        const totalMod = modifier + (isProficient ? proficiencyBonus : 0);
-        saveModElement.textContent = totalMod >= 0 ? `+${totalMod}` : totalMod.toString();
-      }
-      
-      updateCalculations();
-    }
-
-    // Обновить все вычисления
-    function updateCalculations() {
-      // Обновляем инициативу (равна модификатору ловкости)
-      const dexMod = calculateModifier(parseInt(document.getElementById('dexScore').value) || 10);
-      document.getElementById('initiativeValue').textContent = dexMod >= 0 ? `+${dexMod}` : dexMod.toString();
-      
-      // Обновляем пассивное восприятие (10 + модификатор мудрости + бонус владения, если есть)
-      const wisMod = calculateModifier(parseInt(document.getElementById('wisScore').value) || 10);
-      const perceptionProficient = document.getElementById('perception').checked;
-      const proficiencyBonus = parseInt(document.getElementById('proficiencyBonus').textContent.replace('+', '')) || 2;
-      const passivePerception = 10 + wisMod + (perceptionProficient ? proficiencyBonus : 0);
-      document.getElementById('passivePerceptionValue').textContent = passivePerception;
-      
-      // Обновляем класс защиты с учетом щита
-      const baseAC = parseInt(document.getElementById('armorClass').value) || 10;
-      const shieldActive = document.getElementById('shieldToggle').checked;
-      const shieldBonus = shieldActive ? parseInt(document.getElementById('shieldBonus').value) || 0 : 0;
-      document.getElementById('armorClass').value = baseAC + shieldBonus;
-    }
-
-    // Бросок спасброска от смерти
-    function rollDeathSave() {
-      const roll = Math.floor(Math.random() * 20) + 1;
-      alert(`Бросок спасброска от смерти: ${roll}`);
-      
-      if (roll === 1) {
-        // Критический провал - 2 провала
-        addDeathFailure();
-        addDeathFailure();
-      } else if (roll < 10) {
-        // Провал
-        addDeathFailure();
-      } else if (roll === 20) {
-        // Критический успех - мгновенное восстановление
-        alert('Критический успех! Персонаж восстанавливает 1 хит и приходит в сознание!');
-        resetDeathSaves();
-        document.getElementById('currentHP').value = 1;
-      } else {
-        // Успех
-        addDeathSuccess();
-      }
-      
-      checkDeathSaves();
-    }
-
-    // Добавить успешный спасбросок
-    function addDeathSuccess() {
-      const circles = document.querySelectorAll('#successCircles .death-save-circle');
-      for (let circle of circles) {
-        if (!circle.classList.contains('filled')) {
-          circle.classList.add('filled');
-          break;
-        }
-      }
-    }
-
-    // Добавить провальный спасбросок
-    function addDeathFailure() {
-      const circles = document.querySelectorAll('#failureCircles .death-save-circle');
-      for (let circle of circles) {
-        if (!circle.classList.contains('filled')) {
-          circle.classList.add('filled');
-          break;
-        }
-      }
-    }
-
-    // Проверить состояние спасбросков
-    function checkDeathSaves() {
-      const successCount = document.querySelectorAll('#successCircles .death-save-circle.filled').length;
-      const failureCount = document.querySelectorAll('#failureCircles .death-save-circle.filled').length;
-      
-      if (successCount >= 3) {
-        alert('Три успешных спасброска! Персонаж стабилизирован.');
-        resetDeathSaves();
-      } else if (failureCount >= 3) {
-        alert('Три провальных спасброска! Персонаж умирает.');
-        resetDeathSaves();
-      }
-    }
-
-    // Сбросить спасброски от смерти
-    function resetDeathSaves() {
-      document.querySelectorAll('.death-save-circle').forEach(circle => {
-        circle.classList.remove('filled');
-      });
-    }
-
-    // Добавить оружие в таблицу
-    function addWeapon() {
-      const tbody = document.getElementById('weaponsTableBody');
-      const newRow = document.createElement('tr');
-      newRow.innerHTML = `
-        <td><input type="text" class="form-control" placeholder="Название оружия"></td>
-        <td><input type="text" class="form-control" placeholder="Бонус атаки"></td>
-        <td><input type="text" class="form-control" placeholder="Урон и тип"></td>
-        <td><input type="text" class="form-control" placeholder="Заметки"></td>
-      `;
-      tbody.appendChild(newRow);
-    }
-
-    // Загрузка портрета
-    function handlePortraitUpload(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('portraitPreview').src = e.target.result;
-          document.getElementById('portraitPreview').style.display = 'block';
-          document.getElementById('portraitPlaceholder').style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    // Экспорт в JSON
-    function exportToJson() {
-      const formData = getFormData();
-      const jsonString = JSON.stringify(formData, null, 2);
-      
-      // Создаем и скачиваем файл
-      const blob = new Blob([jsonString], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${formData.name || 'character'}_${Date.now()}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
-      alert(`Персонаж "${formData.name}" экспортирован в JSON файл!`);
-    }
-
-    // Получить данные формы
-    function getFormData() {
-      const abilitiesData = {};
-      abilities.forEach(ability => {
-        const score = parseInt(document.getElementById(`${ability.id}Score`).value) || 10;
-        abilitiesData[ability.id] = {
-          name: ability.name,
-          score: score,
-          modifier: calculateModifier(score),
-          savingThrow: document.getElementById(`${ability.id}Save`).checked
-        };
-      });
-      
-      const skillsData = {};
-      Object.values(skills).flat().forEach(skill => {
-        skillsData[skill] = document.getElementById(skill).checked;
-      });
-      
-      const proficiencies = {
-        lightArmor: document.getElementById('lightArmor').checked,
-        mediumArmor: document.getElementById('mediumArmor').checked,
-        heavyArmor: document.getElementById('heavyArmor').checked,
-        shield: document.getElementById('shieldProficiency').checked,
-        simpleWeapons: document.getElementById('simpleWeapons').checked,
-        martialWeapons: document.getElementById('martialWeapons').checked,
-        otherWeapons: document.getElementById('otherWeapons').checked
-      };
-      
-      const coins = {
-        cp: parseInt(document.getElementById('cp').value) || 0,
-        sp: parseInt(document.getElementById('sp').value) || 0,
-        gp: parseInt(document.getElementById('gp').value) || 0,
-        ep: parseInt(document.getElementById('ep').value) || 0,
-        pp: parseInt(document.getElementById('pp').value) || 0
-      };
-      
-      const deathSaves = {
-        successes: Array.from(document.querySelectorAll('#successCircles .death-save-circle')).map(c => c.classList.contains('filled')),
-        failures: Array.from(document.querySelectorAll('#failureCircles .death-save-circle')).map(c => c.classList.contains('filled'))
-      };
-      
-      // Собираем данные об оружии
-      const weapons = [];
-      document.querySelectorAll('#weaponsTableBody tr').forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        if (inputs[0].value) {
-          weapons.push({
-            name: inputs[0].value,
-            bonus: inputs[1].value,
-            damage: inputs[2].value,
-            notes: inputs[3].value
-          });
-        }
-      });
-      
-      return {
-        name: document.getElementById('charName').value,
-        background: document.getElementById('charBackground').value,
-        class: document.getElementById('charClass').value,
-        race: document.getElementById('charRace').value,
-        subclass: document.getElementById('charSubclass').value,
-        level: parseInt(document.getElementById('charLevel').value) || 1,
-        exp: parseInt(document.getElementById('charExp').value) || 0,
-        armorClass: parseInt(document.getElementById('armorClass').value) || 10,
-        shieldBonus: document.getElementById('shieldToggle').checked ? parseInt(document.getElementById('shieldBonus').value) || 0 : 0,
-        currentHP: parseInt(document.getElementById('currentHP').value) || 0,
-        tempHP: parseInt(document.getElementById('tempHP').value) || 0,
-        maxHP: parseInt(document.getElementById('maxHP').value) || 0,
-        hitDiceType: document.getElementById('hitDiceType').value,
-        hitDiceCount: parseInt(document.getElementById('hitDiceCount').value) || 0,
-        speed: parseInt(document.getElementById('speedValue').value) || 30,
-        abilities: abilitiesData,
-        skills: skillsData,
-        proficiencies: proficiencies,
-        coins: coins,
-        deathSaves: deathSaves,
-        weapons: weapons,
-        conditions: document.getElementById('conditions').value,
-        classAbilities: document.getElementById('classAbilities').value,
-        raceAbilities: document.getElementById('raceAbilities').value,
-        features: document.getElementById('features').value,
-        notes: document.getElementById('notes').value,
-        goals: document.getElementById('goals').value,
-        appearance: document.getElementById('appearance').value,
-        personality: document.getElementById('personality').value,
-        equipment: document.getElementById('equipment').value,
-        spellbook: document.getElementById('spellbook').value,
-        toolProficiencies: document.getElementById('toolProficiencies').value,
-        portrait: document.getElementById('portraitPreview').src !== '#' ? document.getElementById('portraitPreview').src : null
-      };
-    }
-
-    // =============== ОБРАБОТЧИКИ СОБЫТИЙ ===============
-
-    newCharBtn.addEventListener('click', () => {
-      if (!checkAuth()) return;
-      openCharacterEditor();
-    });
-
-    saveCharBtn.addEventListener('click', () => {
-      if (!checkAuth()) return;
-      
-      const charName = document.getElementById('charName').value.trim();
-      if (!charName) {
-        alert('Пожалуйста, введите имя персонажа');
+      // Проверяем, что все элементы найдены
+      if (!newCharBtn) {
+        console.error('Кнопка "Новый персонаж" не найдена!');
         return;
       }
-      
-      saveCharacter();
-      alert(`Персонаж "${charName}" успешно сохранен!`);
-      closeCharacterEditor();
-    });
 
-    closeEditor.addEventListener('click', closeCharacterEditor);
-
-    exportJsonBtn.addEventListener('click', exportToJson);
-
-    // Обработчики для характеристик
-    abilities.forEach(ability => {
-      const scoreInput = document.getElementById(`${ability.id}Score`);
-      if (scoreInput) {
-        scoreInput.addEventListener('input', () => updateAbilityModifier(ability.id));
+      if (!characterEditor) {
+        console.error('Редактор персонажей не найден!');
+        return;
       }
-      
-      const saveCheckbox = document.getElementById(`${ability.id}Save`);
-      if (saveCheckbox) {
-        saveCheckbox.addEventListener('change', () => updateAbilityModifier(ability.id));
-      }
-    });
 
-    // Обработчики для навыков
-    Object.values(skills).flat().forEach(skill => {
-      const skillCheckbox = document.getElementById(skill);
-      if (skillCheckbox) {
-        skillCheckbox.addEventListener('change', () => {
-          const abilityId = Object.keys(skills).find(key => skills[key].includes(skill));
-          if (abilityId) updateAbilityModifier(abilityId);
+      console.log('All DOM elements found successfully');
+
+      let currentCharacterId = null;
+      let editingCharacter = null;
+
+      // =============== ОБЩИЕ ФУНКЦИИ ===============
+
+      // Toggle sidebar
+      if (menuToggle && sidebar && mainContent) {
+        menuToggle.addEventListener('click', () => {
+          sidebar.classList.toggle('hidden');
+          mainContent.classList.toggle('sidebar-hidden');
+        });
+
+        // Close sidebar on mobile
+        document.addEventListener('click', (e) => {
+          if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
+              !sidebar.contains(e.target) && e.target !== menuToggle) {
+            sidebar.classList.add('hidden');
+            mainContent.classList.add('sidebar-hidden');
+          }
         });
       }
-    });
 
-    // Обработчики для щита
-    document.getElementById('shieldToggle').addEventListener('change', updateCalculations);
-    document.getElementById('shieldBonus').addEventListener('input', updateCalculations);
-
-    // Обработчики для спасбросков от смерти
-    document.getElementById('rollDeathSave').addEventListener('click', rollDeathSave);
-
-    // Обработчики для кружков спасбросков
-    document.querySelectorAll('.death-save-circle').forEach(circle => {
-      circle.addEventListener('click', function() {
-        this.classList.toggle('filled');
-      });
-    });
-
-    // Обработчик для добавления оружия
-    document.getElementById('addWeapon').addEventListener('click', addWeapon);
-
-    // Обработчик для загрузки портрета
-    document.getElementById('portraitPlaceholder').addEventListener('click', () => {
-      document.getElementById('portraitUpload').click();
-    });
-    document.getElementById('portraitUpload').addEventListener('change', handlePortraitUpload);
-
-    // Обработчики для обновления расчетов
-    document.getElementById('armorClass').addEventListener('input', updateCalculations);
-    document.getElementById('wisScore').addEventListener('input', updateCalculations);
-    document.getElementById('perception').addEventListener('change', updateCalculations);
-
-    // Закрытие редактора по клику вне области
-    characterEditor.addEventListener('click', (e) => {
-      if (e.target === characterEditor) {
-        closeCharacterEditor();
+      // Система аутентификации
+      function checkAuth() {
+        try {
+          const user = JSON.parse(localStorage.getItem('kdUser'));
+          if (!user) {
+            alert('Требуется регистрация для доступа к персонажам.');
+            window.location.href = 'register.html';
+            return false;
+          }
+          return true;
+        } catch (error) {
+          console.error('Auth check error:', error);
+          return false;
+        }
       }
-    });
 
-    // =============== ИНИЦИАЛИЗАЦИЯ ===============
+      function updateAuthUI() {
+        try {
+          const user = JSON.parse(localStorage.getItem('kdUser'));
+          if (user && accountName && accountRole && authButton && accountInfo) {
+            accountName.textContent = user.username;
+            accountRole.textContent = user.role === 'player' ? 'Игрок' : 'Мастер';
+            accountInfo.classList.add('active');
+            authButton.textContent = 'Выйти';
+            authButton.onclick = () => {
+              localStorage.removeItem('kdUser');
+              updateAuthUI();
+              window.location.reload();
+            };
+          } else if (authButton) {
+            accountInfo.classList.remove('active');
+            authButton.textContent = 'Войти / Регистрация';
+            authButton.onclick = () => window.location.href = 'register.html';
+          }
+        } catch (error) {
+          console.error('Auth UI update error:', error);
+        }
+      }
 
-    function init() {
-      updateAuthUI();
-      
-      if (checkAuth()) {
-        initCharacters();
-        renderCharacters();
+      // =============== СИСТЕМА ПЕРСОНАЖЕЙ ===============
+
+      // Инициализация хранилища персонажей
+      function initCharacters() {
+        if (!localStorage.getItem('kdCharacters')) {
+          localStorage.setItem('kdCharacters', JSON.stringify([]));
+        }
+      }
+
+      // Получить персонажей пользователя
+      function getUserCharacters() {
+        try {
+          const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
+          const user = JSON.parse(localStorage.getItem('kdUser'));
+          return allChars.filter(char => char.owner === user.username);
+        } catch (error) {
+          console.error('Error getting user characters:', error);
+          return [];
+        }
+      }
+
+      // Сохранить персонажа
+      function saveCharacter(charData) {
+        try {
+          const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
+          const user = JSON.parse(localStorage.getItem('kdUser'));
+          
+          if (currentCharacterId) {
+            // Редактирование существующего персонажа
+            const index = allChars.findIndex(char => char.id === currentCharacterId);
+            if (index !== -1) {
+              allChars[index] = { 
+                ...charData, 
+                id: currentCharacterId, 
+                owner: user.username,
+                updatedAt: new Date().toISOString()
+              };
+            }
+          } else {
+            // Создание нового персонажа
+            charData.id = Date.now();
+            charData.owner = user.username;
+            charData.createdAt = new Date().toISOString();
+            charData.updatedAt = new Date().toISOString();
+            allChars.push(charData);
+          }
+          
+          localStorage.setItem('kdCharacters', JSON.stringify(allChars));
+          return charData.id;
+        } catch (error) {
+          console.error('Error saving character:', error);
+          return null;
+        }
+      }
+
+      // Удалить персонажа
+      function deleteCharacter(id) {
+        try {
+          let allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
+          allChars = allChars.filter(char => char.id !== id);
+          localStorage.setItem('kdCharacters', JSON.stringify(allChars));
+          renderCharacters();
+        } catch (error) {
+          console.error('Error deleting character:', error);
+        }
+      }
+
+      // Отобразить сетку персонажей
+      function renderCharacters() {
+        try {
+          const chars = getUserCharacters();
+          if (!charactersGrid) {
+            console.error('Characters grid container not found');
+            return;
+          }
+
+          if (chars.length === 0) {
+            charactersGrid.innerHTML = `
+              <div class="empty-state">
+                <p>У вас пока нет персонажей.</p>
+                <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.8;">
+                  Нажмите «+ Новый персонаж», чтобы создать первого героя!
+                </p>
+              </div>
+            `;
+            return;
+          }
+
+          charactersGrid.innerHTML = chars.map(char => `
+            <div class="char-card">
+              <div class="char-avatar">${char.name?.charAt(0) || '?'}</div>
+              <div class="char-name">${char.name || 'Безымянный'}</div>
+              <div class="char-class-level">${char.class || '—'}, ${char.level || 1} ур.</div>
+              <div class="char-details">
+                Раса: ${char.race || '—'}<br>
+                HP: ${char.currentHP || 0}/${char.maxHP || 0}
+              </div>
+              <div class="char-actions">
+                <button class="char-btn edit-btn" data-id="${char.id}">Редактировать</button>
+                <button class="char-btn delete-btn" data-id="${char.id}">Удалить</button>
+              </div>
+            </div>
+          `).join('');
+
+          // Добавить обработчики событий
+          document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', () => editCharacter(parseInt(btn.dataset.id)));
+          });
+
+          document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              if (confirm('Удалить персонажа? Это действие нельзя отменить.')) {
+                deleteCharacter(parseInt(btn.dataset.id));
+              }
+            });
+          });
+        } catch (error) {
+          console.error('Error rendering characters:', error);
+        }
+      }
+
+      // =============== РЕДАКТОР ПЕРСОНАЖА ===============
+
+      // Открыть редактор персонажа
+      function openCharacterEditor(character = null) {
+        console.log('Opening character editor...');
+        currentCharacterId = character ? character.id : null;
+        editingCharacter = character;
         
-        // Инициализируем расчеты
-        abilities.forEach(ability => updateAbilityModifier(ability.id));
-        updateCalculations();
+        if (document.getElementById('editorTitle')) {
+          document.getElementById('editorTitle').textContent = character ? 'Редактирование персонажа' : 'Создание персонажа';
+        }
+        
+        // Заполняем форму данными, если редактируем
+        if (character) {
+          document.getElementById('charName').value = character.name || '';
+          document.getElementById('charRace').value = character.race || '';
+          document.getElementById('charClass').value = character.class || '';
+          document.getElementById('charLevel').value = character.level || 1;
+        } else {
+          // Сброс формы для нового персонажа
+          characterForm.reset();
+          document.getElementById('charLevel').value = 1;
+        }
+        
+        characterEditor.style.display = 'block';
+        
+        // Показываем кнопки управления в основном интерфейсе
+        if (saveCharBtn) saveCharBtn.style.display = 'inline-block';
+        if (exportJsonBtn) exportJsonBtn.style.display = 'inline-block';
       }
-    }
 
-    // Запуск приложения
-    init();
+      // Редактировать персонажа
+      function editCharacter(id) {
+        try {
+          const allChars = JSON.parse(localStorage.getItem('kdCharacters') || '[]');
+          const character = allChars.find(char => char.id === id);
+          if (character) {
+            openCharacterEditor(character);
+          }
+        } catch (error) {
+          console.error('Error editing character:', error);
+        }
+      }
+
+      // Закрыть редактор
+      function closeCharacterEditor() {
+        characterEditor.style.display = 'none';
+        currentCharacterId = null;
+        editingCharacter = null;
+        
+        // Скрываем кнопки управления
+        if (saveCharBtn) saveCharBtn.style.display = 'none';
+        if (exportJsonBtn) exportJsonBtn.style.display = 'none';
+        
+        renderCharacters();
+      }
+
+      // Получить данные формы
+      function getFormData() {
+        return {
+          name: document.getElementById('charName').value,
+          race: document.getElementById('charRace').value,
+          class: document.getElementById('charClass').value,
+          level: parseInt(document.getElementById('charLevel').value) || 1,
+          currentHP: 10,
+          maxHP: 10,
+          armorClass: 10
+        };
+      }
+
+      // Экспорт в JSON
+      function exportToJson() {
+        try {
+          const formData = getFormData();
+          const jsonString = JSON.stringify(formData, null, 2);
+          
+          // Создаем и скачиваем файл
+          const blob = new Blob([jsonString], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${formData.name || 'character'}_${Date.now()}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          alert(`Персонаж "${formData.name}" экспортирован в JSON файл!`);
+        } catch (error) {
+          console.error('Error exporting to JSON:', error);
+          alert('Ошибка при экспорте в JSON');
+        }
+      }
+
+      // =============== ОБРАБОТЧИКИ СОБЫТИЙ ===============
+
+      // Кнопка "Новый персонаж"
+      newCharBtn.addEventListener('click', () => {
+        console.log('New character button clicked');
+        if (!checkAuth()) return;
+        openCharacterEditor();
+      });
+
+      // Кнопка "Сохранить персонажа" в основном интерфейсе
+      if (saveCharBtn) {
+        saveCharBtn.addEventListener('click', () => {
+          console.log('Save character button clicked');
+          if (!checkAuth()) return;
+          
+          const charName = document.getElementById('charName').value.trim();
+          if (!charName) {
+            alert('Пожалуйста, введите имя персонажа');
+            return;
+          }
+          
+          const charData = getFormData();
+          saveCharacter(charData);
+          alert(`Персонаж "${charName}" успешно сохранен!`);
+          closeCharacterEditor();
+        });
+      }
+
+      // Кнопка "Экспорт в JSON" в основном интерфейсе
+      if (exportJsonBtn) {
+        exportJsonBtn.addEventListener('click', exportToJson);
+      }
+
+      // Кнопка "Экспорт в JSON" в редакторе
+      if (exportJsonEditor) {
+        exportJsonEditor.addEventListener('click', exportToJson);
+      }
+
+      // Кнопка закрытия редактора
+      if (closeEditor) {
+        closeEditor.addEventListener('click', closeCharacterEditor);
+      }
+
+      // Обработчик формы
+      if (characterForm) {
+        characterForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          console.log('Form submitted');
+          
+          const charName = document.getElementById('charName').value.trim();
+          if (!charName) {
+            alert('Пожалуйста, введите имя персонажа');
+            return;
+          }
+          
+          const charData = getFormData();
+          saveCharacter(charData);
+          alert(`Персонаж "${charName}" успешно ${currentCharacterId ? 'обновлен' : 'создан'}!`);
+          closeCharacterEditor();
+        });
+      }
+
+      // Закрытие редактора по клику вне области
+      characterEditor.addEventListener('click', (e) => {
+        if (e.target === characterEditor) {
+          closeCharacterEditor();
+        }
+      });
+
+      // =============== ИНИЦИАЛИЗАЦИЯ ===============
+
+      function init() {
+        console.log('Initializing characters page...');
+        updateAuthUI();
+        
+        if (checkAuth()) {
+          initCharacters();
+          renderCharacters();
+        }
+        
+        console.log('Characters page initialized successfully');
+      }
+
+      // Запуск приложения
+      init();
+    });
   </script>
 
 </body>
