@@ -186,71 +186,8 @@
       renderCharacters();
     }
   </script>
-<!-- Character Creation Modal -->
-<div id="charModal" class="modal" style="display: none;">
-  <div class="modal-content form" style="max-width: 600px; margin: 2rem auto; padding: 2rem;">
-    <h2 style="text-align: center; margin-bottom: 1.5rem; color: var(--accent);">Создать персонажа</h2>
-    <form id="charForm">
-      <div class="form-group">
-        <label>Имя</label>
-        <input type="text" name="name" class="form-control" required minlength="1">
-      </div>
-      <div class="form-group">
-        <label>Раса</label>
-        <input type="text" name="race" class="form-control" value="Человек" required>
-      </div>
-      <div class="form-group">
-        <label>Класс</label>
-        <input type="text" name="class" class="form-control" value="Воин" required>
-      </div>
-      <div class="form-group">
-        <label>Уровень</label>
-        <input type="number" name="level" class="form-control" min="1" max="20" value="1" required>
-      </div>
-      <div class="form-group">
-        <label>Очки жизни (HP)</label>
-        <input type="number" name="hp" class="form-control" min="1" value="10" required>
-      </div>
-      <div class="form-group">
-        <label>Мир (опционально)</label>
-        <input type="text" name="world" class="form-control" placeholder="Напр., Фаэрун, Казана...">
-      </div>
 
-      <!-- Дополнительные поля D&D 5e (можно расширить) -->
-      <div class="form-group">
-        <label>Сила (STR)</label>
-        <input type="number" name="str" class="form-control" min="1" max="30" value="10">
-      </div>
-      <div class="form-group">
-        <label>Ловкость (DEX)</label>
-        <input type="number" name="dex" class="form-control" min="1" max="30" value="10">
-      </div>
-      <div class="form-group">
-        <label>Телосложение (CON)</label>
-        <input type="number" name="con" class="form-control" min="1" max="30" value="10">
-      </div>
-      <div class="form-group">
-        <label>Интеллект (INT)</label>
-        <input type="number" name="int" class="form-control" min="1" max="30" value="10">
-      </div>
-      <div class="form-group">
-        <label>Мудрость (WIS)</label>
-        <input type="number" name="wis" class="form-control" min="1" max="30" value="10">
-      </div>
-      <div class="form-group">
-        <label>Харизма (CHA)</label>
-        <input type="number" name="cha" class="form-control" min="1" max="30" value="10">
-      </div>
-
-      <div id="charMessage" class="message" style="margin: 1rem 0;"></div>
-
-      <div style="display: flex; gap: 0.8rem; justify-content: center;">
-        <button type="submit" class="submit-btn">Создать</button>
-        <button type="button" id="cancelCharBtn" class="btn btn-secondary">Отмена</button>
-      </div>
-    </form>
-  </div>
-</div>
 </body>
 </html>
+
 
