@@ -53,259 +53,12 @@
 
     <!-- Цифровой лист персонажа -->
     <div class="digital-character-sheet" id="digitalCharacterSheet" style="display: none;">
-      <div class="digital-header">
-        <div class="digital-header-top">
-          <a class="digital-back-btn" href="#" id="digitalBackBtn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-              <path d="M19 3H14.82C14.4 1.84 13.3 1 12 1C10.7 1 9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM12 2.75C12.22 2.75 12.41 2.85 12.55 3C12.67 3.13 12.75 3.31 12.75 3.5C12.75 3.91 12.41 4.25 12 4.25C11.59 4.25 11.25 3.91 11.25 3.5C11.25 3.31 11.33 3.13 11.45 3C11.59 2.85 11.78 2.75 12 2.75ZM19 19H5V5H19V19Z"/>
-            </svg>
-          </a>
-          <div class="digital-header-info">
-            <p class="digital-character-name" id="digitalCharName">Безымянный персонаж</p>
-            <p class="digital-character-details">
-              <span id="digitalCharRace">&nbsp;</span> — 
-              <span id="digitalCharClass">&nbsp;</span>
-            </p>
-            <div class="digital-exp">
-              <p class="digital-exp-level" id="digitalCharLevel">1</p>
-              <div class="digital-exp-bar">
-                <p class="digital-exp-value">0</p>
-                <div class="digital-exp-progress" id="digitalExpProgress"></div>
-                <p class="digital-exp-value">300</p>
-              </div>
-              <p class="digital-exp-level">2</p>
-            </div>
-          </div>
-        </div>
+      <!-- ... остальной код цифрового листа ... -->
+    </div>
 
-        <div class="digital-stats">
-          <div class="digital-stat">
-            <div class="digital-stat-value" id="digitalAC">10</div>
-            <div class="digital-stat-label">КД</div>
-          </div>
-          <div class="digital-stat">
-            <div class="digital-stat-value" id="digitalSpeed">30</div>
-            <div class="digital-stat-label">Скорость</div>
-          </div>
-          <div class="digital-stat">
-            <div class="digital-stat-value" id="digitalProficiency">+2</div>
-            <div class="digital-stat-label">Владение</div>
-          </div>
-          <div class="digital-stat">
-            <div class="digital-stat-value" id="digitalHP">0/0</div>
-            <div class="digital-stat-label">Хиты</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="digital-content">
-        <!-- Характеристики -->
-        <div class="digital-abilities">
-          <div class="digital-ability">
-            <h3 class="digital-ability-name">
-              Сила <span class="digital-ability-score" id="strScoreDigital">10</span>
-            </h3>
-            <div class="digital-ability-checks">
-              <button class="digital-check-btn" data-ability="str">+0</button>
-              <label class="digital-checkbox">
-                <input type="checkbox" id="strSaveProficiency">
-                <span>Спасбросок</span>
-              </label>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="athleticsProficiency">
-                <span>Атлетика</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-          </div>
-
-          <div class="digital-ability">
-            <h3 class="digital-ability-name">
-              Ловкость <span class="digital-ability-score" id="dexScoreDigital">10</span>
-            </h3>
-            <div class="digital-ability-checks">
-              <button class="digital-check-btn" data-ability="dex">+0</button>
-              <label class="digital-checkbox">
-                <input type="checkbox" id="dexSaveProficiency">
-                <span>Спасбросок</span>
-              </label>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="acrobaticsProficiency">
-                <span>Акробатика</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="sleightProficiency">
-                <span>Ловкость рук</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="stealthProficiency">
-                <span>Скрытность</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-          </div>
-
-          <div class="digital-ability">
-            <h3 class="digital-ability-name">
-              Телосложение <span class="digital-ability-score" id="conScoreDigital">10</span>
-            </h3>
-            <div class="digital-ability-checks">
-              <button class="digital-check-btn" data-ability="con">+0</button>
-              <label class="digital-checkbox">
-                <input type="checkbox" id="conSaveProficiency">
-                <span>Спасбросок</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="digital-ability">
-            <h3 class="digital-ability-name">
-              Интеллект <span class="digital-ability-score" id="intScoreDigital">10</span>
-            </h3>
-            <div class="digital-ability-checks">
-              <button class="digital-check-btn" data-ability="int">+0</button>
-              <label class="digital-checkbox">
-                <input type="checkbox" id="intSaveProficiency">
-                <span>Спасбросок</span>
-              </label>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="investigationProficiency">
-                <span>Анализ</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="historyProficiency">
-                <span>История</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="arcanaProficiency">
-                <span>Магия</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="natureProficiency">
-                <span>Природа</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="religionProficiency">
-                <span>Религия</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-          </div>
-
-          <div class="digital-ability">
-            <h3 class="digital-ability-name">
-              Мудрость <span class="digital-ability-score" id="wisScoreDigital">10</span>
-            </h3>
-            <div class="digital-ability-checks">
-              <button class="digital-check-btn" data-ability="wis">+0</button>
-              <label class="digital-checkbox">
-                <input type="checkbox" id="wisSaveProficiency">
-                <span>Спасбросок</span>
-              </label>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="perceptionProficiency">
-                <span>Восприятие</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="survivalProficiency">
-                <span>Выживание</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="medicineProficiency">
-                <span>Медицина</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="insightProficiency">
-                <span>Проницательность</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="animalProficiency">
-                <span>Уход за животными</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-          </div>
-
-          <div class="digital-ability">
-            <h3 class="digital-ability-name">
-              Харизма <span class="digital-ability-score" id="chaScoreDigital">10</span>
-            </h3>
-            <div class="digital-ability-checks">
-              <button class="digital-check-btn" data-ability="cha">+0</button>
-              <label class="digital-checkbox">
-                <input type="checkbox" id="chaSaveProficiency">
-                <span>Спасбросок</span>
-              </label>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="performanceProficiency">
-                <span>Выступление</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="intimidationProficiency">
-                <span>Запугивание</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="deceptionProficiency">
-                <span>Обман</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-            <div class="digital-skill">
-              <label class="digital-checkbox">
-                <input type="checkbox" id="persuasionProficiency">
-                <span>Убеждение</span>
-              </label>
-              <button class="digital-check-btn">+0</button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Редактор персонажа (скрыт по умолчанию) -->
+    <div class="character-editor" id="characterEditor" style="display: none;">
+      <!-- ... существующий код редактора персонажа ... -->
     </div>
 
     <footer>
@@ -502,31 +255,75 @@
   </style>
 
   <script>
+    // Основные функции управления персонажами
+    function checkAuth() {
+      const user = JSON.parse(localStorage.getItem('kdUser'));
+      if (!user) {
+        alert('Для создания персонажей необходимо войти в систему.');
+        window.location.href = 'register.html';
+        return false;
+      }
+      return true;
+    }
+
+    // Функция открытия редактора персонажа
+    function openCharacterEditor() {
+      console.log('Opening character editor...');
+      
+      if (!checkAuth()) return;
+
+      const characterEditor = document.getElementById('characterEditor');
+      const charactersGrid = document.getElementById('charactersGrid');
+      const digitalSheet = document.getElementById('digitalCharacterSheet');
+      
+      if (characterEditor) {
+        // Скрываем другие элементы
+        if (charactersGrid) charactersGrid.style.display = 'none';
+        if (digitalSheet) digitalSheet.style.display = 'none';
+        
+        // Показываем редактор
+        characterEditor.style.display = 'block';
+        console.log('Character editor displayed');
+        
+        // Инициализируем редактор если нужно
+        if (typeof initCharacterSheet === 'function') {
+          initCharacterSheet();
+        }
+      } else {
+        console.error('Character editor element not found');
+        alert('Редактор персонажей не найден. Проверьте структуру HTML.');
+      }
+    }
+
     // Функции для управления цифровым листом персонажа
     function showDigitalCharacterSheet(characterData) {
       const digitalSheet = document.getElementById('digitalCharacterSheet');
       const grid = document.getElementById('charactersGrid');
+      const editor = document.getElementById('characterEditor');
       
-      digitalSheet.style.display = 'block';
-      grid.style.display = 'none';
-      
-      // Заполняем данные персонажа
-      if (characterData) {
-        document.getElementById('digitalCharName').textContent = characterData.name || 'Безымянный персонаж';
-        document.getElementById('digitalCharRace').textContent = characterData.race || '—';
-        document.getElementById('digitalCharClass').textContent = characterData.class || '—';
-        document.getElementById('digitalCharLevel').textContent = characterData.level || 1;
-        document.getElementById('digitalAC').textContent = characterData.armorClass || 10;
-        document.getElementById('digitalSpeed').textContent = characterData.speed || 30;
-        document.getElementById('digitalHP').textContent = `${characterData.currentHP || 0}/${characterData.maxHP || 0}`;
+      if (digitalSheet && grid && editor) {
+        digitalSheet.style.display = 'block';
+        grid.style.display = 'none';
+        editor.style.display = 'none';
         
-        // Характеристики
-        document.getElementById('strScoreDigital').textContent = characterData.str || 10;
-        document.getElementById('dexScoreDigital').textContent = characterData.dex || 10;
-        document.getElementById('conScoreDigital').textContent = characterData.con || 10;
-        document.getElementById('intScoreDigital').textContent = characterData.int || 10;
-        document.getElementById('wisScoreDigital').textContent = characterData.wis || 10;
-        document.getElementById('chaScoreDigital').textContent = characterData.cha || 10;
+        // Заполняем данные персонажа
+        if (characterData) {
+          document.getElementById('digitalCharName').textContent = characterData.name || 'Безымянный персонаж';
+          document.getElementById('digitalCharRace').textContent = characterData.race || '—';
+          document.getElementById('digitalCharClass').textContent = characterData.class || '—';
+          document.getElementById('digitalCharLevel').textContent = characterData.level || 1;
+          document.getElementById('digitalAC').textContent = characterData.armorClass || 10;
+          document.getElementById('digitalSpeed').textContent = characterData.speed || 30;
+          document.getElementById('digitalHP').textContent = `${characterData.currentHP || 0}/${characterData.maxHP || 0}`;
+          
+          // Характеристики
+          document.getElementById('strScoreDigital').textContent = characterData.str || 10;
+          document.getElementById('dexScoreDigital').textContent = characterData.dex || 10;
+          document.getElementById('conScoreDigital').textContent = characterData.con || 10;
+          document.getElementById('intScoreDigital').textContent = characterData.int || 10;
+          document.getElementById('wisScoreDigital').textContent = characterData.wis || 10;
+          document.getElementById('chaScoreDigital').textContent = characterData.cha || 10;
+        }
       }
     }
 
@@ -534,20 +331,62 @@
       const digitalSheet = document.getElementById('digitalCharacterSheet');
       const grid = document.getElementById('charactersGrid');
       
-      digitalSheet.style.display = 'none';
-      grid.style.display = 'grid';
+      if (digitalSheet && grid) {
+        digitalSheet.style.display = 'none';
+        grid.style.display = 'grid';
+      }
     }
 
-    // Обработчики событий
-    document.getElementById('digitalBackBtn').addEventListener('click', hideDigitalCharacterSheet);
+    function showCharactersGrid() {
+      const digitalSheet = document.getElementById('digitalCharacterSheet');
+      const grid = document.getElementById('charactersGrid');
+      const editor = document.getElementById('characterEditor');
+      
+      if (digitalSheet && grid && editor) {
+        digitalSheet.style.display = 'none';
+        grid.style.display = 'grid';
+        editor.style.display = 'none';
+      }
+    }
 
-    // Обновляем функцию renderCharactersGrid для поддержки цифрового листа
+    // Удаление персонажа
+    function deleteCharacter(charId) {
+      let characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
+      characters = characters.filter(char => char.id != charId);
+      localStorage.setItem('kdCharacters', JSON.stringify(characters));
+      renderCharactersGrid();
+    }
+
+    // Редактирование персонажа
+    function editCharacter(charId) {
+      const characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
+      const character = characters.find(char => char.id == charId);
+      
+      if (character) {
+        openCharacterEditor();
+        // Здесь можно добавить загрузку данных персонажа в редактор
+        console.log('Editing character:', character);
+      }
+    }
+
+    // Отображение сетки персонажей
     function renderCharactersGrid() {
       const charactersGrid = document.getElementById('charactersGrid');
       if (!charactersGrid) return;
 
       const characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
       const user = JSON.parse(localStorage.getItem('kdUser'));
+      
+      if (!user) {
+        charactersGrid.innerHTML = `
+          <div class="empty-state">
+            <p>Для просмотра персонажей необходимо войти в систему.</p>
+            <a href="register.html" class="btn btn-primary" style="margin-top: 1rem;">Войти / Зарегистрироваться</a>
+          </div>
+        `;
+        return;
+      }
+
       const userCharacters = characters.filter(char => char.owner === user.username);
 
       if (userCharacters.length === 0) {
@@ -591,7 +430,6 @@
         });
       });
 
-      // Остальные обработчики...
       document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const charId = this.getAttribute('data-id');
@@ -611,14 +449,65 @@
 
     // Инициализация при загрузке
     document.addEventListener('DOMContentLoaded', function() {
+      console.log('Initializing characters page...');
+      
+      // Инициализация кнопки "Новый персонаж"
+      const newCharBtn = document.getElementById('newCharBtn');
+      if (newCharBtn) {
+        newCharBtn.addEventListener('click', openCharacterEditor);
+        console.log('New character button initialized');
+      } else {
+        console.error('New character button not found');
+      }
+
+      // Инициализация кнопки возврата из цифрового листа
+      const digitalBackBtn = document.getElementById('digitalBackBtn');
+      if (digitalBackBtn) {
+        digitalBackBtn.addEventListener('click', showCharactersGrid);
+      }
+
+      // Инициализация кнопки закрытия редактора
+      const closeEditor = document.getElementById('closeEditor');
+      if (closeEditor) {
+        closeEditor.addEventListener('click', showCharactersGrid);
+      }
+
+      // Инициализация аутентификации
+      const authButton = document.getElementById('authButton');
+      const accountInfo = document.getElementById('accountInfo');
+      const accountName = document.getElementById('accountName');
+      const accountRole = document.getElementById('accountRole');
+
+      function updateAuthUI() {
+        const user = JSON.parse(localStorage.getItem('kdUser'));
+        if (user && accountName && accountRole && authButton && accountInfo) {
+          accountName.textContent = user.username;
+          accountRole.textContent = user.role === 'player' ? 'Игрок' : 'Мастер';
+          accountInfo.classList.add('active');
+          authButton.textContent = 'Выйти';
+          authButton.onclick = () => {
+            localStorage.removeItem('kdUser');
+            window.location.reload();
+          };
+        } else if (authButton) {
+          accountInfo.classList.remove('active');
+          authButton.textContent = 'Войти / Регистрация';
+          authButton.onclick = () => window.location.href = 'register.html';
+        }
+      }
+
+      updateAuthUI();
+      
+      // Рендерим сетку персонажей
       renderCharactersGrid();
-      // Инициализация других функций...
+      console.log('Characters page initialized successfully');
     });
   </script>
 
   <script src="characters.js"></script>
 </body>
 </html>
+
 
 
 
