@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Заклинания D&D — Kazan & Dragons</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo-sidebar">
+      <div class="logo-icon"></div>
+      <span>KAZAN & DRAGONS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="parties.html">Набор в партии</a></li>
+      <li><a href="rules.html">Правила D&D</a></li>
+      <li><a href="classes.html">Классы</a></li>
+      <li><a href="characters.html">Персонажи</a></li>
+      <li><a href="tabletop.html">Игровое поле</a></li>
+      <li><a href="#" class="active">Заклинания</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <div style="font-weight: 700;">K&D</div>
+    </header>
+
+    <div class="page-header">
+      <h1>Заклинания Dungeons & Dragons</h1>
+      <p>Полная база заклинаний с фильтрацией и поиском</p>
+    </div>
+
+    <div class="content">
+      <div class="spells-container">
+        
+        <!-- Сетка заклинаний -->
+        <section class="spells-section">
+          <h2 class="section-title">Все заклинания</h2>
+          <div class="spells-grid" id="spellsGrid">
+            <!-- Заклинания будут загружены через JS -->
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 Kazan & Dragons (K&D) — создано для любителей D&D</p>
+    </footer>
+  </div>
+
+  <script>
+    // БАЗОВЫЙ КОД ДЛЯ ТЕСТА - вставляем прямо в HTML
+    console.log("Начинаем загрузку заклинаний...");
+
+    const spellsData = [
+      {
+        id: 1,
+        name: "Волшебная стрела",
+        name_en: "Magic Missile",
+        level: 1,
+        school: "evocation",
+        school_ru: "Воплощение",
+        casting_time: "1 действие",
+        range: "120 футов",
+        components: "В, С",
+        duration: "Мгновенная",
+        description: "Вы создаете три сверкающие стрелы магии. Каждая стрела попадает в существо по вашему выбору, видимое в пределах дистанции.",
+        classes: ["wizard", "sorcerer"]
+      },
+      {
+        id: 2,
+        name: "Огненный шар",
+        name_en: "Fireball",
+        level: 3,
+        school: "evocation",
+        school_ru: "Воплощение",
+        casting_time: "1 действие",
+        range: "150 футов",
+        components: "В, С, М",
+        duration: "Мгновенная",
+        description: "Яркая вспышка вырывается из вашей руки и превращается в шар огня с громким ревом.",
+        classes: ["wizard", "sorcerer"]
+      },
+      {
+        id: 3,
+        name: "Лечение ран",
+        name_en: "Cure Wounds",
+        level: 1,
+        school: "evocation",
+        school_ru: "Воплощение",
+        casting_time: "1 действие",
+        range: "Касание",
+        components: "В, С",
+        duration: "Мгновенная",
+        description: "Существо, которого вы касаетесь, восстанавливает количество хитов.",
+        classes: ["bard", "cleric", "druid", "paladin", "ranger"]
+      }
+    ];
+
+    // Функция для создания карточки заклинания
+    function createSpellCard(spell) {
+      return `
+        <a href="spellsdnd/spell-${spell.name_en.toLowerCase().replace(/ /g, '-')}.html" class="spell-card">
+          <div class="spell-header">
+            <h3>${spell.name}</h3>
+            <span class="spell-level">${spell.level === 0 ? 'Заговор' : spell.level + ' уровень'}</span>
+          </div>
+          <div class="spell-school">${spell.school_ru}</div>
+          <div class="spell-classes">
+            ${spell.classes.map(cls => {
+              const classLabels = {
+                'bard': 'Бард', 'cleric': 'Жрец', 'druid': 'Друид', 
+                'paladin': 'Паладин', 'ranger': 'Следопыт', 
+                'sorcerer': 'Чародей', 'warlock': 'Колдун', 'wizard': 'Волшебник'
+              };
+              return `<span class="class-tag">${classLabels[cls] || cls}</span>`;
+            }).join('')}
+          </div>
+          <div class="spell-description">
+            ${spell.description}
+          </div>
+          <div class="spell-meta">
+            <div class="meta-item">
+              <i class='bx bx-time'></i>
+              <span>${spell.casting_time}</span>
+            </div>
+            <div class="meta-item">
+              <i class='bx bx-ruler'></i>
+              <span>${spell.range}</span>
+            </div>
+          </div>
+          <div class="card-arrow">
+            <i class='bx bx-chevron-right'></i>
+          </div>
+        </a>
+      `;
+    }
+
+    // Загружаем заклинания когда страница готова
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("DOM загружен, начинаем отрисовку заклинаний");
+      
+      const grid = document.getElementById('spellsGrid');
+      
+      if (!grid) {
+        console.error("Элемент spellsGrid не найден!");
+        return;
+      }
+
+      console.log("Найдено заклинаний:", spellsData.length);
+      
+      // Очищаем сетку
+      grid.innerHTML = '';
+      
+      // Добавляем каждое заклинание
+      spellsData.forEach(spell => {
+        const cardHTML = createSpellCard(spell);
+        grid.innerHTML += cardHTML;
+      });
+      
+      console.log("Заклинания успешно отображены!");
+    });
+
+    // Боковое меню
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuToggle = document.getElementById('menuToggle');
+
+    if (menuToggle) {
+      menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');
+        mainContent.classList.toggle('sidebar-hidden');
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
+          !sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.add('hidden');
+        mainContent.classList.add('sidebar-hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>

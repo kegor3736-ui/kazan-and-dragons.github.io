@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Волшебная стрела — Заклинания D&D — Kazan & Dragons</title>
+  <link rel="stylesheet" href="../style.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo-sidebar">
+      <div class="logo-icon"></div>
+      <span>KAZAN & DRAGONS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="../index.html">Главная</a></li>
+      <li><a href="../parties.html">Набор в партии</a></li>
+      <li><a href="../rules.html">Правила D&D</a></li>
+      <li><a href="../classes.html">Классы</a></li>
+      <li><a href="../characters.html">Персонажи</a></li>
+      <li><a href="../tabletop.html">Игровое поле</a></li>
+      <li><a href="../spells.html">Заклинания</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <div style="font-weight: 700;">K&D</div>
+    </header>
+
+    <div class="page-header">
+      <div class="spell-breadcrumb">
+        <a href="../spells.html">Заклинания</a> / <span>Волшебная стрела</span>
+      </div>
+      <h1>Волшебная стрела <span class="spell-name-en">Magic Missile</span></h1>
+      <p>1 уровень, воплощение</p>
+    </div>
+
+    <div class="content">
+      <div class="spell-detail-container">
+        
+        <section class="spell-overview">
+          <div class="spell-hero">
+            <div class="spell-basic-info">
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Уровень</span>
+                  <span class="info-value">1</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Школа</span>
+                  <span class="info-value">Воплощение</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Время накладывания</span>
+                  <span class="info-value">1 действие</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Дистанция</span>
+                  <span class="info-value">120 футов</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Компоненты</span>
+                  <span class="info-value">В, С</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Длительность</span>
+                  <span class="info-value">Мгновенная</span>
+                </div>
+              </div>
+            </div>
+            <div class="spell-classes">
+              <h3>Доступно классам:</h3>
+              <div class="class-tags">
+                <span class="class-tag">Волшебник</span>
+                <span class="class-tag">Чародей</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="spell-description-section">
+          <h2>Описание заклинания</h2>
+          <div class="description-content">
+            <p>Вы создаете три сверкающие стрелы магии. Каждая стрела попадает в существо по вашему выбору, видимое в пределах дистанции. Стрела причиняет урон силовым полем 1к4 + 1.</p>
+            
+            <div class="spell-effect">
+              <h3><i class='bx bx-shape-square'></i> Эффект</h3>
+              <p>Стрела автоматически попадает в цель и наносит урон силовым полем. Это заклинание не требует броска атаки.</p>
+            </div>
+
+            <div class="spell-higher-level">
+              <h3><i class='bx bx-up-arrow-alt'></i> На высоких уровнях</h3>
+              <p>Если вы накладываете это заклинание, используя ячейку 2 уровня или выше, вы создаете одну дополнительную стрелу за каждый уровень ячейки выше первого.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 Kazan & Dragons (K&D) — создано для любителей D&D</p>
+    </footer>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuToggle = document.getElementById('menuToggle');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+      mainContent.classList.toggle('sidebar-hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
+          !sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.add('hidden');
+        mainContent.classList.add('sidebar-hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Воин — Классы D&D — Kazan & Dragons</title>
+  <link rel="stylesheet" href="../style.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo-sidebar">
+      <div class="logo-icon"></div>
+      <span>KAZAN & DRAGONS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="../index.html">Главная</a></li>
+      <li><a href="../parties.html">Набор в партии</a></li>
+      <li><a href="../rules.html">Правила D&D</a></li>
+      <li><a href="../classes.html">Классы</a></li>
+      <li><a href="../characters.html">Персонажи</a></li>
+      <li><a href="../tabletop.html">Игровое поле</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <div style="font-weight: 700;">K&D</div>
+    </header>
+
+    <div class="page-header">
+      <div class="class-breadcrumb">
+        <a href="../classes.html">Классы</a> / <span>Воин</span>
+      </div>
+      <h1>Воин <span class="class-name-en">Fighter</span></h1>
+      <p>Мастер боевых искусств, владеющий любым оружием и тактикой</p>
+    </div>
+
+    <div class="content">
+      <div class="class-detail-container">
+        
+        <!-- Основная информация -->
+        <section class="class-overview">
+          <div class="class-hero">
+            <div class="class-basic-info">
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Кость хитпоинтов</span>
+                  <span class="info-value">1d10 за уровень</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Владение доспехами</span>
+                  <span class="info-value">Все доспехи, щиты</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Владение оружием</span>
+                  <span class="info-value">Простое и воинское оружие</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Основная характеристика</span>
+                  <span class="info-value">Сила или Ловкость</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Спасброски</span>
+                  <span class="info-value">Сила, Телосложение</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Навыки</span>
+                  <span class="info-value">Выберите 2 из: Акробатика, Атлетика, Выживание, Запугивание, История, Проницательность, Уход за животными</span>
+                </div>
+              </div>
+            </div>
+            <div class="class-image">
+              <img src="../images/fighter-class.jpg" alt="Воин" onerror="this.style.display='none'">
+              <div class="image-placeholder">
+                <i class='bx bx-shield'></i>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Описание класса -->
+        <section class="class-description-section">
+          <h2>Описание класса</h2>
+          <div class="description-content">
+            <p>Воин — это универсальный мастер боя, прошедший суровую подготовку и обладающий исключительным боевым мастерством. Будь то благородный рыцарь, наёмник-ветеран или отважный крестоносец — все они принадлежат к этому классу.</p>
+            
+            <p>В отличие от варвара, полагающегося на ярость, воин использует тактику, технику и железную дисциплину. Это делает его самым гибким и адаптируемым боевым классом в D&D.</p>
+
+            <div class="feature-highlight">
+              <h3><i class='bx bx-star'></i> Ключевые особенности:</h3>
+              <ul>
+                <li><strong>Боевой стиль:</strong> Специализация в определённом виде боя уже на 1 уровне</li>
+                <li><strong>Второе дыхание:</strong> Восстановление хитпоинтов в бою</li>
+                <li><strong>Множественные атаки:</strong> До 4 атак за действие на высоких уровнях</li>
+                <li><strong>Боевые superiority dice:</strong> Особые манёвры для тактического превосходства</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Классовые умения -->
+        <section class="class-features">
+          <h2>Классовые умения</h2>
+          <div class="features-table">
+            <div class="table-header">
+              <span>Уровень</span>
+              <span>Бонус владения</span>
+              <span>Атаки за действие</span>
+              <span>Кость превосходства</span>
+              <span>Умения</span>
+            </div>
+            
+            <div class="table-row">
+              <span>1</span>
+              <span>+2</span>
+              <span>1</span>
+              <span>-</span>
+              <span>Боевой стиль, Второе дыхание</span>
+            </div>
+            
+            <div class="table-row">
+              <span>2</span>
+              <span>+2</span>
+              <span>1</span>
+              <span>1d6</span>
+              <span>Боевой импульс (для Бойца)</span>
+            </div>
+            
+            <div class="table-row">
+              <span>3</span>
+              <span>+2</span>
+              <span>1</span>
+              <span>1d6</span>
+              <span>Воинский архетип</span>
+            </div>
+            
+            <div class="table-row">
+              <span>4</span>
+              <span>+2</span>
+              <span>1</span>
+              <span>1d6</span>
+              <span>Увеличение характеристик</span>
+            </div>
+            
+            <div class="table-row highlight">
+              <span>5</span>
+              <span>+3</span>
+              <span>2</span>
+              <span>1d6</span>
+              <span>Дополнительная атака</span>
+            </div>
+            
+            <div class="table-row">
+              <span>7</span>
+              <span>+3</span>
+              <span>2</span>
+              <span>1d6</span>
+              <span>Умение архетипа</span>
+            </div>
+            
+            <div class="table-row highlight">
+              <span>11</span>
+              <span>+4</span>
+              <span>3</span>
+              <span>1d8</span>
+              <span>Дополнительная атака (2)</span>
+            </div>
+            
+            <div class="table-row highlight">
+              <span>20</span>
+              <span>+6</span>
+              <span>4</span>
+              <span>1d12</span>
+              <span>Дополнительная атака (3)</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Боевые стили -->
+        <section class="class-styles">
+          <h2>Боевые стили</h2>
+          <p>На 1 уровне воин выбирает боевой стиль, определяющий его специализацию в бою.</p>
+          
+          <div class="styles-grid">
+            <div class="style-card">
+              <h3>Двуручное оружие</h3>
+              <p>+2 к урону при атаке двуручным оружием.</p>
+            </div>
+            
+            <div class="style-card">
+              <h3>Дуэлянт</h3>
+              <p>+2 к урону при сражении одноручным оружием без второго оружия.</p>
+            </div>
+            
+            <div class="style-card">
+              <h3>Защита</h3>
+              <p>+1 к КД при использовании щита.</p>
+            </div>
+            
+            <div class="style-card">
+              <h3>Стрельба</h3>
+              <p>+2 к броскам атаки дальнобойным оружием.</p>
+            </div>
+            
+            <div class="style-card">
+              <h3>Борьба</h3>
+              <p>Преимущество на броски атаки против существ в пределах 5 футов.</p>
+            </div>
+            
+            <div class="style-card">
+              <h3>Броня великана</h3>
+              <p>Игнорирование требования Силы для ношения тяжёлых доспехов.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Воинские архетипы -->
+        <section class="class-archetypes">
+          <h2>Воинские архетипы</h2>
+          <p>На 3 уровне воин выбирает архетип, который определяет его специализацию и дополнительные умения.</p>
+          
+          <div class="archetypes-grid">
+            <div class="archetype-card">
+              <h3>Боец</h3>
+              <div class="archetype-source">Player's Handbook</div>
+              <p>Тактический мастер, использующий манёвры для контроля поля боя.</p>
+              <ul>
+                <li>Манёвры превосходства (9 известных)</li>
+                <li>Кости превосходства (6 костей d8)</li>
+                <li>Знание врага для тактического анализа</li>
+                <li>Умение перехватывать атаки</li>
+              </ul>
+            </div>
+            
+            <div class="archetype-card">
+              <h3>Чемпион</h3>
+              <div class="archetype-source">Player's Handbook</div>
+              <p>Несравненный физический боец с улучшенной критической атакой.</p>
+              <ul>
+                <li>Улучшенная критическая атака (19-20)</li>
+                <li>Дополнительный боевой стиль</li>
+                <li>Выдающаяся атлетика</li>
+                <li>Превосходное Телосложение</li>
+              </ul>
+            </div>
+            
+            <div class="archetype-card">
+              <h3>Волшебный рыцарь</h3>
+              <div class="archetype-source">Player's Handbook</div>
+              <p>Боец, сочетающий оружие с магией для тактического превосходства.</p>
+              <ul>
+                <li>Заклинательство (1/3 уровня заклинателя)</li>
+                <li>Нанесение чар на оружие</li>
+                <li>Боевое заклинание</li>
+                <li>Магический удар</li>
+              </ul>
+            </div>
+            
+            <div class="archetype-card">
+              <h3>Следопыт-всадник</h3>
+              <div class="archetype-source">Xanathar's Guide to Everything</div>
+              <p>Мастер верховой езды и боя верхом на боевом скакуне.</p>
+              <ul>
+                <li>Верный спутник-скакун</li>
+                <li>Умения для боя верхом</li>
+                <li>Защита скакуна</li>
+                <li>Заряд с увеличенной дистанцией</li>
+              </ul>
+            </div>
+            
+            <div class="archetype-card">
+              <h3>Самопалач</h3>
+              <div class="archetype-source">Tasha's Cauldron of Everything</div>
+              <p>Мастер огнестрельного оружия, использующий пушки и мушкеты.</p>
+              <ul>
+                <li>Владение огнестрельным оружием</li>
+                <li>Умения перезарядки</li>
+                <li>Взрывные залпы</li>
+                <li>Тактические манёвры с оружием</li>
+              </ul>
+            </div>
+            
+            <div class="archetype-card">
+              <h3>Пси-воин</h3>
+              <div class="archetype-source">Tasha's Cauldron of Everything</div>
+              <p>Боец, использующий псионические способности для усиления боевых умений.</p>
+              <ul>
+                <li>Пси-кости для пси-талантов</li>
+                <li>Пси-усиленные атаки</li>
+                <li>Телекинетические способности</li>
+                <li>Пси-защита</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Рекомендации по созданию -->
+        <section class="class-creation">
+          <h2>Создание персонажа-воина</h2>
+          
+          <div class="creation-tips">
+            <div class="tip-card">
+              <h3><i class='bx bx-brain'></i> Характеристики</h3>
+              <p><strong>Сила</strong> — для тяжёлых доспехов и оружия<br>
+                 <strong>Ловкость</strong> — для лёгких доспехов и фехтования<br>
+                 <strong>Телосложение</strong> — для хитпоинтов и выживаемости</p>
+            </div>
+            
+            <div class="tip-card">
+              <h3><i class='bx bx-shield'></i> Снаряжение</h3>
+              <p><strong>Полный латный доспех</strong> — максимальная защита<br>
+                 <strong>Двуручный меч</strong> — высокий урон<br>
+                 <strong>Меч + щит</strong> — баланс атаки и защиты<br>
+                 <strong>Лук</strong> — дистанционные атаки</p>
+            </div>
+            
+            <div class="tip-card">
+              <h3><i class='bx bx-run'></i> Тактика</h3>
+              <p>Адаптируйтесь к ситуации боя<br>
+                 Используйте Второе дыхание для выживания<br>
+                 Координируйтесь с партией<br>
+                 Контролируйте поле боя позиционированием</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Известные воины -->
+        <section class="class-examples">
+          <h2>Известные воины</h2>
+          <div class="examples-grid">
+            <div class="example-card">
+              <h3>Арагорн</h3>
+              <p>Следопыт и воин, наследник трона Гондора из "Властелина Колец".</p>
+            </div>
+            
+            <div class="example-card">
+              <h3>Бриенна Тарт</h3>
+              <p>Рыцарь-воин с исключительным мастерством владения мечом.</p>
+            </div>
+            
+            <div class="example-card">
+              <h3>Персиваль де Роло</h3>
+              <p>Волшебный рыцарь из Critical Role, мастер тактики и магии.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 Kazan & Dragons (K&D) — создано для любителей D&D</p>
+    </footer>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuToggle = document.getElementById('menuToggle');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+      mainContent.classList.toggle('sidebar-hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
+          !sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.add('hidden');
+        mainContent.classList.add('sidebar-hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>НАЗВАНИЕ_КЛАССА — Классы D&D — Kazan & Dragons</title>
+  <link rel="stylesheet" href="../style.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo-sidebar">
+      <div class="logo-icon"></div>
+      <span>KAZAN & DRAGONS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="../index.html">Главная</a></li>
+      <li><a href="../parties.html">Набор в партии</a></li>
+      <li><a href="../rules.html">Правила D&D</a></li>
+      <li><a href="../classes.html">Классы</a></li>
+      <li><a href="../characters.html">Персонажи</a></li>
+      <li><a href="../tabletop.html">Игровое поле</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <div style="font-weight: 700;">K&D</div>
+    </header>
+
+    <div class="page-header">
+      <div class="class-breadcrumb">
+        <a href="../classes.html">Классы</a> / <span>НАЗВАНИЕ_КЛАССА</span>
+      </div>
+      <h1>НАЗВАНИЕ_КЛАССА <span class="class-name-en">АНГЛИЙСКОЕ_НАЗВАНИЕ</span></h1>
+      <p>ОПИСАНИЕ_КЛАССА</p>
+    </div>
+
+    <div class="content">
+      <div class="class-detail-container">
+        <!-- Контент класса -->
+        <section class="class-overview">
+          <div class="class-hero">
+            <div class="class-basic-info">
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Кость хитпоинтов</span>
+                  <span class="info-value">КОСТЬ_ХП</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Владение доспехами</span>
+                  <span class="info-value">ДОСПЕХИ</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Владение оружием</span>
+                  <span class="info-value">ОРУЖИЕ</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Основная характеристика</span>
+                  <span class="info-value">ХАРАКТЕРИСТИКА</span>
+                </div>
+              </div>
+            </div>
+            <div class="class-image">
+              <img src="../images/CLASS_NAME-class.jpg" alt="НАЗВАНИЕ_КЛАССА" onerror="this.style.display='none'">
+              <div class="image-placeholder">
+                <i class='bx bx-user'></i>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 Kazan & Dragons (K&D) — создано для любителей D&D</p>
+    </footer>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuToggle = document.getElementById('menuToggle');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+      mainContent.classList.toggle('sidebar-hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
+          !sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.add('hidden');
+        mainContent.classList.add('sidebar-hidden');
+      }
+    });
+  </script>
+
+<script src="main.js" defer></script>
+</body>
+</html>
