@@ -21,21 +21,20 @@
 
     .character-sheet {
       display: grid;
-      grid-template-columns: 280px 1fr 280px;
       grid-template-columns: 300px 1fr 300px;
       gap: 1rem;
       padding: 1rem;
       background: var(--card-bg);
       border-radius: 8px;
       margin: 0 auto;
-      max-width: 1400px;
+      width: 100%;
+      max-width: 1800px;
     }
 
-    /* Все остальные стили из предыдущего кода */
     .character-header {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(5, 1fr);
       gap: 1rem;
       padding: 1rem;
       background: rgba(10, 8, 29, 0.8);
@@ -46,7 +45,7 @@
     .hp-section {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(6, 1fr);
       gap: 1rem;
       padding: 1rem;
       background: rgba(10, 8, 29, 0.6);
@@ -77,7 +76,6 @@
       border: 1px solid var(--primary);
       border-radius: 8px;
       padding: 1rem;
-      text-align: center;
     }
 
     .ability-header {
@@ -222,19 +220,6 @@
       font-weight: bold;
     }
 
-    .coin-calculator {
-      margin-top: 0.5rem;
-      padding: 0.5rem;
-      background: rgba(10, 8, 29, 0.6);
-      border-radius: 4px;
-    }
-
-    .coin-calculator button {
-      margin: 0.25rem;
-      padding: 0.25rem 0.5rem;
-      font-size: 0.8rem;
-    }
-
     .portrait-section {
       text-align: center;
       margin: 1rem 0;
@@ -264,7 +249,6 @@
       max-width: 150px;
       max-height: 200px;
       border-radius: 8px;
-      display: none;
       border: 2px solid var(--primary);
     }
 
@@ -290,11 +274,9 @@
     }
 
     .checkbox-group {
-      display: flex;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      margin: 0.25rem 0;
       margin: 0.25rem 1rem 0.25rem 0;
       font-size: 0.9rem;
     }
@@ -448,19 +430,60 @@
       border-top: 1px solid var(--primary);
     }
 
-    .conditions-select {
-      width: 100%;
-      height: 100px;
+    .conditions-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .condition-checkbox {
+      display: none;
+    }
+
+    .condition-label {
+      padding: 0.5rem 1rem;
       background: rgba(10, 8, 29, 0.7);
       border: 1px solid var(--primary);
       border-radius: 4px;
-      color: var(--text);
-      padding: 0.5rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .condition-checkbox:checked + .condition-label {
+      background: var(--primary);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    @media (max-width: 1400px) {
+      .character-header {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .hp-section {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
 
     @media (max-width: 1200px) {
       .character-sheet {
         grid-template-columns: 1fr;
+      }
+      .character-header {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .hp-section {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .character-header {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .hp-section {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
@@ -517,7 +540,7 @@
 
   <!-- Редактор персонажа (скрыт по умолчанию) -->
   <div class="character-editor" id="characterEditor">
-    <div style="max-width: 1400px; margin: 0 auto;">
+    <div style="max-width: 1800px; margin: 0 auto;">
       <div class="editor-header">
         <h2 id="editorTitle">Создание персонажа</h2>
         <button class="btn btn-secondary" id="closeEditor">✕ Закрыть</button>
@@ -554,7 +577,6 @@
           </div>
           <div class="form-group">
             <label>Уровень</label>
-            <input type="number" id="charLevel" class="form-control" value="1" min="1" max="20">
             <input type="number" id="charLevel" class="form-control" value="1" min="1" max="20" readonly>
           </div>
           <div class="form-group">
@@ -577,17 +599,14 @@
         <div class="hp-section">
           <div class="form-group">
             <label>Текущие хиты</label>
-            <input type="number" id="currentHP" class="form-control" value="10">
             <input type="number" id="currentHP" class="form-control" value="10" min="0">
           </div>
           <div class="form-group">
             <label>Временные хиты</label>
-            <input type="number" id="tempHP" class="form-control" value="0">
             <input type="number" id="tempHP" class="form-control" value="0" min="0">
           </div>
           <div class="form-group">
             <label>Максимум хитов</label>
-            <input type="number" id="maxHP" class="form-control" value="10">
             <input type="number" id="maxHP" class="form-control" value="10" min="1">
           </div>
           <div class="form-group">
@@ -634,18 +653,6 @@
             Бонус владения: <span id="proficiencyBonus">+2</span>
           </div>
 
-          <!-- Сила -->
-          <div class="ability-block">
-            <div class="ability-header">СИЛА</div>
-            <input type="number" id="strScore" class="ability-score" value="10" min="1" max="30">
-            <div class="ability-modifier" id="strMod">+0</div>
-            <div class="saving-throw">
-              <label><input type="checkbox" id="strSave"> Спасбросок</label>
-              <span id="strSaveMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="athletics"> Атлетика</label>
-              <span id="athleticsMod">+0</span>
           <!-- Первая строка характеристик -->
           <div class="ability-row">
             <!-- Сила -->
@@ -662,28 +669,7 @@
                 <span id="athleticsMod">+0</span>
               </div>
             </div>
-          </div>
 
-          <!-- Ловкость -->
-          <div class="ability-block">
-            <div class="ability-header">ЛОВКОСТЬ</div>
-            <input type="number" id="dexScore" class="ability-score" value="10" min="1" max="30">
-            <div class="ability-modifier" id="dexMod">+0</div>
-            <div class="saving-throw">
-              <label><input type="checkbox" id="dexSave"> Спасбросок</label>
-              <span id="dexSaveMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="acrobatics"> Акробатика</label>
-              <span id="acrobaticsMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="sleight"> Ловкость рук</label>
-              <span id="sleightMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="stealth"> Скрытность</label>
-              <span id="stealthMod">+0</span>
             <!-- Ловкость -->
             <div class="ability-card">
               <div class="ability-header">ЛОВКОСТЬ</div>
@@ -708,14 +694,6 @@
             </div>
           </div>
 
-          <!-- Телосложение -->
-          <div class="ability-block">
-            <div class="ability-header">ТЕЛОСЛОЖЕНИЕ</div>
-            <input type="number" id="conScore" class="ability-score" value="10" min="1" max="30">
-            <div class="ability-modifier" id="conMod">+0</div>
-            <div class="saving-throw">
-              <label><input type="checkbox" id="conSave"> Спасбросок</label>
-              <span id="conSaveMod">+0</span>
           <!-- Вторая строка характеристик -->
           <div class="ability-row">
             <!-- Телосложение -->
@@ -728,36 +706,7 @@
                 <span id="conSaveMod">+0</span>
               </div>
             </div>
-          </div>
 
-          <!-- Интеллект -->
-          <div class="ability-block">
-            <div class="ability-header">ИНТЕЛЛЕКТ</div>
-            <input type="number" id="intScore" class="ability-score" value="10" min="1" max="30">
-            <div class="ability-modifier" id="intMod">+0</div>
-            <div class="saving-throw">
-              <label><input type="checkbox" id="intSave"> Спасбросок</label>
-              <span id="intSaveMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="investigation"> Анализ</label>
-              <span id="investigationMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="history"> История</label>
-              <span id="historyMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="arcana"> Магия</label>
-              <span id="arcanaMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="nature"> Природа</label>
-              <span id="natureMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="religion"> Религия</label>
-              <span id="religionMod">+0</span>
             <!-- Интеллект -->
             <div class="ability-card">
               <div class="ability-header">ИНТЕЛЛЕКТ</div>
@@ -790,34 +739,6 @@
             </div>
           </div>
 
-          <!-- Мудрость -->
-          <div class="ability-block">
-            <div class="ability-header">МУДРОСТЬ</div>
-            <input type="number" id="wisScore" class="ability-score" value="10" min="1" max="30">
-            <div class="ability-modifier" id="wisMod">+0</div>
-            <div class="saving-throw">
-              <label><input type="checkbox" id="wisSave"> Спасбросок</label>
-              <span id="wisSaveMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="perception"> Внимательность</label>
-              <span id="perceptionMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="survival"> Выживание</label>
-              <span id="survivalMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="medicine"> Медицина</label>
-              <span id="medicineMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="insight"> Проницательность</label>
-              <span id="insightMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="animal"> Уход за животными</label>
-              <span id="animalMod">+0</span>
           <!-- Третья строка характеристик -->
           <div class="ability-row">
             <!-- Мудрость -->
@@ -850,32 +771,7 @@
                 <span id="animalMod">+0</span>
               </div>
             </div>
-          </div>
 
-          <!-- Харизма -->
-          <div class="ability-block">
-            <div class="ability-header">ХАРИЗМА</div>
-            <input type="number" id="chaScore" class="ability-score" value="10" min="1" max="30">
-            <div class="ability-modifier" id="chaMod">+0</div>
-            <div class="saving-throw">
-              <label><input type="checkbox" id="chaSave"> Спасбросок</label>
-              <span id="chaSaveMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="performance"> Выступление</label>
-              <span id="performanceMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="intimidation"> Запугивание</label>
-              <span id="intimidationMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="deception"> Обман</label>
-              <span id="deceptionMod">+0</span>
-            </div>
-            <div class="skill">
-              <label><input type="checkbox" id="persuasion"> Убеждение</label>
-              <span id="persuasionMod">+0</span>
             <!-- Харизма -->
             <div class="ability-card">
               <div class="ability-header">ХАРИЗМА</div>
@@ -929,23 +825,9 @@
         <div class="center-column">
           <div class="ability-block">
             <div class="section-title">СОСТОЯНИЯ</div>
-            <textarea id="conditions" class="text-area" placeholder="Состояния персонажа..."></textarea>
-            <select id="conditions" class="conditions-select" multiple>
-              <option value="blinded">Ослеплен</option>
-              <option value="charmed">Очарован</option>
-              <option value="deafened">Оглох</option>
-              <option value="frightened">Испуган</option>
-              <option value="grappled">Схвачен</option>
-              <option value="incapacitated">Недееспособен</option>
-              <option value="invisible">Невидим</option>
-              <option value="paralyzed">Парализован</option>
-              <option value="petrified">Окаменевший</option>
-              <option value="poisoned">Отравлен</option>
-              <option value="prone">Лежит</option>
-              <option value="restrained">Скован</option>
-              <option value="stunned">Ошеломлен</option>
-              <option value="unconscious">Без сознания</option>
-            </select>
+            <div class="conditions-container" id="conditionsContainer">
+              <!-- Состояния будут добавлены через JavaScript -->
+            </div>
           </div>
 
           <div class="ability-block">
@@ -998,29 +880,6 @@
         <div class="right-column">
           <div class="ability-block">
             <div class="section-title">ВЛАДЕНИЕ СНАРЯЖЕНИЕМ</div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="lightArmor">
-              <label for="lightArmor">Лёгкие доспехи</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="mediumArmor">
-              <label for="mediumArmor">Средние доспехи</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="heavyArmor">
-              <label for="heavyArmor">Тяжёлые доспехи</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="shieldProficiency">
-              <label for="shieldProficiency">Щиты</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="simpleWeapons">
-              <label for="simpleWeapons">Простое оружие</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="martialWeapons">
-              <label for="martialWeapons">Воинское оружие</label>
             <div class="proficiencies-row">
               <div class="checkbox-group">
                 <input type="checkbox" id="lightArmor">
@@ -1047,7 +906,7 @@
                 <label for="martialWeapons">Воинское оружие</label>
               </div>
             </div>
-
+            
             <div style="margin-top: 1rem;">
               <div class="section-title">ИНСТРУМЕНТЫ И ЯЗЫКИ</div>
               <textarea id="toolProficiencies" class="text-area" placeholder="Инструменты и языки..."></textarea>
@@ -1109,10 +968,6 @@
                 <input type="number" id="pp" class="form-control" value="0" min="0">
               </div>
             </div>
-            <div class="coin-calculator">
-              <button class="btn btn-secondary" id="calculateCoins" style="width: 100%;">Рассчитать общую сумму</button>
-              <div id="coinTotal" style="text-align: center; margin-top: 0.5rem; font-weight: bold;"></div>
-            </div>
           </div>
         </div>
 
@@ -1120,7 +975,6 @@
         <div class="spellbook-section">
           <div class="ability-block">
             <div class="section-title">КНИГА ЗАКЛИНАНИЙ</div>
-            <textarea id="spellbook" class="text-area" placeholder="Заклинания персонажа..." style="min-height: 200px;"></textarea>
             
             <div class="spell-levels">
               <div class="spell-level active" data-level="0">Заговоры</div>
@@ -1180,6 +1034,8 @@
       const accountName = document.getElementById('accountName');
       const accountRole = document.getElementById('accountRole');
 
+      let currentEditingCharacter = null;
+
       // Таблица опыта для уровней
       const expTable = {
         1: 0,
@@ -1203,6 +1059,24 @@
         19: 305000,
         20: 355000
       };
+
+      // Список состояний
+      const conditions = [
+        { id: 'blinded', name: 'Ослеплен' },
+        { id: 'charmed', name: 'Очарован' },
+        { id: 'deafened', name: 'Оглох' },
+        { id: 'frightened', name: 'Испуган' },
+        { id: 'grappled', name: 'Схвачен' },
+        { id: 'incapacitated', name: 'Недееспособен' },
+        { id: 'invisible', name: 'Невидим' },
+        { id: 'paralyzed', name: 'Парализован' },
+        { id: 'petrified', name: 'Окаменевший' },
+        { id: 'poisoned', name: 'Отравлен' },
+        { id: 'prone', name: 'Лежит' },
+        { id: 'restrained', name: 'Скован' },
+        { id: 'stunned', name: 'Ошеломлен' },
+        { id: 'unconscious', name: 'Без сознания' }
+      ];
 
       // Проверка авторизации
       function checkAuth() {
@@ -1233,22 +1107,94 @@
           alert('Для создания персонажа необходимо войти в систему.');
           return;
         }
+        currentEditingCharacter = null;
+        resetCharacterForm();
         characterEditor.style.display = 'block';
+        document.getElementById('editorTitle').textContent = 'Создание персонажа';
         initCharacterSheet();
       });
 
       // Закрыть редактор
       closeEditor.addEventListener('click', function() {
         characterEditor.style.display = 'none';
+        currentEditingCharacter = null;
       });
 
-      // Сохранить персонажа
-      saveCharBtn.addEventListener('click', function() {
-        const charName = document.getElementById('charName').value || 'Безымянный';
-        alert(`Персонаж "${charName}" сохранен!`);
-        characterEditor.style.display = 'none';
-        // Здесь будет логика сохранения в localStorage
-      });
+      // Сброс формы персонажа
+      function resetCharacterForm() {
+        // Сброс основных полей
+        document.getElementById('charName').value = '';
+        document.getElementById('charBackground').value = '';
+        document.getElementById('charClass').value = '';
+        document.getElementById('charRace').value = '';
+        document.getElementById('charSubclass').value = '';
+        document.getElementById('charLevel').value = 1;
+        document.getElementById('charExp').value = 0;
+        document.getElementById('armorClass').value = 10;
+        document.getElementById('currentHP').value = 10;
+        document.getElementById('tempHP').value = 0;
+        document.getElementById('maxHP').value = 10;
+        document.getElementById('speedValue').value = 30;
+        
+        // Сброс характеристик
+        const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+        abilities.forEach(ability => {
+          document.getElementById(`${ability}Score`).value = 10;
+          updateAbilityModifier(ability);
+        });
+        
+        // Сброс спасбросков от смерти
+        resetDeathSaves();
+        
+        // Сброс портрета
+        document.getElementById('portraitPreview').style.display = 'none';
+        document.getElementById('portraitPlaceholder').style.display = 'block';
+        document.getElementById('portraitUpload').value = '';
+        
+        // Сброс состояний
+        document.querySelectorAll('.condition-checkbox').forEach(checkbox => {
+          checkbox.checked = false;
+        });
+        
+        // Сброс текстовых полей
+        document.getElementById('classAbilities').value = '';
+        document.getElementById('raceAbilities').value = '';
+        document.getElementById('features').value = '';
+        document.getElementById('notes').value = '';
+        document.getElementById('goals').value = '';
+        document.getElementById('appearance').value = '';
+        document.getElementById('personality').value = '';
+        document.getElementById('equipment').value = '';
+        document.getElementById('toolProficiencies').value = '';
+        document.getElementById('spellbook').value = '';
+        
+        // Сброс чекбоксов владения
+        document.getElementById('lightArmor').checked = false;
+        document.getElementById('mediumArmor').checked = false;
+        document.getElementById('heavyArmor').checked = false;
+        document.getElementById('shieldProficiency').checked = false;
+        document.getElementById('simpleWeapons').checked = false;
+        document.getElementById('martialWeapons').checked = false;
+        
+        // Сброс монет
+        document.getElementById('cp').value = 0;
+        document.getElementById('sp').value = 0;
+        document.getElementById('gp').value = 0;
+        document.getElementById('ep').value = 0;
+        document.getElementById('pp').value = 0;
+        
+        // Сброс оружия
+        const tbody = document.getElementById('weaponsTableBody');
+        tbody.innerHTML = `
+          <tr>
+            <td><input type="text" class="form-control" placeholder="Длинный меч"></td>
+            <td><input type="text" class="form-control" placeholder="+5"></td>
+            <td><input type="text" class="form-control" placeholder="1d8 рубящий"></td>
+            <td><input type="text" class="form-control" placeholder=""></td>
+          </tr>
+        `;
+      }
+
       // Инициализация листа персонажа
       function initCharacterSheet() {
         initAbilityScores();
@@ -1259,16 +1205,24 @@
         initCalculations();
         initEventListeners();
         initSpellbook();
-        initCoinCalculator();
+        initConditions();
       }
 
-      // Экспорт в JSON
-      exportJsonBtn.addEventListener('click', function() {
-        const charData = {
-          name: document.getElementById('charName').value,
-          class: document.getElementById('charClass').value,
-          race: document.getElementById('charRace').value,
-          level: parseInt(document.getElementById('charLevel').value) || 1
+      // Инициализация состояний
+      function initConditions() {
+        const container = document.getElementById('conditionsContainer');
+        container.innerHTML = '';
+        
+        conditions.forEach(condition => {
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = `
+            <input type="checkbox" id="condition-${condition.id}" class="condition-checkbox" value="${condition.id}">
+            <label for="condition-${condition.id}" class="condition-label">${condition.name}</label>
+          `;
+          container.appendChild(wrapper);
+        });
+      }
+
       // Инициализация характеристик
       function initAbilityScores() {
         const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
@@ -1527,39 +1481,6 @@
         updateProficiencyBonus();
       }
 
-      // Инициализация калькулятора монет
-      function initCoinCalculator() {
-        const calculateButton = document.getElementById('calculateCoins');
-        if (calculateButton) {
-          calculateButton.addEventListener('click', calculateTotalCoins);
-        }
-      }
-
-      function calculateTotalCoins() {
-        const cp = parseInt(document.getElementById('cp').value) || 0;
-        const sp = parseInt(document.getElementById('sp').value) || 0;
-        const gp = parseInt(document.getElementById('gp').value) || 0;
-        const ep = parseInt(document.getElementById('ep').value) || 0;
-        const pp = parseInt(document.getElementById('pp').value) || 0;
-        
-        // Конвертация в медные монеты
-        const totalCP = cp + (sp * 10) + (gp * 100) + (ep * 50) + (pp * 1000);
-
-        const jsonString = JSON.stringify(charData, null, 2);
-        // Конвертация обратно в разные типы монет для отображения
-        const remainingPP = Math.floor(totalCP / 1000);
-        const remainingAfterPP = totalCP % 1000;
-        const remainingGP = Math.floor(remainingAfterPP / 100);
-        const remainingAfterGP = remainingAfterPP % 100;
-        const remainingEP = Math.floor(remainingAfterGP / 50);
-        const remainingAfterEP = remainingAfterGP % 50;
-        const remainingSP = Math.floor(remainingAfterEP / 10);
-        const remainingCP = remainingAfterEP % 10;
-        
-        document.getElementById('coinTotal').textContent = 
-          `Всего: ${remainingPP} ПМ, ${remainingGP} ЗМ, ${remainingEP} ЭМ, ${remainingSP} СМ, ${remainingCP} ММ`;
-      }
-
       // Инициализация книги заклинаний
       function initSpellbook() {
         const spellLevels = document.querySelectorAll('.spell-level');
@@ -1611,14 +1532,22 @@
         let characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
         const user = JSON.parse(localStorage.getItem('kdUser'));
         
-        // Добавляем владельца
-        characterData.owner = user.username;
-        characterData.id = Date.now();
+        if (currentEditingCharacter) {
+          // Редактирование существующего персонажа
+          const index = characters.findIndex(char => char.id === currentEditingCharacter.id);
+          if (index !== -1) {
+            characters[index] = { ...characterData, id: currentEditingCharacter.id, owner: user.username };
+          }
+        } else {
+          // Создание нового персонажа
+          characterData.id = Date.now();
+          characterData.owner = user.username;
+          characters.push(characterData);
+        }
         
-        characters.push(characterData);
         localStorage.setItem('kdCharacters', JSON.stringify(characters));
         
-        alert(`Персонаж "${characterData.name}" успешно сохранен!`);
+        alert(`Персонаж "${characterData.name}" успешно ${currentEditingCharacter ? 'обновлен' : 'сохранен'}!`);
         characterEditor.style.display = 'none';
         renderCharactersGrid();
       }
@@ -1629,20 +1558,38 @@
         const jsonString = JSON.stringify(characterData, null, 2);
         const blob = new Blob([jsonString], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
-
+        
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${charData.name || 'character'}.json`;
         a.download = `${characterData.name || 'character'}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-      });
       }
 
       // Получение данных персонажа
       function getCharacterData() {
+        // Собираем выбранные состояния
+        const selectedConditions = [];
+        document.querySelectorAll('.condition-checkbox:checked').forEach(checkbox => {
+          selectedConditions.push(checkbox.value);
+        });
+
+        // Собираем оружие
+        const weapons = [];
+        document.querySelectorAll('#weaponsTableBody tr').forEach(row => {
+          const inputs = row.querySelectorAll('input');
+          if (inputs[0].value) {
+            weapons.push({
+              name: inputs[0].value,
+              bonus: inputs[1].value,
+              damage: inputs[2].value,
+              notes: inputs[3].value
+            });
+          }
+        });
+
         return {
           name: document.getElementById('charName').value,
           background: document.getElementById('charBackground').value,
@@ -1656,18 +1603,139 @@
           tempHP: parseInt(document.getElementById('tempHP').value) || 0,
           maxHP: parseInt(document.getElementById('maxHP').value) || 0,
           hitDice: document.getElementById('hitDiceCount').value + document.getElementById('hitDiceType').value,
-          // ... и так далее для всех полей
+          speed: parseInt(document.getElementById('speedValue').value) || 30,
+          portrait: document.getElementById('portraitPreview').src,
+          conditions: selectedConditions,
+          weapons: weapons,
+          classAbilities: document.getElementById('classAbilities').value,
+          raceAbilities: document.getElementById('raceAbilities').value,
+          features: document.getElementById('features').value,
+          notes: document.getElementById('notes').value,
+          goals: document.getElementById('goals').value,
+          appearance: document.getElementById('appearance').value,
+          personality: document.getElementById('personality').value,
+          equipment: document.getElementById('equipment').value,
+          toolProficiencies: document.getElementById('toolProficiencies').value,
+          spellbook: document.getElementById('spellbook').value,
+          proficiencies: {
+            lightArmor: document.getElementById('lightArmor').checked,
+            mediumArmor: document.getElementById('mediumArmor').checked,
+            heavyArmor: document.getElementById('heavyArmor').checked,
+            shield: document.getElementById('shieldProficiency').checked,
+            simpleWeapons: document.getElementById('simpleWeapons').checked,
+            martialWeapons: document.getElementById('martialWeapons').checked
+          },
+          coins: {
+            cp: parseInt(document.getElementById('cp').value) || 0,
+            sp: parseInt(document.getElementById('sp').value) || 0,
+            gp: parseInt(document.getElementById('gp').value) || 0,
+            ep: parseInt(document.getElementById('ep').value) || 0,
+            pp: parseInt(document.getElementById('pp').value) || 0
+          },
+          abilities: {
+            str: parseInt(document.getElementById('strScore').value) || 10,
+            dex: parseInt(document.getElementById('dexScore').value) || 10,
+            con: parseInt(document.getElementById('conScore').value) || 10,
+            int: parseInt(document.getElementById('intScore').value) || 10,
+            wis: parseInt(document.getElementById('wisScore').value) || 10,
+            cha: parseInt(document.getElementById('chaScore').value) || 10
+          }
         };
       }
 
-      // Инициализация сетки персонажей
-      function renderCharacters() {
-        charactersGrid.innerHTML = `
-          <div class="empty-state">
-            <p>У вас пока нет персонажей.</p>
-            <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.8;">
-              Нажмите «+ Новый персонаж», чтобы создать первого героя!
-            </p>
+      // Загрузка данных персонажа в форму
+      function loadCharacterData(character) {
+        document.getElementById('charName').value = character.name || '';
+        document.getElementById('charBackground').value = character.background || '';
+        document.getElementById('charClass').value = character.class || '';
+        document.getElementById('charRace').value = character.race || '';
+        document.getElementById('charSubclass').value = character.subclass || '';
+        document.getElementById('charLevel').value = character.level || 1;
+        document.getElementById('charExp').value = character.exp || 0;
+        document.getElementById('armorClass').value = character.armorClass || 10;
+        document.getElementById('currentHP').value = character.currentHP || 0;
+        document.getElementById('tempHP').value = character.tempHP || 0;
+        document.getElementById('maxHP').value = character.maxHP || 0;
+        document.getElementById('speedValue').value = character.speed || 30;
+
+        // Загрузка характеристик
+        if (character.abilities) {
+          document.getElementById('strScore').value = character.abilities.str || 10;
+          document.getElementById('dexScore').value = character.abilities.dex || 10;
+          document.getElementById('conScore').value = character.abilities.con || 10;
+          document.getElementById('intScore').value = character.abilities.int || 10;
+          document.getElementById('wisScore').value = character.abilities.wis || 10;
+          document.getElementById('chaScore').value = character.abilities.cha || 10;
+        }
+
+        // Загрузка портрета
+        if (character.portrait && character.portrait !== '') {
+          document.getElementById('portraitPreview').src = character.portrait;
+          document.getElementById('portraitPreview').style.display = 'block';
+          document.getElementById('portraitPlaceholder').style.display = 'none';
+        }
+
+        // Загрузка состояний
+        if (character.conditions) {
+          character.conditions.forEach(condition => {
+            const checkbox = document.getElementById(`condition-${condition}`);
+            if (checkbox) checkbox.checked = true;
+          });
+        }
+
+        // Загрузка текстовых полей
+        document.getElementById('classAbilities').value = character.classAbilities || '';
+        document.getElementById('raceAbilities').value = character.raceAbilities || '';
+        document.getElementById('features').value = character.features || '';
+        document.getElementById('notes').value = character.notes || '';
+        document.getElementById('goals').value = character.goals || '';
+        document.getElementById('appearance').value = character.appearance || '';
+        document.getElementById('personality').value = character.personality || '';
+        document.getElementById('equipment').value = character.equipment || '';
+        document.getElementById('toolProficiencies').value = character.toolProficiencies || '';
+        document.getElementById('spellbook').value = character.spellbook || '';
+
+        // Загрузка владения
+        if (character.proficiencies) {
+          document.getElementById('lightArmor').checked = character.proficiencies.lightArmor || false;
+          document.getElementById('mediumArmor').checked = character.proficiencies.mediumArmor || false;
+          document.getElementById('heavyArmor').checked = character.proficiencies.heavyArmor || false;
+          document.getElementById('shieldProficiency').checked = character.proficiencies.shield || false;
+          document.getElementById('simpleWeapons').checked = character.proficiencies.simpleWeapons || false;
+          document.getElementById('martialWeapons').checked = character.proficiencies.martialWeapons || false;
+        }
+
+        // Загрузка монет
+        if (character.coins) {
+          document.getElementById('cp').value = character.coins.cp || 0;
+          document.getElementById('sp').value = character.coins.sp || 0;
+          document.getElementById('gp').value = character.coins.gp || 0;
+          document.getElementById('ep').value = character.coins.ep || 0;
+          document.getElementById('pp').value = character.coins.pp || 0;
+        }
+
+        // Загрузка оружия
+        if (character.weapons && character.weapons.length > 0) {
+          const tbody = document.getElementById('weaponsTableBody');
+          tbody.innerHTML = '';
+          character.weapons.forEach(weapon => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td><input type="text" class="form-control" value="${weapon.name}"></td>
+              <td><input type="text" class="form-control" value="${weapon.bonus}"></td>
+              <td><input type="text" class="form-control" value="${weapon.damage}"></td>
+              <td><input type="text" class="form-control" value="${weapon.notes}"></td>
+            `;
+            tbody.appendChild(row);
+          });
+        }
+
+        // Обновляем расчеты
+        const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+        abilities.forEach(ability => updateAbilityModifier(ability));
+        updateCalculations();
+      }
+
       // Отображение сетки персонажей
       function renderCharactersGrid() {
         const characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
@@ -1688,7 +1756,11 @@
 
         charactersGrid.innerHTML = userCharacters.map(char => `
           <div class="char-card">
-            <div class="char-avatar">${char.name?.charAt(0) || '?'}</div>
+            <div class="char-avatar">
+              ${char.portrait ? 
+                `<img src="${char.portrait}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">` : 
+                char.name?.charAt(0) || '?'}
+            </div>
             <div class="char-name">${char.name || 'Безымянный'}</div>
             <div class="char-class-level">${char.class || '—'}, ${char.level || 1} ур.</div>
             <div class="char-details">
@@ -1700,20 +1772,19 @@
               <button class="char-btn delete-btn" data-id="${char.id}">Удалить</button>
             </div>
           </div>
-        `;
         `).join('');
 
         // Добавляем обработчики для кнопок редактирования и удаления
         document.querySelectorAll('.edit-btn').forEach(btn => {
           btn.addEventListener('click', function() {
-            const charId = this.getAttribute('data-id');
+            const charId = parseInt(this.getAttribute('data-id'));
             editCharacter(charId);
           });
         });
 
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', function() {
-            const charId = this.getAttribute('data-id');
+            const charId = parseInt(this.getAttribute('data-id'));
             if (confirm('Удалить этого персонажа?')) {
               deleteCharacter(charId);
             }
@@ -1721,15 +1792,22 @@
         });
       }
 
-      renderCharacters();
       function editCharacter(charId) {
-        // Реализация редактирования персонажа
-        alert('Редактирование персонажа будет реализовано в будущем');
+        const characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
+        const character = characters.find(char => char.id === charId);
+        
+        if (character) {
+          currentEditingCharacter = character;
+          loadCharacterData(character);
+          characterEditor.style.display = 'block';
+          document.getElementById('editorTitle').textContent = 'Редактирование персонажа';
+          initCharacterSheet();
+        }
       }
 
       function deleteCharacter(charId) {
         let characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
-        characters = characters.filter(char => char.id != charId);
+        characters = characters.filter(char => char.id !== charId);
         localStorage.setItem('kdCharacters', JSON.stringify(characters));
         renderCharactersGrid();
       }
@@ -1742,3 +1820,4 @@
 
 </body>
 </html>
+
