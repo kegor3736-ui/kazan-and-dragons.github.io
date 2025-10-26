@@ -51,496 +51,570 @@
       <!-- Персонажи будут отображаться здесь -->
     </div>
 
+    <!-- Цифровой лист персонажа -->
+    <div class="digital-character-sheet" id="digitalCharacterSheet" style="display: none;">
+      <div class="digital-header">
+        <div class="digital-header-top">
+          <a class="digital-back-btn" href="#" id="digitalBackBtn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+              <path d="M19 3H14.82C14.4 1.84 13.3 1 12 1C10.7 1 9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM12 2.75C12.22 2.75 12.41 2.85 12.55 3C12.67 3.13 12.75 3.31 12.75 3.5C12.75 3.91 12.41 4.25 12 4.25C11.59 4.25 11.25 3.91 11.25 3.5C11.25 3.31 11.33 3.13 11.45 3C11.59 2.85 11.78 2.75 12 2.75ZM19 19H5V5H19V19Z"/>
+            </svg>
+          </a>
+          <div class="digital-header-info">
+            <p class="digital-character-name" id="digitalCharName">Безымянный персонаж</p>
+            <p class="digital-character-details">
+              <span id="digitalCharRace">&nbsp;</span> — 
+              <span id="digitalCharClass">&nbsp;</span>
+            </p>
+            <div class="digital-exp">
+              <p class="digital-exp-level" id="digitalCharLevel">1</p>
+              <div class="digital-exp-bar">
+                <p class="digital-exp-value">0</p>
+                <div class="digital-exp-progress" id="digitalExpProgress"></div>
+                <p class="digital-exp-value">300</p>
+              </div>
+              <p class="digital-exp-level">2</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="digital-stats">
+          <div class="digital-stat">
+            <div class="digital-stat-value" id="digitalAC">10</div>
+            <div class="digital-stat-label">КД</div>
+          </div>
+          <div class="digital-stat">
+            <div class="digital-stat-value" id="digitalSpeed">30</div>
+            <div class="digital-stat-label">Скорость</div>
+          </div>
+          <div class="digital-stat">
+            <div class="digital-stat-value" id="digitalProficiency">+2</div>
+            <div class="digital-stat-label">Владение</div>
+          </div>
+          <div class="digital-stat">
+            <div class="digital-stat-value" id="digitalHP">0/0</div>
+            <div class="digital-stat-label">Хиты</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="digital-content">
+        <!-- Характеристики -->
+        <div class="digital-abilities">
+          <div class="digital-ability">
+            <h3 class="digital-ability-name">
+              Сила <span class="digital-ability-score" id="strScoreDigital">10</span>
+            </h3>
+            <div class="digital-ability-checks">
+              <button class="digital-check-btn" data-ability="str">+0</button>
+              <label class="digital-checkbox">
+                <input type="checkbox" id="strSaveProficiency">
+                <span>Спасбросок</span>
+              </label>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="athleticsProficiency">
+                <span>Атлетика</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+          </div>
+
+          <div class="digital-ability">
+            <h3 class="digital-ability-name">
+              Ловкость <span class="digital-ability-score" id="dexScoreDigital">10</span>
+            </h3>
+            <div class="digital-ability-checks">
+              <button class="digital-check-btn" data-ability="dex">+0</button>
+              <label class="digital-checkbox">
+                <input type="checkbox" id="dexSaveProficiency">
+                <span>Спасбросок</span>
+              </label>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="acrobaticsProficiency">
+                <span>Акробатика</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="sleightProficiency">
+                <span>Ловкость рук</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="stealthProficiency">
+                <span>Скрытность</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+          </div>
+
+          <div class="digital-ability">
+            <h3 class="digital-ability-name">
+              Телосложение <span class="digital-ability-score" id="conScoreDigital">10</span>
+            </h3>
+            <div class="digital-ability-checks">
+              <button class="digital-check-btn" data-ability="con">+0</button>
+              <label class="digital-checkbox">
+                <input type="checkbox" id="conSaveProficiency">
+                <span>Спасбросок</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="digital-ability">
+            <h3 class="digital-ability-name">
+              Интеллект <span class="digital-ability-score" id="intScoreDigital">10</span>
+            </h3>
+            <div class="digital-ability-checks">
+              <button class="digital-check-btn" data-ability="int">+0</button>
+              <label class="digital-checkbox">
+                <input type="checkbox" id="intSaveProficiency">
+                <span>Спасбросок</span>
+              </label>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="investigationProficiency">
+                <span>Анализ</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="historyProficiency">
+                <span>История</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="arcanaProficiency">
+                <span>Магия</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="natureProficiency">
+                <span>Природа</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="religionProficiency">
+                <span>Религия</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+          </div>
+
+          <div class="digital-ability">
+            <h3 class="digital-ability-name">
+              Мудрость <span class="digital-ability-score" id="wisScoreDigital">10</span>
+            </h3>
+            <div class="digital-ability-checks">
+              <button class="digital-check-btn" data-ability="wis">+0</button>
+              <label class="digital-checkbox">
+                <input type="checkbox" id="wisSaveProficiency">
+                <span>Спасбросок</span>
+              </label>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="perceptionProficiency">
+                <span>Восприятие</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="survivalProficiency">
+                <span>Выживание</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="medicineProficiency">
+                <span>Медицина</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="insightProficiency">
+                <span>Проницательность</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="animalProficiency">
+                <span>Уход за животными</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+          </div>
+
+          <div class="digital-ability">
+            <h3 class="digital-ability-name">
+              Харизма <span class="digital-ability-score" id="chaScoreDigital">10</span>
+            </h3>
+            <div class="digital-ability-checks">
+              <button class="digital-check-btn" data-ability="cha">+0</button>
+              <label class="digital-checkbox">
+                <input type="checkbox" id="chaSaveProficiency">
+                <span>Спасбросок</span>
+              </label>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="performanceProficiency">
+                <span>Выступление</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="intimidationProficiency">
+                <span>Запугивание</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="deceptionProficiency">
+                <span>Обман</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+            <div class="digital-skill">
+              <label class="digital-checkbox">
+                <input type="checkbox" id="persuasionProficiency">
+                <span>Убеждение</span>
+              </label>
+              <button class="digital-check-btn">+0</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer>
       <p>© 2025 Kazan & Dragons (K&D)</p>
     </footer>
   </div>
 
-  <!-- Редактор персонажа (скрыт по умолчанию) -->
-  <div class="character-editor" id="characterEditor">
-    <div style="max-width: 1400px; margin: 0 auto;">
-      <div class="editor-header">
-        <h2 id="editorTitle">Создание персонажа</h2>
-        <button class="btn btn-secondary" id="closeEditor">✕ Закрыть</button>
-      </div>
+  <style>
+    /* Стили для цифрового листа персонажа */
+    .digital-character-sheet {
+      background: var(--card-bg);
+      border-radius: 12px;
+      margin: 2rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(138, 43, 226, 0.3);
+    }
 
-      <!-- Кнопки управления в редакторе -->
-      <div class="controls" style="background: transparent; padding: 0 0 1rem 0;">
-        <button class="btn btn-primary" id="saveCharBtn">Сохранить персонажа</button>
-        <button class="btn export-btn" id="exportJsonBtn">Экспорт в JSON</button>
-      </div>
+    .digital-header {
+      margin-bottom: 2rem;
+    }
 
-      <div class="character-sheet">
-        <!-- ВЕРХНЯЯ ЧАСТЬ - ОСНОВНАЯ ИНФОРМАЦИЯ -->
-        <div class="character-header">
-          <div class="form-group">
-            <label>Имя персонажа</label>
-            <input type="text" id="charName" class="form-control" placeholder="Арагорн">
+    .digital-header-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .digital-back-btn {
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .digital-header-info {
+      flex: 1;
+    }
+
+    .digital-character-name {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .digital-character-details {
+      color: #c9a0dc;
+      margin-bottom: 1rem;
+    }
+
+    .digital-exp {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(10, 8, 29, 0.6);
+      padding: 0.5rem;
+      border-radius: 8px;
+    }
+
+    .digital-exp-level {
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .digital-exp-bar {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+    }
+
+    .digital-exp-progress {
+      flex: 1;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .digital-exp-value {
+      font-size: 0.8rem;
+      color: #c9a0dc;
+    }
+
+    .digital-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 1rem;
+    }
+
+    .digital-stat {
+      text-align: center;
+      background: rgba(10, 8, 29, 0.6);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(138, 43, 226, 0.2);
+    }
+
+    .digital-stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .digital-stat-label {
+      font-size: 0.8rem;
+      color: #c9a0dc;
+    }
+
+    .digital-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .digital-ability {
+      background: rgba(10, 8, 29, 0.4);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(138, 43, 226, 0.2);
+    }
+
+    .digital-ability-name {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .digital-ability-score {
+      color: white;
+    }
+
+    .digital-ability-checks {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+    }
+
+    .digital-check-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .digital-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .digital-skill {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(138, 43, 226, 0.1);
+    }
+
+    .digital-skill:last-child {
+      border-bottom: none;
+    }
+
+    @media (max-width: 768px) {
+      .digital-character-sheet {
+        margin: 1rem;
+        padding: 1rem;
+      }
+      
+      .digital-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .digital-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+
+  <script>
+    // Функции для управления цифровым листом персонажа
+    function showDigitalCharacterSheet(characterData) {
+      const digitalSheet = document.getElementById('digitalCharacterSheet');
+      const grid = document.getElementById('charactersGrid');
+      
+      digitalSheet.style.display = 'block';
+      grid.style.display = 'none';
+      
+      // Заполняем данные персонажа
+      if (characterData) {
+        document.getElementById('digitalCharName').textContent = characterData.name || 'Безымянный персонаж';
+        document.getElementById('digitalCharRace').textContent = characterData.race || '—';
+        document.getElementById('digitalCharClass').textContent = characterData.class || '—';
+        document.getElementById('digitalCharLevel').textContent = characterData.level || 1;
+        document.getElementById('digitalAC').textContent = characterData.armorClass || 10;
+        document.getElementById('digitalSpeed').textContent = characterData.speed || 30;
+        document.getElementById('digitalHP').textContent = `${characterData.currentHP || 0}/${characterData.maxHP || 0}`;
+        
+        // Характеристики
+        document.getElementById('strScoreDigital').textContent = characterData.str || 10;
+        document.getElementById('dexScoreDigital').textContent = characterData.dex || 10;
+        document.getElementById('conScoreDigital').textContent = characterData.con || 10;
+        document.getElementById('intScoreDigital').textContent = characterData.int || 10;
+        document.getElementById('wisScoreDigital').textContent = characterData.wis || 10;
+        document.getElementById('chaScoreDigital').textContent = characterData.cha || 10;
+      }
+    }
+
+    function hideDigitalCharacterSheet() {
+      const digitalSheet = document.getElementById('digitalCharacterSheet');
+      const grid = document.getElementById('charactersGrid');
+      
+      digitalSheet.style.display = 'none';
+      grid.style.display = 'grid';
+    }
+
+    // Обработчики событий
+    document.getElementById('digitalBackBtn').addEventListener('click', hideDigitalCharacterSheet);
+
+    // Обновляем функцию renderCharactersGrid для поддержки цифрового листа
+    function renderCharactersGrid() {
+      const charactersGrid = document.getElementById('charactersGrid');
+      if (!charactersGrid) return;
+
+      const characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
+      const user = JSON.parse(localStorage.getItem('kdUser'));
+      const userCharacters = characters.filter(char => char.owner === user.username);
+
+      if (userCharacters.length === 0) {
+        charactersGrid.innerHTML = `
+          <div class="empty-state">
+            <p>У вас пока нет персонажей.</p>
+            <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.8;">
+              Нажмите «+ Новый персонаж», чтобы создать первого героя!
+            </p>
           </div>
-          <div class="form-group">
-            <label>Предыстория</label>
-            <input type="text" id="charBackground" class="form-control" placeholder="Странник">
+        `;
+        return;
+      }
+
+      charactersGrid.innerHTML = userCharacters.map(char => `
+        <div class="char-card">
+          <div class="char-avatar">${char.name?.charAt(0) || '?'}</div>
+          <div class="char-name">${char.name || 'Безымянный'}</div>
+          <div class="char-class-level">${char.class || '—'}, ${char.level || 1} ур.</div>
+          <div class="char-details">
+            Раса: ${char.race || '—'}<br>
+            HP: ${char.currentHP || 0}/${char.maxHP || 0}
           </div>
-          <div class="form-group">
-            <label>Класс</label>
-            <input type="text" id="charClass" class="form-control" placeholder="Воин">
-          </div>
-          <div class="form-group">
-            <label>Раса</label>
-            <input type="text" id="charRace" class="form-control" placeholder="Человек">
-          </div>
-          <div class="form-group">
-            <label>Подкласс</label>
-            <input type="text" id="charSubclass" class="form-control" placeholder="Паладин">
-          </div>
-          <div class="form-group">
-            <label>Уровень</label>
-            <input type="number" id="charLevel" class="form-control" value="1" min="1" max="20" readonly>
-          </div>
-          <div class="form-group">
-            <label>Опыт</label>
-            <input type="number" id="charExp" class="form-control" value="0">
-          </div>
-          <div class="form-group">
-            <label>Класс защиты</label>
-            <input type="number" id="armorClass" class="form-control" value="10">
-          </div>
-          <div class="form-group shield-toggle">
-            <label>
-              <input type="checkbox" id="shieldToggle"> Щит
-            </label>
-            <input type="number" id="shieldBonus" class="form-control" value="2" min="0" max="5" style="width: 60px;">
+          <div class="char-actions">
+            <button class="char-btn edit-btn" data-id="${char.id}">Редактировать</button>
+            <button class="char-btn view-digital-btn" data-id="${char.id}">Цифровой лист</button>
+            <button class="char-btn delete-btn" data-id="${char.id}">Удалить</button>
           </div>
         </div>
+      `).join('');
 
-        <!-- БЛОК ХИТОВ -->
-        <div class="hp-section">
-          <div class="form-group">
-            <label>Текущие хиты</label>
-            <input type="number" id="currentHP" class="form-control" value="10" min="0">
-          </div>
-          <div class="form-group">
-            <label>Временные хиты</label>
-            <input type="number" id="tempHP" class="form-control" value="0" min="0">
-          </div>
-          <div class="form-group">
-            <label>Максимум хитов</label>
-            <input type="number" id="maxHP" class="form-control" value="10" min="1">
-          </div>
-          <div class="form-group">
-            <label>Кости хитов:</label>
-            <div style="display: flex; gap: 0.5rem; align-items: center;">
-              <select id="hitDiceType" class="form-control">
-                <option value="d6">d6</option>
-                <option value="d8">d8</option>
-                <option value="d10" selected>d10</option>
-                <option value="d12">d12</option>
-              </select>
-              <input type="number" id="hitDiceCount" class="form-control" value="1" min="0" style="width: 60px;">
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Спасброски от смерти</label>
-            <div class="death-saves">
-              <div class="death-save-group">
-                <label>Успехи</label>
-                <div class="death-save-circles" id="successCircles">
-                  <div class="death-save-circle" data-index="0"></div>
-                  <div class="death-save-circle" data-index="1"></div>
-                  <div class="death-save-circle" data-index="2"></div>
-                </div>
-              </div>
-              <div class="death-save-group">
-                <label>Провалы</label>
-                <div class="death-save-circles" id="failureCircles">
-                  <div class="death-save-circle" data-index="0"></div>
-                  <div class="death-save-circle" data-index="1"></div>
-                  <div class="death-save-circle" data-index="2"></div>
-                </div>
-              </div>
-            </div>
-            <button type="button" class="btn btn-secondary" id="rollDeathSave" style="margin-top: 0.5rem; width: 100%;">
-              Бросок спасброска
-            </button>
-          </div>
-        </div>
+      // Обработчики для кнопок
+      document.querySelectorAll('.view-digital-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const charId = this.getAttribute('data-id');
+          const characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
+          const character = characters.find(char => char.id == charId);
+          if (character) {
+            showDigitalCharacterSheet(character);
+          }
+        });
+      });
 
-        <!-- ЛЕВАЯ КОЛОНКА - ХАРАКТЕРИСТИКИ -->
-        <div class="ability-column">
-          <div class="proficiency-bonus">
-            Бонус владения: <span id="proficiencyBonus">+2</span>
-          </div>
+      // Остальные обработчики...
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const charId = this.getAttribute('data-id');
+          editCharacter(charId);
+        });
+      });
 
-          <!-- Первая строка характеристик -->
-          <div class="ability-row">
-            <!-- Сила -->
-            <div class="ability-card">
-              <div class="ability-header">СИЛА</div>
-              <input type="number" id="strScore" class="ability-score" value="10" min="1" max="30">
-              <div class="ability-modifier" id="strMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="strSave"> Спасбросок</label>
-                <span id="strSaveMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="athletics"> Атлетика</label>
-                <span id="athleticsMod">+0</span>
-              </div>
-            </div>
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const charId = this.getAttribute('data-id');
+          if (confirm('Удалить этого персонажа?')) {
+            deleteCharacter(charId);
+          }
+        });
+      });
+    }
 
-            <!-- Ловкость -->
-            <div class="ability-card">
-              <div class="ability-header">ЛОВКОСТЬ</div>
-              <input type="number" id="dexScore" class="ability-score" value="10" min="1" max="30">
-              <div class="ability-modifier" id="dexMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="dexSave"> Спасбросок</label>
-                <span id="dexSaveMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="acrobatics"> Акробатика</label>
-                <span id="acrobaticsMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="sleight"> Ловкость рук</label>
-                <span id="sleightMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="stealth"> Скрытность</label>
-                <span id="stealthMod">+0</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Вторая строка характеристик -->
-          <div class="ability-row">
-            <!-- Телосложение -->
-            <div class="ability-card">
-              <div class="ability-header">ТЕЛОСЛОЖЕНИЕ</div>
-              <input type="number" id="conScore" class="ability-score" value="10" min="1" max="30">
-              <div class="ability-modifier" id="conMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="conSave"> Спасбросок</label>
-                <span id="conSaveMod">+0</span>
-              </div>
-            </div>
-
-            <!-- Интеллект -->
-            <div class="ability-card">
-              <div class="ability-header">ИНТЕЛЛЕКТ</div>
-              <input type="number" id="intScore" class="ability-score" value="10" min="1" max="30">
-              <div class="ability-modifier" id="intMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="intSave"> Спасбросок</label>
-                <span id="intSaveMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="investigation"> Анализ</label>
-                <span id="investigationMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="history"> История</label>
-                <span id="historyMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="arcana"> Магия</label>
-                <span id="arcanaMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="nature"> Природа</label>
-                <span id="natureMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="religion"> Религия</label>
-                <span id="religionMod">+0</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Третья строка характеристик -->
-          <div class="ability-row">
-            <!-- Мудрость -->
-            <div class="ability-card">
-              <div class="ability-header">МУДРОСТЬ</div>
-              <input type="number" id="wisScore" class="ability-score" value="10" min="1" max="30">
-              <div class="ability-modifier" id="wisMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="wisSave"> Спасбросок</label>
-                <span id="wisSaveMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="perception"> Внимательность</label>
-                <span id="perceptionMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="survival"> Выживание</label>
-                <span id="survivalMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="medicine"> Медицина</label>
-                <span id="medicineMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="insight"> Проницательность</label>
-                <span id="insightMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="animal"> Уход за животными</label>
-                <span id="animalMod">+0</span>
-              </div>
-            </div>
-
-            <!-- Харизма -->
-            <div class="ability-card">
-              <div class="ability-header">ХАРИЗМА</div>
-              <input type="number" id="chaScore" class="ability-score" value="10" min="1" max="30">
-              <div class="ability-modifier" id="chaMod">+0</div>
-              <div class="saving-throw">
-                <label><input type="checkbox" id="chaSave"> Спасбросок</label>
-                <span id="chaSaveMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="performance"> Выступление</label>
-                <span id="performanceMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="intimidation"> Запугивание</label>
-                <span id="intimidationMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="deception"> Обман</label>
-                <span id="deceptionMod">+0</span>
-              </div>
-              <div class="skill">
-                <label><input type="checkbox" id="persuasion"> Убеждение</label>
-                <span id="persuasionMod">+0</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Инициатива и скорость -->
-          <div class="ability-block">
-            <div class="initiative-speed">
-              <div class="stat-group">
-                <div class="ability-header">ИНИЦИАТИВА</div>
-                <div class="stat-value" id="initiativeValue">+0</div>
-              </div>
-              <div class="stat-group">
-                <div class="ability-header">СКОРОСТЬ</div>
-                <div class="stat-value">
-                  <input type="number" id="speedValue" class="form-control" value="30" style="text-align: center;">
-                </div>
-              </div>
-            </div>
-            <div class="stat-group" style="margin-top: 1rem;">
-              <div class="ability-header">ПАССИВНОЕ ВОСПРИЯТИЕ</div>
-              <div class="stat-value" id="passivePerceptionValue">10</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА -->
-        <div class="center-column">
-          <div class="ability-block">
-            <div class="section-title">СОСТОЯНИЯ</div>
-            <select id="conditions" class="conditions-select" multiple>
-              <option value="blinded">Ослеплен</option>
-              <option value="charmed">Очарован</option>
-              <option value="deafened">Оглох</option>
-              <option value="frightened">Испуган</option>
-              <option value="grappled">Схвачен</option>
-              <option value="incapacitated">Недееспособен</option>
-              <option value="invisible">Невидим</option>
-              <option value="paralyzed">Парализован</option>
-              <option value="petrified">Окаменевший</option>
-              <option value="poisoned">Отравлен</option>
-              <option value="prone">Лежит</option>
-              <option value="restrained">Скован</option>
-              <option value="stunned">Ошеломлен</option>
-              <option value="unconscious">Без сознания</option>
-            </select>
-          </div>
-
-          <div class="ability-block">
-            <div class="section-title">ОРУЖИЕ И БОЕВЫЕ ЗАГОВОРЫ</div>
-            <table class="weapons-table">
-              <thead>
-                <tr>
-                  <th>Название</th>
-                  <th>Бонус / Сложность</th>
-                  <th>Урон / Вид</th>
-                  <th>Заметки</th>
-                </tr>
-              </thead>
-              <tbody id="weaponsTableBody">
-                <tr>
-                  <td><input type="text" class="form-control" placeholder="Длинный меч"></td>
-                  <td><input type="text" class="form-control" placeholder="+5"></td>
-                  <td><input type="text" class="form-control" placeholder="1d8 рубящий"></td>
-                  <td><input type="text" class="form-control" placeholder=""></td>
-                </tr>
-              </tbody>
-            </table>
-            <button type="button" class="btn btn-secondary" id="addWeapon" style="margin-top: 0.5rem; width: 100%;">
-              + Добавить оружие
-            </button>
-          </div>
-
-          <div class="ability-block">
-            <div class="section-title">СПОСОБНОСТИ КЛАССА</div>
-            <textarea id="classAbilities" class="text-area" placeholder="Способности класса..."></textarea>
-          </div>
-
-          <div class="ability-block">
-            <div class="section-title">СПОСОБНОСТИ РАСЫ</div>
-            <textarea id="raceAbilities" class="text-area" placeholder="Способности расы..."></textarea>
-          </div>
-
-          <div class="ability-block">
-            <div class="section-title">ЧЕРТЫ</div>
-            <textarea id="features" class="text-area" placeholder="Черты персонажа..."></textarea>
-          </div>
-
-          <div class="ability-block">
-            <div class="section-title">ЗАМЕТКИ</div>
-            <textarea id="notes" class="text-area" placeholder="Заметки..."></textarea>
-          </div>
-        </div>
-
-        <!-- ПРАВАЯ КОЛОНКА -->
-        <div class="right-column">
-          <div class="ability-block">
-            <div class="section-title">ВЛАДЕНИЕ СНАРЯЖЕНИЕМ</div>
-            <div class="proficiencies-row">
-              <div class="checkbox-group">
-                <input type="checkbox" id="lightArmor">
-                <label for="lightArmor">Лёгкие доспехи</label>
-              </div>
-              <div class="checkbox-group">
-                <input type="checkbox" id="mediumArmor">
-                <label for="mediumArmor">Средние доспехи</label>
-              </div>
-              <div class="checkbox-group">
-                <input type="checkbox" id="heavyArmor">
-                <label for="heavyArmor">Тяжёлые доспехи</label>
-              </div>
-              <div class="checkbox-group">
-                <input type="checkbox" id="shieldProficiency">
-                <label for="shieldProficiency">Щиты</label>
-              </div>
-              <div class="checkbox-group">
-                <input type="checkbox" id="simpleWeapons">
-                <label for="simpleWeapons">Простое оружие</label>
-              </div>
-              <div class="checkbox-group">
-                <input type="checkbox" id="martialWeapons">
-                <label for="martialWeapons">Воинское оружие</label>
-              </div>
-            </div>
-            
-            <div style="margin-top: 1rem;">
-              <div class="section-title">ИНСТРУМЕНТЫ И ЯЗЫКИ</div>
-              <textarea id="toolProficiencies" class="text-area" placeholder="Инструменты и языки..."></textarea>
-            </div>
-          </div>
-
-          <div class="ability-block">
-            <div class="section-title">ПОРТРЕТ</div>
-            <div class="portrait-section">
-              <div class="portrait-placeholder" id="portraitPlaceholder">
-                Нажмите для загрузки изображения
-              </div>
-              <img id="portraitPreview" class="portrait-preview" alt="Портрет персонажа">
-              <input type="file" id="portraitUpload" accept="image/*" style="display: none;">
-            </div>
-          </div>
-
-          <div class="ability-block">
-            <div class="section-title">ЦЕЛИ И ЗАДАЧИ</div>
-            <textarea id="goals" class="text-area" placeholder="Цели и задачи персонажа..."></textarea>
-          </div>
-
-          <div class="ability-block">
-            <div class="section-title">ВНЕШНОСТЬ</div>
-            <textarea id="appearance" class="text-area" placeholder="Описание внешности..."></textarea>
-          </div>
-
-          <div class="ability-block">
-            <div class="section-title">ПРЕДЫСТОРИЯ</div>
-            <textarea id="personality" class="text-area" placeholder="Личные качества и предыстория..."></textarea>
-          </div>
-
-          <div class="ability-block">
-            <div class="section-title">СНАРЯЖЕНИЕ</div>
-            <textarea id="equipment" class="text-area" placeholder="Снаряжение персонажа..."></textarea>
-          </div>
-
-          <div class="ability-block">
-            <div class="section-title">МОНЕТЫ</div>
-            <div class="coins-section">
-              <div class="coin-group">
-                <label>ММ</label>
-                <input type="number" id="cp" class="form-control" value="0" min="0">
-              </div>
-              <div class="coin-group">
-                <label>СМ</label>
-                <input type="number" id="sp" class="form-control" value="0" min="0">
-              </div>
-              <div class="coin-group">
-                <label>ЗМ</label>
-                <input type="number" id="gp" class="form-control" value="0" min="0">
-              </div>
-              <div class="coin-group">
-                <label>ЭМ</label>
-                <input type="number" id="ep" class="form-control" value="0" min="0">
-              </div>
-              <div class="coin-group">
-                <label>ПМ</label>
-                <input type="number" id="pp" class="form-control" value="0" min="0">
-              </div>
-            </div>
-            <div class="coin-calculator">
-              <button class="btn btn-secondary" id="calculateCoins" style="width: 100%;">Рассчитать общую сумму</button>
-              <div id="coinTotal" style="text-align: center; margin-top: 0.5rem; font-weight: bold;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- КНИГА ЗАКЛИНАНИЙ -->
-        <div class="spellbook-section">
-          <div class="ability-block">
-            <div class="section-title">КНИГА ЗАКЛИНАНИЙ</div>
-            
-            <div class="spell-levels">
-              <div class="spell-level active" data-level="0">Заговоры</div>
-              <div class="spell-level" data-level="1">1 уровень</div>
-              <div class="spell-level" data-level="2">2 уровень</div>
-              <div class="spell-level" data-level="3">3 уровень</div>
-              <div class="spell-level" data-level="4">4 уровень</div>
-              <div class="spell-level" data-level="5">5 уровень</div>
-              <div class="spell-level" data-level="6">6 уровень</div>
-              <div class="spell-level" data-level="7">7 уровень</div>
-              <div class="spell-level" data-level="8">8 уровень</div>
-              <div class="spell-level" data-level="9">9 уровень</div>
-            </div>
-
-            <div class="spell-slots">
-              <div class="spell-slot">
-                <label>Ячейки заклинаний</label>
-                <input type="number" class="form-control" value="0" min="0">
-              </div>
-              <div class="spell-slot">
-                <label>Использовано</label>
-                <input type="number" class="form-control" value="0" min="0">
-              </div>
-            </div>
-
-            <textarea id="spellbook" class="text-area" placeholder="Описание заклинаний..." style="min-height: 200px; margin-top: 1rem;"></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCharactersGrid();
+      // Инициализация других функций...
+    });
+  </script>
 
   <script src="characters.js"></script>
 </body>
