@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Профиль — Kazan & Dragons</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo-sidebar">
+      <div class="logo-icon"></div>
+      <span>KAZAN & DRAGONS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="parties.html">Набор в партии</a></li>
+      <li><a href="rules.html">Правила D&D</a></li>
+      <li><a href="characters.html">Персонажи</a></li>
+      <li><a href="tabletop.html">Игровое поле</a></li>
+      <li><a href="tokenator.html">Токенатор</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <div class="account-widget">
+        <div class="account-info" id="accountInfo">
+          <div class="account-name" id="accountName">—</div>
+          <div class="account-role" id="accountRole">—</div>
+        </div>
+        <button class="auth-btn" id="authButton">Войти / Регистрация</button>
+      </div>
+    </header>
+
+    <div class="page-header">
+      <h1 id="profileTitle">Ваш профиль</h1>
+    </div>
+
+    <div class="form" style="max-width: 600px; margin: 0 auto 2rem;">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profileAvatar">?</div>
+        <div class="profile-status">
+          <span id="onlineStatus">Офлайн</span>
+        </div>
+      </div>
+
+      <form id="profileForm">
+        <div class="form-group">
+          <label>Имя пользователя</label>
+          <input type="text" id="profileUsername" class="form-control" required minlength="3">
+        </div>
+        <div class="form-group">
+          <label>Роль</label>
+          <div class="role-select">
+            <div class="role-option" data-role="player">
+              <h4>Игрок</h4>
+              <p>Создаю персонажей и ищу партии</p>
+            </div>
+            <div class="role-option" data-role="dm">
+              <h4>Мастер</h4>
+              <p>Веду игры и набираю игроков</p>
+            </div>
+          </div>
+          <input type="hidden" id="profileRole" value="player">
+        </div>
+        <div class="form-group">
+          <label>Сколько вам лет?</label>
+          <input type="number" id="profileAge" class="form-control" min="13" max="100">
+        </div>
+        <div class="form-group">
+          <label>Сколько лет играете в НРИ?</label>
+          <input type="number" id="profileExperience" class="form-control" min="0" max="50">
+        </div>
+        <div class="form-group">
+          <label>О себе</label>
+          <textarea id="profileBio" class="text-area" placeholder="Расскажите о себе..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="submit-btn">Сохранить профиль</button>
+          <button type="button" id="cancelBtn" class="btn btn-secondary" style="display: none;">Отмена</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="main.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initProfilePage();
+    });
+
+    function initProfilePage() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetUser = urlParams.get('user');
+      const currentUser = KD.getCurrentUser();
+      
+      if (!currentUser) {
+        KD.showNotification('Требуется регистрация', 'info');
+        setTimeout(() => window.location.href = 'register.html', 1500);
+        return;
+      }
+
+      if (targetUser) {
+        // Просмотр чужого профиля
+        loadUserProfile(targetUser, false);
+        document.getElementById('cancelBtn').style.display = 'inline-block';
+        document.getElementById('cancelBtn').onclick = () => {
+          window.location.href = 'profile.html';
+        };
+      } else {
+        // Редактирование своего профиля
+        loadUserProfile(currentUser.username, true);
+      }
+    }
+
+    function loadUserProfile(username, isEditable) {
+      const user = KD.getUserByUsername(username) || { username };
+      const isOwnProfile = KD.getCurrentUser()?.username === username;
+      
+      // Обновление заголовка
+      document.getElementById('profileTitle').textContent = 
+        isOwnProfile ? 'Ваш профиль' : `Профиль: ${KD.escapeHtml(username)}`;
+      
+      // Аватар
+      document.getElementById('profileAvatar').textContent = username.charAt(0).toUpperCase();
+      
+      // Онлайн-статус
+      const isOnline = KD.isUserOnline(username);
+      const statusEl = document.getElementById('onlineStatus');
+      statusEl.textContent = isOnline ? 'Онлайн' : 'Офлайн';
+      statusEl.style.color = isOnline ? '#4ade80' : '#f87171';
+      
+      // Заполнение полей
+      document.getElementById('profileUsername').value = user.username || '';
+      document.getElementById('profileAge').value = user.age || '';
+      document.getElementById('profileExperience').value = user.experience || '';
+      document.getElementById('profileBio').value = user.bio || '';
+      document.getElementById('profileRole').value = user.role || 'player';
+      
+      // Обновление выбора роли
+      document.querySelectorAll('.role-option').forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.role === (user.role || 'player'));
+      });
+      
+      // Управление редактированием
+      const form = document.getElementById('profileForm');
+      const inputs = form.querySelectorAll('input, textarea, .role-option');
+      
+      if (isEditable && isOwnProfile) {
+        // Разрешить редактирование
+        inputs.forEach(el => {
+          if (el.classList.contains('role-option')) {
+            el.style.pointerEvents = 'auto';
+            el.style.opacity = '1';
+          } else {
+            el.disabled = false;
+          }
+        });
+        document.querySelector('.submit-btn').style.display = 'block';
+      } else {
+        // Запретить редактирование
+        inputs.forEach(el => {
+          if (el.classList.contains('role-option')) {
+            el.style.pointerEvents = 'none';
+            el.style.opacity = '0.6';
+          } else {
+            el.disabled = true;
+          }
+        });
+        document.querySelector('.submit-btn').style.display = 'none';
+      }
+      
+      // Обработчики выбора роли (только если редактируем)
+      if (isEditable && isOwnProfile) {
+        document.querySelectorAll('.role-option').forEach(opt => {
+          opt.onclick = () => {
+            document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+            document.getElementById('profileRole').value = opt.dataset.role;
+          };
+        });
+      }
+      
+      // Сохранение профиля
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        if (!isEditable || !isOwnProfile) return;
+        
+        const updatedUser = {
+          ...user,
+          username: document.getElementById('profileUsername').value.trim(),
+          role: document.getElementById('profileRole').value,
+          age: parseInt(document.getElementById('profileAge').value) || null,
+          experience: parseInt(document.getElementById('profileExperience').value) || null,
+          bio: document.getElementById('profileBio').value.trim()
+        };
+        
+        // Обновление текущего пользователя
+        localStorage.setItem('kdUser', JSON.stringify(updatedUser));
+        
+        // Обновление в общем каталоге
+        KD.saveUserToDirectory(updatedUser);
+        
+        KD.showNotification('Профиль успешно сохранён!', 'success');
+        window.location.reload();
+      };
+    }
+  </script>
+
+  <style>
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--primary);
+    }
+    
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    
+    .profile-status {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    /* Стили для disabled состояния */
+    .form-control:disabled,
+    .text-area:disabled {
+      background: rgba(10, 8, 29, 0.5);
+      color: var(--accent);
+      cursor: not-allowed;
+    }
+    
+    .role-option {
+      transition: opacity 0.2s ease;
+    }
+  </style>
+</body>
+</html>
