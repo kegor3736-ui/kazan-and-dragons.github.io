@@ -37,28 +37,132 @@
       </div>
     </header>
 
-    <div class="page-header">
-      <h1>Хранилище персонажей</h1>
-      <p>Создавайте и управляйте своими героями</p>
-    </div>
+    <!-- Контейнер для основного контента -->
+    <div id="contentContainer">
+      <div class="page-header">
+        <h1>Хранилище персонажей</h1>
+        <p>Создавайте и управляйте своими героями</p>
+      </div>
 
-    <div class="controls">
-      <button class="new-char-btn" id="newCharBtn">+ Новый персонаж</button>
-    </div>
+      <div class="controls">
+        <button class="new-char-btn" id="newCharBtn">+ Новый персонаж</button>
+      </div>
 
-    <!-- Сетка существующих персонажей -->
-    <div class="characters-grid" id="charactersGrid">
-      <!-- Персонажи будут отображаться здесь -->
-    </div>
+      <!-- Сетка существующих персонажей -->
+      <div class="characters-grid" id="charactersGrid">
+        <!-- Персонажи будут отображаться здесь -->
+      </div>
 
-    <!-- Цифровой лист персонажа -->
-    <div class="digital-character-sheet" id="digitalCharacterSheet" style="display: none;">
-      <!-- ... остальной код цифрового листа ... -->
-    </div>
+      <!-- Цифровой лист персонажа -->
+      <div class="digital-character-sheet" id="digitalCharacterSheet" style="display: none;">
+        <div class="digital-header">
+          <div class="digital-header-top">
+            <a class="digital-back-btn" href="#" id="digitalBackBtn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M19 3H14.82C14.4 1.84 13.3 1 12 1C10.7 1 9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM12 2.75C12.22 2.75 12.41 2.85 12.55 3C12.67 3.13 12.75 3.31 12.75 3.5C12.75 3.91 12.41 4.25 12 4.25C11.59 4.25 11.25 3.91 11.25 3.5C11.25 3.31 11.33 3.13 11.45 3C11.59 2.85 11.78 2.75 12 2.75ZM19 19H5V5H19V19Z"/>
+              </svg>
+            </a>
+            <div class="digital-header-info">
+              <p class="digital-character-name" id="digitalCharName">Безымянный персонаж</p>
+              <p class="digital-character-details">
+                <span id="digitalCharRace">&nbsp;</span> — 
+                <span id="digitalCharClass">&nbsp;</span>
+              </p>
+              <div class="digital-exp">
+                <p class="digital-exp-level" id="digitalCharLevel">1</p>
+                <div class="digital-exp-bar">
+                  <p class="digital-exp-value">0</p>
+                  <div class="digital-exp-progress" id="digitalExpProgress"></div>
+                  <p class="digital-exp-value">300</p>
+                </div>
+                <p class="digital-exp-level">2</p>
+              </div>
+            </div>
+          </div>
 
-    <!-- Редактор персонажа (скрыт по умолчанию) -->
-    <div class="character-editor" id="characterEditor" style="display: none;">
-      <!-- ... существующий код редактора персонажа ... -->
+          <div class="digital-stats">
+            <div class="digital-stat">
+              <div class="digital-stat-value" id="digitalAC">10</div>
+              <div class="digital-stat-label">КД</div>
+            </div>
+            <div class="digital-stat">
+              <div class="digital-stat-value" id="digitalSpeed">30</div>
+              <div class="digital-stat-label">Скорость</div>
+            </div>
+            <div class="digital-stat">
+              <div class="digital-stat-value" id="digitalProficiency">+2</div>
+              <div class="digital-stat-label">Владение</div>
+            </div>
+            <div class="digital-stat">
+              <div class="digital-stat-value" id="digitalHP">0/0</div>
+              <div class="digital-stat-label">Хиты</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="digital-content">
+          <!-- Характеристики -->
+          <div class="digital-abilities">
+            <!-- Сила -->
+            <div class="digital-ability">
+              <h3 class="digital-ability-name">
+                Сила <span class="digital-ability-score" id="strScoreDigital">10</span>
+              </h3>
+              <div class="digital-ability-checks">
+                <button class="digital-check-btn" data-ability="str">+0</button>
+                <label class="digital-checkbox">
+                  <input type="checkbox" id="strSaveProficiency">
+                  <span>Спасбросок</span>
+                </label>
+              </div>
+              <div class="digital-skill">
+                <label class="digital-checkbox">
+                  <input type="checkbox" id="athleticsProficiency">
+                  <span>Атлетика</span>
+                </label>
+                <button class="digital-check-btn">+0</button>
+              </div>
+            </div>
+
+            <!-- Ловкость -->
+            <div class="digital-ability">
+              <h3 class="digital-ability-name">
+                Ловкость <span class="digital-ability-score" id="dexScoreDigital">10</span>
+              </h3>
+              <div class="digital-ability-checks">
+                <button class="digital-check-btn" data-ability="dex">+0</button>
+                <label class="digital-checkbox">
+                  <input type="checkbox" id="dexSaveProficiency">
+                  <span>Спасбросок</span>
+                </label>
+              </div>
+              <div class="digital-skill">
+                <label class="digital-checkbox">
+                  <input type="checkbox" id="acrobaticsProficiency">
+                  <span>Акробатика</span>
+                </label>
+                <button class="digital-check-btn">+0</button>
+              </div>
+              <div class="digital-skill">
+                <label class="digital-checkbox">
+                  <input type="checkbox" id="sleightProficiency">
+                  <span>Ловкость рук</span>
+                </label>
+                <button class="digital-check-btn">+0</button>
+              </div>
+              <div class="digital-skill">
+                <label class="digital-checkbox">
+                  <input type="checkbox" id="stealthProficiency">
+                  <span>Скрытность</span>
+                </label>
+                <button class="digital-check-btn">+0</button>
+              </div>
+            </div>
+
+            <!-- Остальные характеристики... -->
+          </div>
+        </div>
+      </div>
     </div>
 
     <footer>
@@ -66,7 +170,123 @@
     </footer>
   </div>
 
+  <!-- Редактор персонажа (fixed overlay) -->
+  <div class="character-editor-overlay" id="characterEditorOverlay" style="display: none;">
+    <div class="character-editor-container">
+      <div class="character-editor-header">
+        <h2>Создание персонажа</h2>
+        <button class="close-editor-btn" id="closeEditorBtn">✕ Закрыть</button>
+      </div>
+      
+      <div class="character-editor-content">
+        <div class="editor-simple-form">
+          <div class="form-group">
+            <label for="simpleCharName">Имя персонажа</label>
+            <input type="text" id="simpleCharName" class="form-control" placeholder="Введите имя персонажа">
+          </div>
+          
+          <div class="form-group">
+            <label for="simpleCharRace">Раса</label>
+            <select id="simpleCharRace" class="form-control">
+              <option value="">Выберите расу</option>
+              <option value="human">Человек</option>
+              <option value="elf">Эльф</option>
+              <option value="dwarf">Дварф</option>
+              <option value="halfling">Халфлинг</option>
+              <option value="dragonborn">Драконорожденный</option>
+              <option value="tiefling">Тифлинг</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="simpleCharClass">Класс</label>
+            <select id="simpleCharClass" class="form-control">
+              <option value="">Выберите класс</option>
+              <option value="fighter">Воин</option>
+              <option value="wizard">Волшебник</option>
+              <option value="rogue">Плут</option>
+              <option value="cleric">Жрец</option>
+              <option value="ranger">Следопыт</option>
+              <option value="bard">Бард</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="simpleCharLevel">Уровень</label>
+            <input type="number" id="simpleCharLevel" class="form-control" value="1" min="1" max="20">
+          </div>
+          
+          <div class="editor-actions">
+            <button class="btn btn-primary" id="saveSimpleCharBtn">Сохранить персонажа</button>
+            <button class="btn btn-secondary" id="cancelSimpleCharBtn">Отмена</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <style>
+    /* Стили для оверлея редактора */
+    .character-editor-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 8, 29, 0.95);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .character-editor-container {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      border: 2px solid var(--primary-light);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .character-editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .character-editor-header h2 {
+      color: var(--accent);
+      margin: 0;
+    }
+
+    .close-editor-btn {
+      background: var(--error);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .editor-simple-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+
     /* Стили для цифрового листа персонажа */
     .digital-character-sheet {
       background: var(--card-bg);
@@ -251,6 +471,11 @@
       .digital-stats {
         grid-template-columns: repeat(2, 1fr);
       }
+      
+      .character-editor-container {
+        margin: 1rem;
+        padding: 1rem;
+      }
     }
   </style>
 
@@ -272,39 +497,87 @@
       
       if (!checkAuth()) return;
 
-      const characterEditor = document.getElementById('characterEditor');
-      const charactersGrid = document.getElementById('charactersGrid');
-      const digitalSheet = document.getElementById('digitalCharacterSheet');
+      const editorOverlay = document.getElementById('characterEditorOverlay');
       
-      if (characterEditor) {
-        // Скрываем другие элементы
-        if (charactersGrid) charactersGrid.style.display = 'none';
-        if (digitalSheet) digitalSheet.style.display = 'none';
-        
-        // Показываем редактор
-        characterEditor.style.display = 'block';
-        console.log('Character editor displayed');
-        
-        // Инициализируем редактор если нужно
-        if (typeof initCharacterSheet === 'function') {
-          initCharacterSheet();
-        }
+      if (editorOverlay) {
+        editorOverlay.style.display = 'flex';
+        console.log('Character editor overlay displayed');
       } else {
-        console.error('Character editor element not found');
-        alert('Редактор персонажей не найден. Проверьте структуру HTML.');
+        console.error('Character editor overlay not found');
+        alert('Ошибка: редактор персонажей не найден.');
       }
+    }
+
+    // Функция закрытия редактора
+    function closeCharacterEditor() {
+      const editorOverlay = document.getElementById('characterEditorOverlay');
+      if (editorOverlay) {
+        editorOverlay.style.display = 'none';
+      }
+    }
+
+    // Функция сохранения простого персонажа
+    function saveSimpleCharacter() {
+      const name = document.getElementById('simpleCharName').value.trim();
+      const race = document.getElementById('simpleCharRace').value;
+      const charClass = document.getElementById('simpleCharClass').value;
+      const level = parseInt(document.getElementById('simpleCharLevel').value) || 1;
+
+      if (!name) {
+        alert('Пожалуйста, введите имя персонажа');
+        return;
+      }
+
+      if (!race) {
+        alert('Пожалуйста, выберите расу');
+        return;
+      }
+
+      if (!charClass) {
+        alert('Пожалуйста, выберите класс');
+        return;
+      }
+
+      const user = JSON.parse(localStorage.getItem('kdUser'));
+      const characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
+
+      const newCharacter = {
+        id: Date.now(),
+        name: name,
+        race: race,
+        class: charClass,
+        level: level,
+        owner: user.username,
+        createdAt: new Date().toISOString(),
+        // Базовые характеристики
+        str: 10,
+        dex: 10,
+        con: 10,
+        int: 10,
+        wis: 10,
+        cha: 10,
+        currentHP: 10,
+        maxHP: 10,
+        armorClass: 10,
+        speed: 30
+      };
+
+      characters.push(newCharacter);
+      localStorage.setItem('kdCharacters', JSON.stringify(characters));
+
+      alert(`Персонаж "${name}" успешно создан!`);
+      closeCharacterEditor();
+      renderCharactersGrid();
     }
 
     // Функции для управления цифровым листом персонажа
     function showDigitalCharacterSheet(characterData) {
       const digitalSheet = document.getElementById('digitalCharacterSheet');
       const grid = document.getElementById('charactersGrid');
-      const editor = document.getElementById('characterEditor');
       
-      if (digitalSheet && grid && editor) {
+      if (digitalSheet && grid) {
         digitalSheet.style.display = 'block';
         grid.style.display = 'none';
-        editor.style.display = 'none';
         
         // Заполняем данные персонажа
         if (characterData) {
@@ -327,7 +600,7 @@
       }
     }
 
-    function hideDigitalCharacterSheet() {
+    function showCharactersGrid() {
       const digitalSheet = document.getElementById('digitalCharacterSheet');
       const grid = document.getElementById('charactersGrid');
       
@@ -337,36 +610,12 @@
       }
     }
 
-    function showCharactersGrid() {
-      const digitalSheet = document.getElementById('digitalCharacterSheet');
-      const grid = document.getElementById('charactersGrid');
-      const editor = document.getElementById('characterEditor');
-      
-      if (digitalSheet && grid && editor) {
-        digitalSheet.style.display = 'none';
-        grid.style.display = 'grid';
-        editor.style.display = 'none';
-      }
-    }
-
     // Удаление персонажа
     function deleteCharacter(charId) {
       let characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
       characters = characters.filter(char => char.id != charId);
       localStorage.setItem('kdCharacters', JSON.stringify(characters));
       renderCharactersGrid();
-    }
-
-    // Редактирование персонажа
-    function editCharacter(charId) {
-      const characters = JSON.parse(localStorage.getItem('kdCharacters')) || [];
-      const character = characters.find(char => char.id == charId);
-      
-      if (character) {
-        openCharacterEditor();
-        // Здесь можно добавить загрузку данных персонажа в редактор
-        console.log('Editing character:', character);
-      }
     }
 
     // Отображение сетки персонажей
@@ -411,7 +660,6 @@
             HP: ${char.currentHP || 0}/${char.maxHP || 0}
           </div>
           <div class="char-actions">
-            <button class="char-btn edit-btn" data-id="${char.id}">Редактировать</button>
             <button class="char-btn view-digital-btn" data-id="${char.id}">Цифровой лист</button>
             <button class="char-btn delete-btn" data-id="${char.id}">Удалить</button>
           </div>
@@ -427,13 +675,6 @@
           if (character) {
             showDigitalCharacterSheet(character);
           }
-        });
-      });
-
-      document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const charId = this.getAttribute('data-id');
-          editCharacter(charId);
         });
       });
 
@@ -456,8 +697,6 @@
       if (newCharBtn) {
         newCharBtn.addEventListener('click', openCharacterEditor);
         console.log('New character button initialized');
-      } else {
-        console.error('New character button not found');
       }
 
       // Инициализация кнопки возврата из цифрового листа
@@ -466,10 +705,20 @@
         digitalBackBtn.addEventListener('click', showCharactersGrid);
       }
 
-      // Инициализация кнопки закрытия редактора
-      const closeEditor = document.getElementById('closeEditor');
-      if (closeEditor) {
-        closeEditor.addEventListener('click', showCharactersGrid);
+      // Инициализация кнопок редактора
+      const closeEditorBtn = document.getElementById('closeEditorBtn');
+      if (closeEditorBtn) {
+        closeEditorBtn.addEventListener('click', closeCharacterEditor);
+      }
+
+      const cancelSimpleCharBtn = document.getElementById('cancelSimpleCharBtn');
+      if (cancelSimpleCharBtn) {
+        cancelSimpleCharBtn.addEventListener('click', closeCharacterEditor);
+      }
+
+      const saveSimpleCharBtn = document.getElementById('saveSimpleCharBtn');
+      if (saveSimpleCharBtn) {
+        saveSimpleCharBtn.addEventListener('click', saveSimpleCharacter);
       }
 
       // Инициализация аутентификации
@@ -503,8 +752,6 @@
       console.log('Characters page initialized successfully');
     });
   </script>
-
-  <script src="characters.js"></script>
 </body>
 </html>
 
