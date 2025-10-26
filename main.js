@@ -1,23 +1,71 @@
-// main.js - Общие функции для всех страниц Kazan & Dragons
+// main.js - Ядро Kazan & Dragons
+// Полная поддержка профилей, чатов, онлайн-статуса и партий
 
-// =============== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И КОНСТАНТЫ ===============
+// =============== КОНСТАНТЫ ===============
 const KD_STORAGE_KEYS = {
     USER: 'kdUser',
+    ALL_USERS: 'kdAllUsers',
     CHARACTERS: 'kdCharacters',
     PARTIES: 'kdParties',
+    CHATS: 'kdChats',
     TABLETOP: 'kdTabletopState'
 };
 
-// =============== ОСНОВНЫЕ ФУНКЦИИ УПРАВЛЕНИЯ ===============
+// =============== ИНИЦИАЛИЗАЦИЯ ===============
+document.addEventListener('DOMContentLoaded', () => {
+    initApp();
+});
 
-// Инициализация приложения
 function initApp() {
+    initStorage();
     initSidebar();
-    initAuth();
+    initAuthSystem();
+    initOnlineStatus();
     initCommonEventListeners();
 }
 
-// Инициализация боковой панели
+// =============== ХРАНЕНИЕ ДАННЫХ ===============
+function initStorage() {
+    // Пользователи
+    if (!localStorage.getItem(KD_STORAGE_KEYS.ALL_USERS)) {
+        localStorage.setItem(KD_STORAGE_KEYS.ALL_USERS, JSON.stringify([]));
+    }
+    
+    // Текущий пользователь (если нет — создаём из ALL_USERS при входе)
+    if (!localStorage.getItem(KD_STORAGE_KEYS.USER)) {
+        // Оставляем пустым — вход через register.html
+    }
+    
+    // Персонажи
+    if (!localStorage.getItem(KD_STORAGE_KEYS.CHARACTERS)) {
+        localStorage.setItem(KD_STORAGE_KEYS.CHARACTERS, JSON.stringify([]));
+    }
+    
+    // Партии
+    if (!localStorage.getItem(KD_STORAGE_KEYS.PARTIES)) {
+        const sampleParties = [{
+            id: 1,
+            title: "Тайна Оберхарфа",
+            world: "KAZANA",
+            master: "Странник",
+            dates: "13 / 20 / 27 февраля",
+            description: "Вас нанял очень странный Дворянин низкого роста в Г.Элден, чтобы вы разобрались с проблемой местных жителей отдалённой деревушки Оберхаф. Судя по последним письмам, у них начали частенько пропадать люди. А несколько отрядов авантюристов, посланных туда, не вернулись.\n\nВ окутанной туманом ложбине располагается захолустная деревенька с мрачной репутацией. Вы прибыли сюда с заданием, но с каждым ударом грома и отблеском молнии ваша уверенность в себе улетучивается, а туман сгущается.",
+            level: "3–5",
+            players: "3–5",
+            reward: "800 зм",
+            isPaid: true,
+            applicants: []
+        }];
+        localStorage.setItem(KD_STORAGE_KEYS.PARTIES, JSON.stringify(sampleParties));
+    }
+    
+    // Чаты
+    if (!localStorage.getItem(KD_STORAGE_KEYS.CHATS)) {
+        localStorage.setItem(KD_STORAGE_KEYS.CHATS, JSON.stringify({}));
+    }
+}
+
+// =============== БОКОВАЯ ПАНЕЛЬ ===============
 function initSidebar() {
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.getElementById('mainContent');
@@ -32,7 +80,6 @@ function initSidebar() {
         }
     });
 
-    // Закрытие боковой панели на мобильных устройствах
     document.addEventListener('click', (e) => {
         if (window.innerWidth <= 576 && 
             sidebar && 
@@ -48,8 +95,8 @@ function initSidebar() {
     });
 }
 
-// Инициализация системы аутентификации
-function initAuth() {
+// =============== АУТЕНТИФИКАЦИЯ И ПРОФИЛЬ ===============
+function initAuthSystem() {
     const authButton = document.getElementById('authButton');
     const accountInfo = document.getElementById('accountInfo');
     const accountName = document.getElementById('accountName');
@@ -62,80 +109,168 @@ function initAuth() {
         const user = getCurrentUser();
         
         if (user) {
-            // Пользователь авторизован
-            if (accountName) accountName.textContent = user.username;
-            if (accountRole) accountRole.textContent = user.role === 'player' ? 'Игрок' : 'Мастер';
+            if (accountName) accountName.textContent = user.username || '—';
+            if (accountRole) accountRole.textContent = user.role === 'dm' ? 'Мастер' : 'Игрок';
             if (accountInfo) accountInfo.classList.add('active');
             
             authButton.textContent = 'Выйти';
             authButton.onclick = logoutUser;
             
-            // Скрыть CTA кнопки на главной
             if (heroButtons) heroButtons.style.display = 'none';
         } else {
-            // Пользователь не авторизован
             if (accountInfo) accountInfo.classList.remove('active');
             
             authButton.textContent = 'Войти / Регистрация';
             authButton.onclick = () => window.location.href = 'register.html';
             
-            // Показать CTA кнопки на главной
             if (heroButtons) heroButtons.style.display = 'flex';
         }
     }
 
     updateAuthUI();
+    window.updateAuthUI = updateAuthUI;
 }
 
-// Инициализация общих обработчиков событий
-function initCommonEventListeners() {
-    // Обработка навигации
-    document.addEventListener('click', (e) => {
-        if (e.target.matches('a[href]')) {
-            const href = e.target.getAttribute('href');
-            if (href && !href.startsWith('http') && !href.startsWith('#')) {
-                // Можно добавить логику отслеживания переходов
-                console.log('Navigation to:', href);
-            }
-        }
-    });
-
-    // Обработка форм
-    document.addEventListener('submit', (e) => {
-        const form = e.target;
-        if (form.method === 'get') return;
-        
-        // Можно добавить общую валидацию форм
-        console.log('Form submitted:', form.id || form.className);
-    });
-}
-
-// =============== СИСТЕМА АУТЕНТИФИКАЦИИ ===============
-
-// Получить текущего пользователя
 function getCurrentUser() {
     try {
-        return JSON.parse(localStorage.getItem(KD_STORAGE_KEYS.USER));
+        return JSON.parse(localStorage.getItem(KD_STORAGE_KEYS.USER)) || null;
     } catch (error) {
         console.error('Error parsing user data:', error);
         return null;
     }
 }
 
-// Проверить авторизацию
-function isUserLoggedIn() {
-    return !!getCurrentUser();
+function getAllUsers() {
+    try {
+        return JSON.parse(localStorage.getItem(KD_STORAGE_KEYS.ALL_USERS)) || [];
+    } catch (error) {
+        console.error('Error parsing all users:', error);
+        return [];
+    }
 }
 
-// Выйти из системы
+function getUserByUsername(username) {
+    return getAllUsers().find(u => u.username === username) || null;
+}
+
+function saveUserToDirectory(user) {
+    const allUsers = getAllUsers();
+    const existingIndex = allUsers.findIndex(u => u.username === user.username);
+    if (existingIndex >= 0) {
+        allUsers[existingIndex] = { ...allUsers[existingIndex], ...user };
+    } else {
+        allUsers.push(user);
+    }
+    localStorage.setItem(KD_STORAGE_KEYS.ALL_USERS, JSON.stringify(allUsers));
+}
+
+// =============== ОНЛАЙН-СТАТУС ===============
+function initOnlineStatus() {
+    updateUserActivity();
+    setInterval(updateUserActivity, 60000); // Обновлять каждую минуту
+}
+
+function updateUserActivity() {
+    const user = getCurrentUser();
+    if (user) {
+        localStorage.setItem(`kdUserLastActivity_${user.username}`, Date.now().toString());
+        saveUserToDirectory(user);
+    }
+}
+
+function isUserOnline(username) {
+    const lastActivity = localStorage.getItem(`kdUserLastActivity_${username}`);
+    if (!lastActivity) return false;
+    return (Date.now() - parseInt(lastActivity)) < 10 * 60 * 1000; // 10 минут
+}
+
+// =============== УПРАВЛЕНИЕ ПАРТИЯМИ ===============
+function getParties() {
+    try {
+        return JSON.parse(localStorage.getItem(KD_STORAGE_KEYS.PARTIES)) || [];
+    } catch (error) {
+        console.error('Error loading parties:', error);
+        return [];
+    }
+}
+
+function saveParties(parties) {
+    localStorage.setItem(KD_STORAGE_KEYS.PARTIES, JSON.stringify(parties));
+}
+
+function createParty(partyData) {
+    const parties = getParties();
+    const newParty = {
+        id: Date.now(),
+        master: getCurrentUser().username,
+        applicants: [],
+        ...partyData
+    };
+    parties.push(newParty);
+    saveParties(parties);
+    return newParty;
+}
+
+function applyToParty(partyId, username) {
+    const parties = getParties();
+    const party = parties.find(p => p.id === partyId);
+    if (party && !party.applicants.includes(username)) {
+        party.applicants.push(username);
+        saveParties(parties);
+        return true;
+    }
+    return false;
+}
+
+// =============== ЧАТЫ ===============
+function getChatMessages(partyId) {
+    try {
+        const chats = JSON.parse(localStorage.getItem(KD_STORAGE_KEYS.CHATS)) || {};
+        return chats[partyId] || [];
+    } catch (error) {
+        console.error('Error loading chat:', error);
+        return [];
+    }
+}
+
+function saveChatMessage(partyId, text) {
+    const chats = JSON.parse(localStorage.getItem(KD_STORAGE_KEYS.CHATS)) || {};
+    if (!chats[partyId]) chats[partyId] = [];
+    chats[partyId].push({
+        user: getCurrentUser()?.username || 'Гость',
+        text: escapeHtml(text),
+        timestamp: Date.now()
+    });
+    localStorage.setItem(KD_STORAGE_KEYS.CHATS, JSON.stringify(chats));
+}
+
+// =============== ОБЩИЕ СЛУШАТЕЛИ ===============
+function initCommonEventListeners() {
+    document.addEventListener('click', (e) => {
+        if (e.target.matches('a[href]')) {
+            const href = e.target.getAttribute('href');
+            if (href && !href.startsWith('http') && !href.startsWith('#')) {
+                console.log('Navigation to:', href);
+            }
+        }
+    });
+
+    document.addEventListener('submit', (e) => {
+        const form = e.target;
+        if (form.method === 'get') return;
+        console.log('Form submitted:', form.id || form.className);
+    });
+}
+
+// =============== СИСТЕМА ВЫХОДА ===============
 function logoutUser() {
     if (confirm('Вы уверены, что хотите выйти?')) {
         localStorage.removeItem(KD_STORAGE_KEYS.USER);
         
-        // Обновляем UI
-        initAuth();
+        if (typeof window.updateAuthUI === 'function') {
+            window.updateAuthUI();
+        }
         
-        // Если на странице требуется авторизация - перенаправляем
         if (window.location.pathname.includes('characters.html') || 
             window.location.pathname.includes('parties.html')) {
             window.location.href = 'index.html';
@@ -145,13 +280,16 @@ function logoutUser() {
     }
 }
 
-// Проверить права доступа (только для мастеров)
+// =============== ПРОВЕРКИ ДОСТУПА ===============
+function isUserLoggedIn() {
+    return !!getCurrentUser();
+}
+
 function isUserDM() {
     const user = getCurrentUser();
     return user && user.role === 'dm';
 }
 
-// Требовать авторизацию
 function requireAuth() {
     if (!isUserLoggedIn()) {
         if (confirm('Для доступа к этой странице требуется регистрация. Перейти к регистрации?')) {
@@ -162,70 +300,15 @@ function requireAuth() {
     return true;
 }
 
-// =============== СИСТЕМА ХРАНЕНИЯ ДАННЫХ ===============
-
-// Инициализация данных
-function initStorage() {
-    // Персонажи
-    if (!localStorage.getItem(KD_STORAGE_KEYS.CHARACTERS)) {
-        localStorage.setItem(KD_STORAGE_KEYS.CHARACTERS, JSON.stringify([]));
-    }
-    
-    // Партии
-    if (!localStorage.getItem(KD_STORAGE_KEYS.PARTIES)) {
-        const sampleParties = [
-            {
-                id: 1,
-                title: "Тайна Оберхарфа",
-                world: "KAZANA",
-                master: "Странник",
-                dates: "13 / 20 / 27 февраля",
-                description: "Вас нанял очень странный Дворянин низкого роста в Г.Элден, чтобы вы разобрались с проблемой местных жителей отдалённой деревушки Оберхаф. Судя по последним письмам, у них начали частенько пропадать люди. А несколько отрядов авантюристов, посланных туда, не вернулись.\n\nВ окутанной туманом ложбине располагается захолустная деревенька с мрачной репутацией. Вы прибыли сюда с заданием, но с каждым ударом грома и отблеском молнии ваша уверенность в себе улетучивается, а туман сгущается.",
-                level: "3–5",
-                players: "3–5",
-                reward: "800 зм",
-                isPaid: true,
-                applicants: []
-            }
-        ];
-        localStorage.setItem(KD_STORAGE_KEYS.PARTIES, JSON.stringify(sampleParties));
-    }
-}
-
-// Получить данные
-function getStorageData(key) {
-    try {
-        return JSON.parse(localStorage.getItem(key)) || [];
-    } catch (error) {
-        console.error(`Error parsing ${key}:`, error);
-        return [];
-    }
-}
-
-// Сохранить данные
-function setStorageData(key, data) {
-    try {
-        localStorage.setItem(key, JSON.stringify(data));
-        return true;
-    } catch (error) {
-        console.error(`Error saving ${key}:`, error);
-        return false;
-    }
-}
-
-// =============== СИСТЕМА УВЕДОМЛЕНИЙ ===============
-
-// Показать уведомление
+// =============== УВЕДОМЛЕНИЯ ===============
 function showNotification(message, type = 'info', duration = 5000) {
-    // Создаем элемент уведомления
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
-        <div class="notification-content">${message}</div>
+        <div class="notification-content">${escapeHtml(message)}</div>
         <button class="notification-close">&times;</button>
     `;
     
-    // Стили для уведомления
     Object.assign(notification.style, {
         position: 'fixed',
         top: '20px',
@@ -243,106 +326,34 @@ function showNotification(message, type = 'info', duration = 5000) {
         gap: '1rem'
     });
     
-    // Кнопка закрытия
     const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.style.background = 'none';
-    closeBtn.style.border = 'none';
-    closeBtn.style.color = 'white';
-    closeBtn.style.cursor = 'pointer';
-    closeBtn.style.fontSize = '1.2rem';
+    closeBtn.style.cssText = 'background:none;border:none;color:white;cursor:pointer;font-size:1.2rem;';
+    closeBtn.addEventListener('click', () => notification.remove());
     
-    closeBtn.addEventListener('click', () => {
-        notification.remove();
-    });
-    
-    // Добавляем в DOM
     document.body.appendChild(notification);
     
-    // Автоматическое закрытие
     if (duration > 0) {
         setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
+            if (notification.parentNode) notification.remove();
         }, duration);
     }
-    
-    return notification;
-}
-
-// =============== СИСТЕМА ЗАГРУЗКИ ===============
-
-// Показать индикатор загрузки
-function showLoading(container) {
-    const loader = document.createElement('div');
-    loader.className = 'loading-spinner';
-    loader.innerHTML = `
-        <div class="spinner"></div>
-        <div>Загрузка...</div>
-    `;
-    
-    Object.assign(loader.style, {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '2rem',
-        color: 'var(--accent)'
-    });
-    
-    const spinner = loader.querySelector('.spinner');
-    Object.assign(spinner.style, {
-        width: '40px',
-        height: '40px',
-        border: '4px solid rgba(138, 43, 226, 0.3)',
-        borderTop: '4px solid var(--primary-light)',
-        borderRadius: '50%',
-        animation: 'spin 1s linear infinite',
-        marginBottom: '1rem'
-    });
-    
-    // Добавляем анимацию в CSS если её нет
-    if (!document.querySelector('#spinner-style')) {
-        const style = document.createElement('style');
-        style.id = 'spinner-style';
-        style.textContent = `
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    if (container) {
-        container.innerHTML = '';
-        container.appendChild(loader);
-    }
-    
-    return loader;
-}
-
-// =============== СИСТЕМА ОШИБОК ===============
-
-// Обработка ошибок
-function handleError(error, userMessage = 'Произошла ошибка') {
-    console.error('Application error:', error);
-    
-    // Показываем пользователю понятное сообщение
-    showNotification(userMessage, 'error');
-    
-    // Можно добавить отправку ошибок на сервер
-    // logErrorToServer(error);
 }
 
 // =============== УТИЛИТЫ ===============
+function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') return '';
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "<")
+        .replace(/>/g, ">")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-// Генерация ID
 function generateId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
 
-// Форматирование даты
 function formatDate(dateString) {
     const options = { 
         year: 'numeric', 
@@ -354,30 +365,16 @@ function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('ru-RU', options);
 }
 
-// Валидация email
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
 
-// Валидация пароля
 function isValidPassword(password) {
     return password && password.length >= 8;
 }
 
-// Экранирование HTML
-function escapeHtml(unsafe) {
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-// =============== СИСТЕМА ЭКСПОРТА/ИМПОРТА ===============
-
-// Экспорт данных в JSON файл
+// =============== ЭКСПОРТ/ИМПОРТ ===============
 function exportToJson(data, filename = 'data.json') {
     try {
         const jsonString = JSON.stringify(data, null, 2);
@@ -390,20 +387,18 @@ function exportToJson(data, filename = 'data.json') {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        
         URL.revokeObjectURL(url);
         return true;
     } catch (error) {
-        handleError(error, 'Ошибка при экспорте данных');
+        console.error('Export error:', error);
+        showNotification('Ошибка при экспорте данных', 'error');
         return false;
     }
 }
 
-// Импорт данных из JSON файла
 function importFromJson(file, callback) {
     const reader = new FileReader();
-    
-    reader.onload = function(e) {
+    reader.onload = (e) => {
         try {
             const data = JSON.parse(e.target.result);
             callback(null, data);
@@ -411,33 +406,34 @@ function importFromJson(file, callback) {
             callback(error, null);
         }
     };
-    
-    reader.onerror = function(error) {
-        callback(error, null);
-    };
-    
+    reader.onerror = (error) => callback(error, null);
     reader.readAsText(file);
 }
 
-// =============== ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ===============
-
-// Запуск приложения когда DOM готов
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApp);
-} else {
-    initApp();
-}
-
-// Экспорт функций для использования в других скриптах
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        initApp,
-        getCurrentUser,
-        isUserLoggedIn,
-        requireAuth,
-        showNotification,
-        handleError,
-        exportToJson,
-        importFromJson
-    };
-}
+// =============== ГЛОБАЛЬНЫЙ ДОСТУП ===============
+window.KD = {
+    // Аутентификация
+    getCurrentUser,
+    getAllUsers,
+    getUserByUsername,
+    isUserOnline,
+    isUserLoggedIn,
+    isUserDM,
+    requireAuth,
+    logoutUser,
+    
+    // Хранение
+    getParties,
+    saveParties,
+    createParty,
+    applyToParty,
+    getChatMessages,
+    saveChatMessage,
+    
+    // Утилиты
+    showNotification,
+    escapeHtml,
+    exportToJson,
+    importFromJson,
+    generateId
+};
