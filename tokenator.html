@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
   <style>
     .tokenator-container {
-      max-width: 900px;
+      max-width: 950px;
       margin: 2rem auto;
       padding: 0 1rem;
     }
@@ -22,10 +22,10 @@
       background: rgba(10, 8, 29, 0.7);
       border: 1px solid var(--primary);
       border-radius: 12px;
-      padding: 1rem;
+      padding: 1.2rem;
       text-align: center;
+      min-width: 240px;
       position: relative;
-      min-width: 220px;
     }
     #tokenCanvas {
       background: #151025;
@@ -33,7 +33,25 @@
       cursor: move;
       max-width: 100%;
       height: auto;
+      display: block;
+      margin: 0 auto;
     }
+    .mirror-btn {
+      margin-top: 1rem;
+      padding: 0.4rem 0.8rem;
+      background: rgba(138, 43, 226, 0.3);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .mirror-btn:hover {
+      background: rgba(138, 43, 226, 0.5);
+      transform: scale(1.03);
+    }
+
     .controls {
       display: flex;
       flex-direction: column;
@@ -49,35 +67,73 @@
       gap: 1rem;
       align-items: center;
     }
-    .form-row label {
+    .form-row > label {
       min-width: 140px;
       color: var(--accent);
       font-weight: 600;
     }
-    .form-control, #charNameInput {
+    .upload-area {
       flex: 1;
-      padding: 0.6rem;
+      border: 2px dashed var(--primary-light);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      background: rgba(10, 8, 29, 0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .upload-area:hover {
+      border-color: var(--accent);
+      background: rgba(138, 43, 226, 0.1);
+    }
+    .upload-area i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+      color: var(--accent);
+    }
+    #imageUpload {
+      display: none;
+    }
+    .text-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.8rem;
+      margin-top: 0.5rem;
+    }
+    .text-option-group label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-size: 0.85rem;
+      color: #c9a0dc;
+    }
+    .text-option-group select,
+    .text-option-group input {
+      width: 100%;
+      padding: 0.4rem;
       background: rgba(10, 8, 29, 0.7);
       border: 1px solid var(--primary);
-      border-radius: 6px;
+      border-radius: 4px;
       color: white;
-    }
-    .btn-group {
-      display: flex;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-      margin-top: 0.5rem;
     }
     .toggle-group {
       display: flex;
       gap: 1rem;
       align-items: center;
+      margin-top: 0.5rem;
     }
     .toggle-group label {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       cursor: pointer;
+      color: var(--accent);
+    }
+    .btn-group {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
     }
     @media (max-width: 600px) {
       .preview-section {
@@ -90,6 +146,9 @@
       }
       .btn-group {
         flex-direction: column;
+      }
+      .text-options {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -133,32 +192,63 @@
     <div class="tokenator-container">
       <div class="controls">
         <div class="form-row">
-          <label for="imageUpload">Изображение:</label>
+          <label>Изображение:</label>
+          <div class="upload-area" id="uploadArea">
+            <i>🖼️</i>
+            <div>Нажмите, чтобы выбрать файл</div>
+            <div style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.3rem;">Поддержка: JPG, PNG, WebP</div>
+          </div>
           <input type="file" id="imageUpload" accept="image/*">
         </div>
 
         <div class="form-row">
           <label>Имя персонажа:</label>
           <div style="flex: 1;">
-            <input type="text" id="charNameInput" placeholder="Арагорн (оставьте пустым, чтобы скрыть)" maxlength="20">
-            <div class="toggle-group" style="margin-top: 0.5rem;">
+            <input type="text" id="charNameInput" placeholder="Арагорн" maxlength="20">
+            <div class="toggle-group">
               <label>
                 <input type="checkbox" id="showNameToggle" checked> Показывать имя
               </label>
-              <button id="mirrorBtn" class="btn" style="padding: 0.3rem 0.6rem; font-size: 0.9rem;">↔ Отразить</button>
+            </div>
+            <div class="text-options">
+              <div class="text-option-group">
+                <label>Цвет текста</label>
+                <input type="color" id="textColor" value="#ffffff">
+              </div>
+              <div class="text-option-group">
+                <label>Шрифт</label>
+                <select id="fontFamily">
+                  <option value="Arial">Arial</option>
+                  <option value="Verdana">Verdana</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Courier New">Courier New</option>
+                  <option value="Impact">Impact</option>
+                  <option value="Tahoma">Tahoma</option>
+                </select>
+              </div>
+              <div class="text-option-group">
+                <label>Начертание</label>
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.3rem;">
+                  <label style="display: flex; align-items: center; gap: 0.3rem;">
+                    <input type="checkbox" id="boldToggle"> Жирный
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 0.3rem;">
+                    <input type="checkbox" id="italicToggle"> Курсив
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="form-row">
           <label for="zoomSlider">Масштаб:</label>
-          <input type="range" id="zoomSlider" min="0.5" max="3" step="0.1" value="1" class="form-control" style="height: 28px;">
+          <input type="range" id="zoomSlider" min="0.5" max="3" step="0.1" value="1" style="flex: 1; height: 28px;">
         </div>
 
         <div class="btn-group">
           <button id="generateBtn" class="btn btn-primary">Обновить токен</button>
           <button id="downloadBtn" class="btn btn-secondary" disabled>Скачать PNG</button>
-          <button id="saveToStorageBtn" class="btn" style="background: #4ade80; color: #000;" disabled>Сохранить</button>
         </div>
       </div>
 
@@ -166,7 +256,7 @@
         <div class="canvas-wrapper">
           <h3>Предпросмотр</h3>
           <canvas id="tokenCanvas" width="200" height="200"></canvas>
-          <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">Перетаскивайте изображение внутри круга</p>
+          <button class="mirror-btn" id="mirrorBtn">↔ Отразить</button>
         </div>
       </div>
     </div>
@@ -178,17 +268,23 @@
 
   <script src="main.js" defer></script>
   <script>
-    // DOM elements
+    // DOM
     const imageUpload = document.getElementById('imageUpload');
+    const uploadArea = document.getElementById('uploadArea');
     const charNameInput = document.getElementById('charNameInput');
     const showNameToggle = document.getElementById('showNameToggle');
     const mirrorBtn = document.getElementById('mirrorBtn');
     const zoomSlider = document.getElementById('zoomSlider');
     const generateBtn = document.getElementById('generateBtn');
     const downloadBtn = document.getElementById('downloadBtn');
-    const saveToStorageBtn = document.getElementById('saveToStorageBtn');
     const tokenCanvas = document.getElementById('tokenCanvas');
     const ctx = tokenCanvas.getContext('2d');
+
+    // Text controls
+    const textColor = document.getElementById('textColor');
+    const fontFamily = document.getElementById('fontFamily');
+    const boldToggle = document.getElementById('boldToggle');
+    const italicToggle = document.getElementById('italicToggle');
 
     // State
     let uploadedImage = null;
@@ -200,24 +296,26 @@
     let dragStartX = 0;
     let dragStartY = 0;
 
-    // Load image
+    // Styled upload
+    uploadArea.addEventListener('click', () => imageUpload.click());
     imageUpload.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
-
+      uploadArea.innerHTML = `<i>✅</i><div>Загружено: ${file.name.split('.').shift()}</div>`;
+      
       const reader = new FileReader();
       reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
           uploadedImage = img;
-          // Сброс параметров
-          offsetX = 0;
-          offsetY = 0;
-          scale = 1;
-          isMirrored = false;
+          offsetX = 0; offsetY = 0; scale = 1; isMirrored = false;
           zoomSlider.value = 1;
           charNameInput.value = '';
           showNameToggle.checked = true;
+          textColor.value = '#ffffff';
+          fontFamily.value = 'Arial';
+          boldToggle.checked = false;
+          italicToggle.checked = false;
           generateBtn.disabled = false;
           renderToken();
         };
@@ -226,7 +324,7 @@
       reader.readAsDataURL(file);
     });
 
-    // Mirror image
+    // Mirror
     mirrorBtn.addEventListener('click', () => {
       isMirrored = !isMirrored;
       renderToken();
@@ -238,12 +336,13 @@
       renderToken();
     });
 
-    // Drag interaction
+    // Drag
     tokenCanvas.addEventListener('mousedown', (e) => {
       if (!uploadedImage) return;
       isDragging = true;
-      dragStartX = e.offsetX;
-      dragStartY = e.offsetY;
+      const rect = tokenCanvas.getBoundingClientRect();
+      dragStartX = e.clientX - rect.left;
+      dragStartY = e.clientY - rect.top;
       tokenCanvas.style.cursor = 'grabbing';
     });
 
@@ -252,13 +351,10 @@
       const rect = tokenCanvas.getBoundingClientRect();
       const currentX = e.clientX - rect.left;
       const currentY = e.clientY - rect.top;
-      
       offsetX += (currentX - dragStartX);
       offsetY += (currentY - dragStartY);
-      
       dragStartX = currentX;
       dragStartY = currentY;
-      
       renderToken();
     });
 
@@ -267,91 +363,62 @@
       tokenCanvas.style.cursor = 'move';
     });
 
-    // Touch support (optional)
-    tokenCanvas.addEventListener('touchstart', (e) => {
-      if (!uploadedImage) return;
-      isDragging = true;
-      const touch = e.touches[0];
-      dragStartX = touch.clientX - tokenCanvas.getBoundingClientRect().left;
-      dragStartY = touch.clientY - tokenCanvas.getBoundingClientRect().top;
-      e.preventDefault();
-    });
-
-    window.addEventListener('touchmove', (e) => {
-      if (!isDragging || !uploadedImage) return;
-      const touch = e.touches[0];
-      const rect = tokenCanvas.getBoundingClientRect();
-      const currentX = touch.clientX - rect.left;
-      const currentY = touch.clientY - rect.top;
-      
-      offsetX += (currentX - dragStartX);
-      offsetY += (currentY - dragStartY);
-      
-      dragStartX = currentX;
-      dragStartY = currentY;
-      
-      renderToken();
-      e.preventDefault();
-    });
-
-    window.addEventListener('touchend', () => {
-      isDragging = false;
-    });
-
-    // Render token
+    // Render
     function renderToken() {
       if (!uploadedImage) return;
 
       ctx.clearRect(0, 0, tokenCanvas.width, tokenCanvas.height);
 
-      // Apply circular mask
+      // Circular mask
       ctx.save();
       ctx.beginPath();
       ctx.arc(100, 100, 100, 0, Math.PI * 2);
       ctx.closePath();
       ctx.clip();
 
-      // Draw image
+      // Image
       const img = uploadedImage;
-      const scaledWidth = img.width * scale;
-      const scaledHeight = img.height * scale;
-      const x = 100 - scaledWidth / 2 + offsetX;
-      const y = 100 - scaledHeight / 2 + offsetY;
+      const scaledW = img.width * scale;
+      const scaledH = img.height * scale;
+      const x = 100 - scaledW / 2 + offsetX;
+      const y = 100 - scaledH / 2 + offsetY;
 
       ctx.save();
       if (isMirrored) {
         ctx.translate(200, 0);
         ctx.scale(-1, 1);
       }
-      ctx.drawImage(img, x, y, scaledWidth, scaledHeight);
+      ctx.drawImage(img, x, y, scaledW, scaledH);
+      ctx.restore();
       ctx.restore();
 
-      ctx.restore();
-
-      // Draw name if enabled
+      // Text
       if (showNameToggle.checked) {
         const name = charNameInput.value.trim() || '???';
+        const color = textColor.value;
+        const font = fontFamily.value;
+        const bold = boldToggle.checked ? 'bold ' : '';
+        const italic = italicToggle.checked ? 'italic ' : '';
+        const fontSize = '18px';
+
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 160, 200, 40);
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 18px Arial';
+
+        ctx.fillStyle = color;
+        ctx.font = `${italic}${bold}${fontSize} ${font}`;
         ctx.textAlign = 'center';
         ctx.fillText(name, 100, 188);
       }
 
-      // Enable buttons
       downloadBtn.disabled = false;
-      saveToStorageBtn.disabled = false;
     }
 
-    // Manual update
+    // Real-time updates
+    const textControls = [charNameInput, showNameToggle, textColor, fontFamily, boldToggle, italicToggle];
+    textControls.forEach(el => el.addEventListener('input', renderToken));
     generateBtn.addEventListener('click', renderToken);
 
-    // Real-time name update
-    charNameInput.addEventListener('input', renderToken);
-    showNameToggle.addEventListener('change', renderToken);
-
-    // Download token
+    // Download
     downloadBtn.addEventListener('click', () => {
       const link = document.createElement('a');
       link.download = `${charNameInput.value.trim() || 'token'}.png`;
@@ -359,30 +426,7 @@
       link.click();
     });
 
-    // Save to localStorage
-    saveToStorageBtn.addEventListener('click', () => {
-      const user = JSON.parse(localStorage.getItem('kdUser'));
-      if (!user) {
-        alert('Требуется регистрация для сохранения токенов.');
-        return;
-      }
-
-      const tokenData = {
-        id: Date.now(),
-        name: charNameInput.value.trim() || 'Безымянный',
-        owner: user.username,
-        imageUrl: tokenCanvas.toDataURL('image/png'),
-        createdAt: new Date().toISOString()
-      };
-
-      const tokens = JSON.parse(localStorage.getItem('kdTokens')) || [];
-      tokens.push(tokenData);
-      localStorage.setItem('kdTokens', JSON.stringify(tokens));
-
-      alert(`Токен "${tokenData.name}" сохранён!`);
-    });
-
-    // Initialize UI
+    // Init UI
     document.addEventListener('DOMContentLoaded', () => {
       const sidebar = document.getElementById('sidebar');
       const mainContent = document.getElementById('mainContent');
