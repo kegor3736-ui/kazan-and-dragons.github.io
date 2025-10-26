@@ -1,1 +1,295 @@
-<script src="main.js" defer></script>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Токенатор — Kazan & Dragons</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .tokenator-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .preview-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+    .canvas-wrapper {
+      background: rgba(10, 8, 29, 0.7);
+      border: 1px solid var(--primary);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+    #tokenCanvas {
+      background: #151025;
+      border-radius: 50%;
+      max-width: 100%;
+      height: auto;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: rgba(26, 20, 45, 0.8);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-top: 1rem;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+    .form-row label {
+      min-width: 120px;
+      color: var(--accent);
+    }
+    #charNameInput {
+      flex: 1;
+      padding: 0.6rem;
+      background: rgba(10, 8, 29, 0.7);
+      border: 1px solid var(--primary);
+      border-radius: 6px;
+      color: white;
+    }
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    @media (max-width: 600px) {
+      .preview-section {
+        flex-direction: column;
+        align-items: center;
+      }
+      .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo-sidebar">
+      <div class="logo-icon"></div>
+      <span>KAZAN & DRAGONS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="parties.html">Набор в партии</a></li>
+      <li><a href="rules.html">Правила D&D</a></li>
+      <li><a href="characters.html">Персонажи</a></li>
+      <li><a href="tabletop.html">Игровое поле</a></li>
+      <li><a href="#" class="active">Токенатор</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <div class="account-widget">
+        <div class="account-info" id="accountInfo">
+          <div class="account-name" id="accountName">—</div>
+          <div class="account-role" id="accountRole">—</div>
+        </div>
+        <button class="auth-btn" id="authButton">Войти / Регистрация</button>
+      </div>
+    </header>
+
+    <div class="page-header">
+      <h1>Токенатор</h1>
+      <p>Создайте уникальный токен для своего персонажа</p>
+    </div>
+
+    <div class="tokenator-container">
+      <div class="controls">
+        <div class="form-row">
+          <label for="imageUpload">Изображение:</label>
+          <input type="file" id="imageUpload" accept="image/*">
+        </div>
+        <div class="form-row">
+          <label for="charNameInput">Имя персонажа:</label>
+          <input type="text" id="charNameInput" placeholder="Арагорн" maxlength="20">
+        </div>
+        <div class="btn-group">
+          <button id="generateBtn" class="btn btn-primary">Создать токен</button>
+          <button id="downloadBtn" class="btn btn-secondary" disabled>Скачать PNG</button>
+          <button id="saveToStorageBtn" class="btn" style="background: #4ade80; color: #000;" disabled>Сохранить</button>
+        </div>
+      </div>
+
+      <div class="preview-section">
+        <div class="canvas-wrapper">
+          <h3>Предпросмотр</h3>
+          <canvas id="tokenCanvas" width="200" height="200"></canvas>
+          <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">Круглый токен 200×200</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 Kazan & Dragons (K&D)</p>
+    </footer>
+  </div>
+
+  <script src="main.js" defer></script>
+  <script>
+    // DOM elements
+    const imageUpload = document.getElementById('imageUpload');
+    const charNameInput = document.getElementById('charNameInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const saveToStorageBtn = document.getElementById('saveToStorageBtn');
+    const tokenCanvas = document.getElementById('tokenCanvas');
+    const ctx = tokenCanvas.getContext('2d');
+
+    let uploadedImage = null;
+
+    // Load image
+    imageUpload.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          uploadedImage = img;
+          generateBtn.disabled = false;
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Generate token
+    generateBtn.addEventListener('click', () => {
+      if (!uploadedImage) return;
+
+      const name = charNameInput.value.trim() || '???';
+
+      // Clear canvas
+      ctx.clearRect(0, 0, tokenCanvas.width, tokenCanvas.height);
+
+      // Draw circular mask
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(100, 100, 100, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+
+      // Draw image (centered and scaled to fill)
+      const img = uploadedImage;
+      const scale = Math.max(tokenCanvas.width / img.width, tokenCanvas.height / img.height);
+      const x = (tokenCanvas.width - img.width * scale) / 2;
+      const y = (tokenCanvas.height - img.height * scale) / 2;
+      ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+
+      ctx.restore();
+
+      // Draw name background
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(0, 160, 200, 40);
+
+      // Draw name
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 18px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(name, 100, 188);
+
+      // Enable buttons
+      downloadBtn.disabled = false;
+      saveToStorageBtn.disabled = false;
+    });
+
+    // Download token
+    downloadBtn.addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.download = `${charNameInput.value.trim() || 'token'}.png`;
+      link.href = tokenCanvas.toDataURL('image/png');
+      link.click();
+    });
+
+    // Save to localStorage
+    saveToStorageBtn.addEventListener('click', () => {
+      const user = JSON.parse(localStorage.getItem('kdUser'));
+      if (!user) {
+        alert('Требуется регистрация для сохранения токенов.');
+        return;
+      }
+
+      const tokenData = {
+        id: Date.now(),
+        name: charNameInput.value.trim() || 'Безымянный',
+        owner: user.username,
+        imageUrl: tokenCanvas.toDataURL('image/png'),
+        createdAt: new Date().toISOString()
+      };
+
+      // Get existing tokens
+      const tokens = JSON.parse(localStorage.getItem('kdTokens')) || [];
+      tokens.push(tokenData);
+      localStorage.setItem('kdTokens', JSON.stringify(tokens));
+
+      alert(`Токен "${tokenData.name}" сохранён!`);
+    });
+
+    // Initialize auth UI
+    document.addEventListener('DOMContentLoaded', () => {
+      // Sidebar toggle
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('mainContent');
+      const menuToggle = document.getElementById('menuToggle');
+
+      if (menuToggle && sidebar && mainContent) {
+        menuToggle.addEventListener('click', () => {
+          sidebar.classList.toggle('hidden');
+          mainContent.classList.toggle('sidebar-hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (window.innerWidth <= 576 && 
+              !sidebar.classList.contains('hidden') && 
+              !sidebar.contains(e.target) && 
+              e.target !== menuToggle) {
+            sidebar.classList.add('hidden');
+            mainContent.classList.add('sidebar-hidden');
+          }
+        });
+      }
+
+      // Auth (rely on main.js if loaded, otherwise fallback)
+      setTimeout(() => {
+        if (typeof initAuth === 'function') {
+          initAuth();
+        } else {
+          // Fallback auth
+          const user = JSON.parse(localStorage.getItem('kdUser'));
+          const authBtn = document.getElementById('authButton');
+          if (user) {
+            document.getElementById('accountName').textContent = user.username;
+            document.getElementById('accountRole').textContent = user.role === 'player' ? 'Игрок' : 'Мастер';
+            document.getElementById('accountInfo').classList.add('active');
+            authBtn.textContent = 'Выйти';
+            authBtn.onclick = () => {
+              localStorage.removeItem('kdUser');
+              location.reload();
+            };
+          }
+        }
+      }, 100);
+    });
+  </script>
+</body>
+</html>
