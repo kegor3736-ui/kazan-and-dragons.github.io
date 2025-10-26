@@ -1796,6 +1796,32 @@ footer::before {
     justify-content: center;
   }
 }
+/* =============== УМЕНЬШЕННЫЙ ТЕКСТ НАВЫКОВ =============== */
+.compact-skill {
+  font-size: 0.85rem !important;
+  padding: 0.15rem 0 !important;
+}
+
+.compact-skill label {
+  font-size: 0.85rem !important;
+}
+
+/* =============== НИЖНИЙ БЛОК (бывшая правая колонка) =============== */
+.bottom-section {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--primary);
+}
+
+@media (max-width: 768px) {
+  .bottom-section {
+    grid-template-columns: 1fr;
+  }
+}
 
 
 
