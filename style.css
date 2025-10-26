@@ -2527,3 +2527,207 @@ input[type="checkbox"]:hover {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(224, 176, 255, 0.2);
 }
+/* КОМПАКТНЫЙ РЕДАКТОР */
+.compact-header {
+  padding: 0.8rem !important;
+  gap: 0.6rem !important;
+}
+
+.compact-header .form-group {
+  margin-bottom: 0.4rem !important;
+}
+
+.compact-header label {
+  font-size: 0.8rem !important;
+}
+
+.level-input,
+.armor-input {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.exp-input,
+.shield-bonus {
+  width: 70px !important;
+  padding: 0.3rem !important;
+  font-size: 0.85rem !important;
+}
+
+.inspiration-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+}
+
+/* КОМПАКТНЫЕ ХИТЫ */
+.compact-hp {
+  padding: 0.8rem !important;
+  gap: 0.8rem !important;
+}
+
+.hp-inputs {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.hp-current, .hp-max, .hp-temp {
+  width: 60px !important;
+  padding: 0.3rem !important;
+  font-size: 0.85rem !important;
+  text-align: center;
+}
+
+.death-saves.compact {
+  display: flex;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+
+.death-save-circles {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.death-save-circle {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.roll-btn {
+  padding: 0.3rem 0.6rem !important;
+  font-size: 0.85rem !important;
+}
+
+/* КОМПАКТНЫЕ ХАРАКТЕРИСТИКИ */
+.compact-abilities {
+  gap: 0.8rem !important;
+}
+
+.proficiency-bonus.compact {
+  padding: 0.5rem !important;
+  font-size: 1.1rem !important;
+}
+
+.ability-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ability-row.compact {
+  gap: 0.6rem;
+}
+
+.ability-card.compact {
+  padding: 0.6rem !important;
+}
+
+.ability-header {
+  font-size: 0.85rem !important;
+  margin-bottom: 0.3rem !important;
+}
+
+.ability-score.compact {
+  font-size: 1.4rem !important;
+  padding: 0.2rem !important;
+  height: auto !important;
+}
+
+.ability-modifier {
+  font-size: 1rem !important;
+  padding: 0.2rem !important;
+  margin: 0.2rem 0 !important;
+}
+
+.saving-throw.compact,
+.skill.compact {
+  font-size: 0.8rem !important;
+  padding: 0.1rem 0 !important;
+}
+
+.saving-throw.compact label,
+.skill.compact label {
+  font-size: 0.8rem !important;
+}
+
+/* Маленькие поля */
+.small-stats.compact {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+.stat-label {
+  font-size: 0.75rem !important;
+}
+
+.stat-value,
+.stat-input {
+  font-size: 0.9rem !important;
+  padding: 0.2rem !important;
+}
+
+.conditions-select.compact {
+  font-size: 0.8rem !important;
+  padding: 0.2rem !important;
+}
+
+/* ЦЕНТРАЛЬНАЯ КОЛОНКА */
+.center-column.compact {
+  gap: 0.8rem !important;
+}
+
+.ability-block {
+  padding: 0.8rem !important;
+}
+
+.section-title {
+  font-size: 1rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.weapons-table.compact th,
+.weapons-table.compact td {
+  padding: 0.3rem !important;
+  font-size: 0.85rem !important;
+}
+
+.add-weapon-btn {
+  padding: 0.3rem 0.6rem !important;
+  font-size: 0.85rem !important;
+}
+
+.text-area {
+  min-height: 80px !important;
+  padding: 0.4rem !important;
+  font-size: 0.85rem !important;
+}
+
+/* НИЖНИЙ БЛОК */
+.bottom-section.compact {
+  margin-top: 0.8rem !important;
+  padding-top: 0.8rem !important;
+}
+
+.proficiencies-row.compact {
+  gap: 0.4rem !important;
+}
+
+.checkbox-group {
+  font-size: 0.85rem !important;
+}
+
+.checkbox-group label {
+  font-size: 0.85rem !important;
+}
+
+/* КАСТОМНЫЕ ЧЕКБОКСЫ */
+input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px !important;
+}
