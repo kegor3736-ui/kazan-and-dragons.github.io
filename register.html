@@ -35,6 +35,21 @@
       </div>
 
       <div class="form-group">
+        <label>Сколько вам лет?</label>
+        <input type="number" id="age" class="form-control" min="13" max="100" placeholder="Укажите ваш возраст">
+      </div>
+
+      <div class="form-group">
+        <label>Сколько лет вы играете в настольные ролевые игры?</label>
+        <input type="number" id="experience" class="form-control" min="0" max="50" placeholder="0 — новичок, 10+ — ветеран">
+      </div>
+
+      <div class="form-group">
+        <label>Расскажите о себе</label>
+        <textarea id="bio" class="text-area" placeholder="Ваши интересы, любимые классы, стиль игры..."></textarea>
+      </div>
+
+      <div class="form-group">
         <label>Выберите роль</label>
         <div class="role-select">
           <div class="role-option" data-role="player">
@@ -59,86 +74,107 @@
     </form>
   </div>
 
+  <script src="main.js" defer></script>
   <script>
-    // Определяем роль из URL
-    function getRoleFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('role') === 'dm' ? 'dm' : 'player';
-    }
-
-    // Устанавливаем роль при загрузке
     document.addEventListener('DOMContentLoaded', () => {
-      const initialRole = getRoleFromUrl();
+      // Установка роли из URL (если пришли как мастер)
+      const urlParams = new URLSearchParams(window.location.search);
+      const initialRole = urlParams.get('role') === 'dm' ? 'dm' : 'player';
       document.getElementById('userRole').value = initialRole;
 
-      // Обновляем визуальный выбор
+      // Обновление визуального выбора
       document.querySelectorAll('.role-option').forEach(opt => {
         opt.classList.toggle('selected', opt.dataset.role === initialRole);
       });
-    });
 
-    // Выбор роли вручную
-    document.querySelectorAll('.role-option').forEach(option => {
-      option.addEventListener('click', () => {
-        document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
-        option.classList.add('selected');
-        document.getElementById('userRole').value = option.dataset.role;
+      // Выбор роли вручную
+      document.querySelectorAll('.role-option').forEach(option => {
+        option.addEventListener('click', () => {
+          document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+          option.classList.add('selected');
+          document.getElementById('userRole').value = option.dataset.role;
+        });
+      });
+
+      // Отправка формы
+      document.getElementById('registerForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Сброс ошибок
+        document.querySelectorAll('.form-control, .text-area').forEach(el => el.classList.remove('error'));
+        const msg = document.getElementById('registerMessage');
+        msg.className = 'message';
+
+        // Сбор данных
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const age = parseInt(document.getElementById('age').value) || null;
+        const experience = parseInt(document.getElementById('experience').value) || null;
+        const bio = document.getElementById('bio').value.trim();
+        const role = document.getElementById('userRole').value;
+
+        // Валидация
+        let valid = true;
+        if (username.length < 3) {
+          document.getElementById('username').classList.add('error');
+          valid = false;
+        }
+        if (!email || !email.includes('@')) {
+          document.getElementById('email').classList.add('error');
+          valid = false;
+        }
+        if (password.length < 8) {
+          document.getElementById('password').classList.add('error');
+          valid = false;
+        }
+
+        if (!valid) {
+          msg.textContent = 'Пожалуйста, исправьте ошибки в форме.';
+          msg.classList.add('error');
+          return;
+        }
+
+        // Создание объекта пользователя
+        const user = {
+          username,
+          email,
+          // Пароль хранится только для прототипа (в реальном проекте — хэш!)
+          password,
+          role,
+          age,
+          experience,
+          bio,
+          createdAt: new Date().toISOString()
+        };
+
+        // Сохранение в localStorage
+        localStorage.setItem('kdUser', JSON.stringify(user));
+        
+        // Сохранение в общий каталог пользователей (для профилей)
+        if (typeof KD !== 'undefined' && KD.saveUserToDirectory) {
+          KD.saveUserToDirectory(user);
+        } else {
+          // Резервный вариант
+          const allUsers = JSON.parse(localStorage.getItem('kdAllUsers') || '[]');
+          allUsers.push(user);
+          localStorage.setItem('kdAllUsers', JSON.stringify(allUsers));
+        }
+
+        // Успех
+        msg.innerHTML = `✅ Успешная регистрация!<br>Добро пожаловать, <strong>${KD.escapeHtml(username)}</strong>!`;
+        msg.classList.add('success');
+
+        // Редирект
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1000);
       });
     });
-
-    // Отправка формы
-    document.getElementById('registerForm').onsubmit = function(e) {
-      e.preventDefault();
-      
-      // Сброс ошибок
-      document.querySelectorAll('.form-control').forEach(el => el.classList.remove('error'));
-      const msg = document.getElementById('registerMessage');
-      msg.className = 'message';
-      
-      // Данные
-      const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const role = document.getElementById('userRole').value;
-      
-      // Валидация
-      let valid = true;
-      if (username.length < 3) {
-        document.getElementById('username').classList.add('error');
-        valid = false;
-      }
-      if (!email.includes('@') || email.length < 5) {
-        document.getElementById('email').classList.add('error');
-        valid = false;
-      }
-      if (password.length < 8) {
-        document.getElementById('password').classList.add('error');
-        valid = false;
-      }
-      
-      if (!valid) {
-        msg.textContent = 'Пожалуйста, исправьте ошибки в форме.';
-        msg.classList.add('error');
-        return;
-      }
-
-      // Сохранение
-      localStorage.setItem('kdUser', JSON.stringify({ username, email, role }));
-
-      // Успех
-      msg.innerHTML = `✅ Успешная регистрация!<br>Добро пожаловать, <strong>${username}</strong>!`;
-      msg.classList.add('success');
-
-      // Редирект
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 500);
-    };
   </script>
-  <script src="main.js" defer></script>
-
 </body>
 </html>
+
 
 
 
