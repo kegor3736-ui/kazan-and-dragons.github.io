@@ -20,7 +20,7 @@
       <li><a href="rules.html">Правила D&D</a></li>
       <li><a href="characters.html">Персонажи</a></li>
       <li><a href="tabletop.html">Игровое поле</a></li>
-       <li><a href="tokenator.html">Токенатор</a></li>
+      <li><a href="tokenator.html">Токенатор</a></li>
     </ul>
   </aside>
 
@@ -28,7 +28,13 @@
   <div class="main-content" id="mainContent">
     <header>
       <button class="menu-toggle" id="menuToggle">☰</button>
-      <div style="font-weight: 700;">K&D</div>
+      <div class="account-widget">
+        <div class="account-info" id="accountInfo">
+          <div class="account-name" id="accountName">—</div>
+          <div class="account-role" id="accountRole">—</div>
+        </div>
+        <button class="auth-btn" id="authButton">Войти / Регистрация</button>
+      </div>
     </header>
 
     <div class="page-header">
@@ -42,7 +48,8 @@
         <button class="filter-btn" data-filter="free">Бесплатные</button>
         <button class="filter-btn" data-filter="paid">Платные</button>
       </div>
-      <button class="post-btn" id="postBtn">Создать объявление</button>
+      <!-- Кнопка будет показана только мастерам -->
+      <button class="post-btn" id="postBtn" style="display: none;">Создать объявление</button>
     </div>
 
     <div class="listings" id="listingsContainer">
@@ -54,104 +61,186 @@
     </footer>
   </div>
 
+  <!-- Модальное окно: Создание объявления -->
+  <div id="createPartyModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Создать объявление</h2>
+      <form id="partyForm">
+        <div class="form-group">
+          <label>Название приключения</label>
+          <input type="text" id="partyTitle" class="form-control" placeholder="Тайна Оберхарфа" required>
+        </div>
+        <div class="form-group">
+          <label>Мир/локация</label>
+          <input type="text" id="partyWorld" class="form-control" value="KAZANA" required>
+        </div>
+        <div class="form-group">
+          <label>Даты сессий</label>
+          <input type="text" id="partyDates" class="form-control" placeholder="13 / 20 / 27 февраля" required>
+        </div>
+        <div class="form-group">
+          <label>Описание</label>
+          <textarea id="partyDescription" class="text-area" placeholder="Опишите сюжет, особенности игры..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Уровень персонажей</label>
+          <input type="text" id="partyLevel" class="form-control" value="1–5" required>
+        </div>
+        <div class="form-group">
+          <label>Количество игроков</label>
+          <input type="text" id="partyPlayers" class="form-control" value="3–5" required>
+        </div>
+        <div class="form-group">
+          <label>Награда</label>
+          <input type="text" id="partyReward" class="form-control" value="500 зм">
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="partyIsPaid"> Платная игра
+          </label>
+        </div>
+        <button type="submit" class="submit-btn">Опубликовать</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно: Чат партии -->
+  <div id="chatModal" class="modal" style="display: none;">
+    <div class="modal-content" style="width: 90%; max-width: 500px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3>Чат партии: <span id="chatPartyTitle"></span></h3>
+        <span class="close chat-close">&times;</span>
+      </div>
+      <div class="chat-messages" id="modalChatMessages" style="height: 300px; overflow-y: auto; margin-bottom: 1rem; padding: 0.5rem; background: rgba(10,8,29,0.6); border-radius: 8px;">
+        <!-- Сообщения будут здесь -->
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <input type="text" id="modalChatInput" class="form-control" placeholder="Введите сообщение..." maxlength="100" style="flex: 1;">
+        <button id="sendModalChat" class="btn btn-primary" style="padding: 0.5rem 1rem;">Отправить</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js" defer></script>
   <script>
-    // DOM elements
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.getElementById('mainContent');
-    const menuToggle = document.getElementById('menuToggle');
-    const postBtn = document.getElementById('postBtn');
-    const listingsContainer = document.getElementById('listingsContainer');
-    const filterButtons = document.querySelectorAll('.filter-btn');
-
-    // Toggle sidebar
-    menuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('hidden');
-      mainContent.classList.toggle('sidebar-hidden');
+    document.addEventListener('DOMContentLoaded', () => {
+      // Инициализация
+      KD.requireAuth();
+      initPartiesPage();
     });
 
-    // Close sidebar on mobile
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 576 && !sidebar.classList.contains('hidden') && 
-          !sidebar.contains(e.target) && e.target !== menuToggle) {
-        sidebar.classList.add('hidden');
-        mainContent.classList.add('sidebar-hidden');
+    function initPartiesPage() {
+      // Показать кнопку только мастерам
+      if (KD.is_userDM()) {
+        document.getElementById('postBtn').style.display = 'block';
       }
-    });
 
-    // Check auth
-    function isUserLoggedIn() {
-      return !!localStorage.getItem('kdUser');
+      // Обработчики
+      initEventListeners();
+      renderParties();
     }
 
-    function getUser() {
-      return JSON.parse(localStorage.getItem('kdUser')) || null;
+    function initEventListeners() {
+      // Фильтрация
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderParties(btn.dataset.filter);
+        });
+      });
+
+      // Создание объявления
+      document.getElementById('postBtn').addEventListener('click', () => {
+        document.getElementById('createPartyModal').style.display = 'flex';
+      });
+
+      // Закрытие модальных окон
+      document.querySelectorAll('.close').forEach(el => {
+        el.addEventListener('click', () => {
+          el.closest('.modal').style.display = 'none';
+        });
+      });
+
+      // Отправка формы объявления
+      document.getElementById('partyForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = {
+          title: document.getElementById('partyTitle').value,
+          world: document.getElementById('partyWorld').value,
+          dates: document.getElementById('partyDates').value,
+          description: document.getElementById('partyDescription').value,
+          level: document.getElementById('partyLevel').value,
+          players: document.getElementById('partyPlayers').value,
+          reward: document.getElementById('partyReward').value,
+          isPaid: document.getElementById('partyIsPaid').checked
+        };
+        KD.createParty(formData);
+        document.getElementById('createPartyModal').style.display = 'none';
+        renderParties();
+        KD.showNotification('Объявление успешно опубликовано!', 'success');
+      });
+
+      // Отправка сообщения в чате
+      document.getElementById('sendModalChat').addEventListener('click', sendMessageToChat);
+      document.getElementById('modalChatInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessageToChat();
+      });
     }
 
-    // Initialize parties data
-    function initParties() {
-      if (!localStorage.getItem('kdParties')) {
-        const sampleParties = [
-          {
-            id: 1,
-            title: "Тайна Оберхарфа",
-            world: "KAZANA",
-            master: "Странник",
-            dates: "13 / 20 / 27 февраля",
-            description: "Вас нанял очень странный Дворянин низкого роста в Г.Элден, чтобы вы разобрались с проблемой местных жителей отдалённой деревушки Оберхаф. Судя по последним письмам, у них начали частенько пропадать люди. А несколько отрядов авантюристов, посланных туда, не вернулись.\n\nВ окутанной туманом ложбине располагается захолустная деревенька с мрачной репутацией. Вы прибыли сюда с заданием, но с каждым ударом грома и отблеском молнии ваша уверенность в себе улетучивается, а туман сгущается.",
-            level: "3–5",
-            players: "3–5",
-            reward: "800 зм",
-            isPaid: true,
-            applicants: []
-          }
-        ];
-        localStorage.setItem('kdParties', JSON.stringify(sampleParties));
-      }
-    }
-
-    // Render parties
     function renderParties(filter = 'all') {
-      const parties = JSON.parse(localStorage.getItem('kdParties') || '[]');
-      const user = getUser();
-      
+      const parties = KD.getParties();
+      const user = KD.getCurrentUser();
       let filtered = parties;
+
       if (filter === 'free') filtered = parties.filter(p => !p.isPaid);
       if (filter === 'paid') filtered = parties.filter(p => p.isPaid);
 
+      const container = document.getElementById('listingsContainer');
       if (filtered.length === 0) {
-        listingsContainer.innerHTML = '<div class="login-prompt">Нет объявлений. Будьте первым!</div>';
+        container.innerHTML = '<div class="empty-state">Нет объявлений. Будьте первым!</div>';
         return;
       }
 
-      listingsContainer.innerHTML = filtered.map(party => {
+      container.innerHTML = filtered.map(party => {
         const isApplied = user && party.applicants.includes(user.username);
+        const applicantsHtml = party.applicants.map(username => {
+          const isOnline = KD.isUserOnline(username);
+          return `
+            <a href="profile.html?user=${encodeURIComponent(username)}" class="applicant-avatar" title="${KD.escapeHtml(username)}">
+              <div class="avatar ${isOnline ? 'online' : ''}">${KD.escapeHtml(username.charAt(0))}</div>
+            </a>
+          `;
+        }).join('');
+
         return `
           <div class="listing-card">
             <div class="listing-header">
-              <div class="listing-avatar">${party.master.charAt(0)}</div>
+              <div class="listing-avatar">${KD.escapeHtml(party.master.charAt(0))}</div>
               <div class="listing-info">
-                <div class="listing-title">${party.title}</div>
+                <div class="listing-title">${KD.escapeHtml(party.title)}</div>
                 <div class="listing-meta">
-                  <span>${party.dates}</span>
-                  <span>Мир: ${party.world}</span>
-                  <span>Мастер: ${party.master}</span>
+                  <span>${KD.escapeHtml(party.dates)}</span>
+                  <span>Мир: ${KD.escapeHtml(party.world)}</span>
+                  <span>Мастер: ${KD.escapeHtml(party.master)}</span>
                 </div>
               </div>
             </div>
             <div class="listing-body">
-              <p class="listing-description">${party.description.replace(/\n/g, '<br>')}</p>
+              <p class="listing-description">${KD.escapeHtml(party.description).replace(/\n/g, '<br>')}</p>
               <div class="listing-details">
                 <div class="detail-item">
                   <span class="detail-label">Уровень:</span>
-                  <span>${party.level}</span>
+                  <span>${KD.escapeHtml(party.level)}</span>
                 </div>
                 <div class="detail-item">
                   <span class="detail-label">Игроков:</span>
-                  <span>${party.players}</span>
+                  <span>${KD.escapeHtml(party.players)}</span>
                 </div>
                 <div class="detail-item">
                   <span class="detail-label">Награда:</span>
-                  <span>${party.reward}</span>
+                  <span>${KD.escapeHtml(party.reward)}</span>
                 </div>
                 <div class="detail-item">
                   <span class="detail-label">Формат:</span>
@@ -163,70 +252,136 @@
                   ? `<button class="apply-btn" data-id="${party.id}" ${isApplied ? 'disabled' : ''}>
                       ${isApplied ? 'Записан' : 'Записаться'}
                     </button>`
-                  : `<button class="apply-btn" onclick="alert('Требуется регистрация!')">Записаться</button>`
+                  : `<button class="apply-btn" onclick="KD.showNotification('Требуется регистрация', 'info')">Записаться</button>`
                 }
-                <button class="chat-btn">Чат партии</button>
+                <button class="chat-btn" data-id="${party.id}" data-title="${KD.escapeHtml(party.title)}">Чат партии</button>
               </div>
+              ${applicantsHtml ? `<div class="applicants-list">${applicantsHtml}</div>` : ''}
             </div>
           </div>
         `;
       }).join('');
 
-      // Add event listeners to Apply buttons
-      if (user) {
-        document.querySelectorAll('.apply-btn[data-id]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const id = parseInt(btn.dataset.id);
-            applyToParty(id, user.username);
-          });
+      // Обработчики кнопок
+      document.querySelectorAll('.apply-btn[data-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = parseInt(btn.dataset.id);
+          if (KD.applyToParty(id, KD.getCurrentUser().username)) {
+            renderParties();
+            KD.showNotification('Вы записаны в партию!', 'success');
+          }
         });
-      }
-    }
-
-    // Apply to party
-    function applyToParty(partyId, username) {
-      const parties = JSON.parse(localStorage.getItem('kdParties'));
-      const party = parties.find(p => p.id === partyId);
-      if (party && !party.applicants.includes(username)) {
-        party.applicants.push(username);
-        localStorage.setItem('kdParties', JSON.stringify(parties));
-        renderParties();
-      }
-    }
-
-    // Post new party (mock)
-    postBtn.addEventListener('click', () => {
-      if (!isUserLoggedIn()) {
-        if (confirm('Требуется регистрация. Перейти на страницу регистрации?')) {
-          window.location.href = 'register.html';
-        }
-        return;
-      }
-
-      const user = getUser();
-      if (user.role !== 'dm') {
-        alert('Только Мастера могут создавать объявления!');
-        return;
-      }
-
-      alert('Форма создания объявления будет добавлена в будущем.\nПока что вы можете редактировать localStorage вручную.');
-    });
-
-    // Filter buttons
-    filterButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderParties(btn.dataset.filter);
       });
-    });
 
-    // Initialize
-    initParties();
-    renderParties();
+      document.querySelectorAll('.chat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const partyId = parseInt(btn.dataset.id);
+          const title = btn.dataset.title;
+          openChatModal(partyId, title);
+        });
+      });
+    }
+
+    function openChatModal(partyId, title) {
+      document.getElementById('chatPartyTitle').textContent = title;
+      document.getElementById('chatModal').style.display = 'flex';
+      
+      // Загрузка сообщений
+      const messages = KD.getChatMessages(partyId);
+      const messagesEl = document.getElementById('modalChatMessages');
+      messagesEl.innerHTML = messages.map(msg => 
+        `<div class="message"><strong>${KD.escapeHtml(msg.user)}:</strong> ${msg.text}</div>`
+      ).join('');
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      
+      // Сохраняем partyId для отправки
+      document.getElementById('sendModalChat').dataset.partyId = partyId;
+    }
+
+    function sendMessageToChat() {
+      const input = document.getElementById('modalChatInput');
+      const text = input.value.trim();
+      const partyId = parseInt(document.getElementById('sendModalChat').dataset.partyId);
+      
+      if (!text || !partyId) return;
+      
+      KD.saveChatMessage(partyId, text);
+      input.value = '';
+      
+      // Обновить чат
+      const messages = KD.getChatMessages(partyId);
+      const messagesEl = document.getElementById('modalChatMessages');
+      messagesEl.innerHTML = messages.map(msg => 
+        `<div class="message"><strong>${KD.escapeHtml(msg.user)}:</strong> ${msg.text}</div>`
+      ).join('');
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
   </script>
-  <script src="main.js" defer></script>
 
+  <!-- Стили для модальных окон и аватаров -->
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+    }
+    .modal-content {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 600px;
+      border: 1px solid var(--primary-light);
+      position: relative;
+    }
+    .close {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--accent);
+    }
+    .applicants-list {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      position: relative;
+    }
+    .avatar.online::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 12px;
+      height: 12px;
+      background: #4ade80;
+      border: 2px solid var(--card-bg);
+      border-radius: 50%;
+    }
+    .applicant-avatar {
+      text-decoration: none;
+    }
+  </style>
 </body>
 </html>
 
