@@ -135,18 +135,6 @@
       flex-wrap: wrap;
       margin-top: 0.5rem;
     }
-    .scale-mode {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      margin-top: 0.3rem;
-    }
-    .scale-mode label {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      cursor: pointer;
-    }
     @media (max-width: 600px) {
       .preview-section {
         flex-direction: column;
@@ -256,16 +244,10 @@
         <div class="form-row">
           <label>Масштаб:</label>
           <div style="flex: 1;">
-            <div class="scale-mode">
-              <label>
-                <input type="radio" name="scaleMode" value="fit" checked> Вместить целиком
-              </label>
-              <label>
-                <input type="radio" name="scaleMode" value="manual"> Произвольный
-              </label>
+            <input type="range" id="zoomSlider" min="0" max="100" value="0" style="width: 100%; height: 28px;">
+            <div id="zoomHint" style="text-align: right; font-size: 0.85rem; color: var(--accent); margin-top: 0.2rem;">
+              ← Вместить целиком | Увеличить →
             </div>
-            <input type="range" id="zoomSlider" min="0.5" max="3" step="0.1" value="1" style="width: 100%; margin-top: 0.5rem; height: 28px;">
-            <div id="zoomValue" style="text-align: right; font-size: 0.85rem; color: var(--accent); margin-top: 0.2rem;">1.0×</div>
           </div>
         </div>
 
@@ -298,12 +280,10 @@
     const showNameToggle = document.getElementById('showNameToggle');
     const mirrorBtn = document.getElementById('mirrorBtn');
     const zoomSlider = document.getElementById('zoomSlider');
-    const zoomValue = document.getElementById('zoomValue');
     const generateBtn = document.getElementById('generateBtn');
     const downloadBtn = document.getElementById('downloadBtn');
     const tokenCanvas = document.getElementById('tokenCanvas');
     const ctx = tokenCanvas.getContext('2d');
-    const scaleModeRadios = document.querySelectorAll('input[name="scaleMode"]');
 
     // Text controls
     const textColor = document.getElementById('textColor');
@@ -315,12 +295,11 @@
     let uploadedImage = null;
     let offsetX = 0;
     let offsetY = 0;
-    let manualScale = 1;
     let isMirrored = false;
     let isDragging = false;
     let dragStartX = 0;
     let dragStartY = 0;
-    let currentScaleMode = 'fit';
+    let fitScale = 1; // базовый масштаб для "вместить целиком"
 
     // Calculate "fit" scale
     function calculateFitScale(img) {
@@ -342,12 +321,9 @@
         const img = new Image();
         img.onload = () => {
           uploadedImage = img;
+          fitScale = calculateFitScale(img);
           offsetX = 0; offsetY = 0; isMirrored = false;
-          manualScale = 1;
-          currentScaleMode = 'fit';
-          document.querySelector('input[name="scaleMode"][value="fit"]').checked = true;
-          zoomSlider.value = 1;
-          zoomValue.textContent = 'Авто';
+          zoomSlider.value = 0; // сброс к "вместить целиком"
           charNameInput.value = '';
           showNameToggle.checked = true;
           textColor.value = '#ffffff';
@@ -362,35 +338,14 @@
       reader.readAsDataURL(file);
     });
 
-    // Scale mode toggle
-    scaleModeRadios.forEach(radio => {
-      radio.addEventListener('change', () => {
-        currentScaleMode = radio.value;
-        if (currentScaleMode === 'fit') {
-          zoomSlider.disabled = true;
-          zoomValue.textContent = 'Авто';
-        } else {
-          zoomSlider.disabled = false;
-          zoomValue.textContent = `${manualScale.toFixed(1)}×`;
-        }
-        renderToken();
-      });
-    });
-
-    // Zoom slider
-    zoomSlider.addEventListener('input', () => {
-      manualScale = parseFloat(zoomSlider.value);
-      if (currentScaleMode === 'manual') {
-        zoomValue.textContent = `${manualScale.toFixed(1)}×`;
-        renderToken();
-      }
-    });
-
     // Mirror
     mirrorBtn.addEventListener('click', () => {
       isMirrored = !isMirrored;
       renderToken();
     });
+
+    // Zoom slider: 0 = fit, 100 = fit * 3
+    zoomSlider.addEventListener('input', renderToken);
 
     // Drag
     tokenCanvas.addEventListener('mousedown', (e) => {
@@ -432,13 +387,10 @@
       ctx.closePath();
       ctx.clip();
 
-      // Determine scale
-      let finalScale;
-      if (currentScaleMode === 'fit') {
-        finalScale = calculateFitScale(uploadedImage);
-      } else {
-        finalScale = manualScale;
-      }
+      // Scale: 0 → fitScale, 100 → fitScale * 3
+      const sliderValue = parseFloat(zoomSlider.value);
+      const zoomFactor = 1 + (sliderValue / 100) * 2; // от 1x до 3x
+      const finalScale = fitScale * zoomFactor;
 
       // Image
       const img = uploadedImage;
