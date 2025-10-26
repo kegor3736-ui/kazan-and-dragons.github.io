@@ -116,7 +116,7 @@ function initCharacterGrid() {
     renderCharactersGrid();
 }
 
-// Отображение сетки персонажей
+// Отображение сетки персонажей — ОБНОВЛЕНО ПОД ВАШИ ТРЕБОВАНИЯ
 function renderCharactersGrid() {
     const charactersGrid = document.getElementById('charactersGrid');
     if (!charactersGrid) return;
@@ -137,23 +137,71 @@ function renderCharactersGrid() {
         return;
     }
 
-    charactersGrid.innerHTML = userCharacters.map(char => `
-        <div class="char-card">
-            <div class="char-avatar">${char.name?.charAt(0) || '?'}</div>
-            <div class="char-name">${char.name || 'Безымянный'}</div>
-            <div class="char-class-level">${char.class || '—'}, ${char.level || 1} ур.</div>
-            <div class="char-details">
-                Раса: ${char.race || '—'}<br>
-                HP: ${char.currentHP || 0}/${char.maxHP || 0}
-            </div>
-            <div class="char-actions">
-                <button class="char-btn edit-btn" data-id="${char.id}">Редактировать</button>
-                <button class="char-btn delete-btn" data-id="${char.id}">Удалить</button>
-            </div>
-        </div>
-    `).join('');
+    charactersGrid.innerHTML = userCharacters.map(char => {
+        // Опыт до следующего уровня
+        const currentExp = char.exp || 0;
+        const currentLevel = char.level || 1;
+        const nextLevelExp = currentLevel < 20 ? expTable[currentLevel + 1] : expTable[20];
+        const expProgress = currentLevel < 20 
+            ? Math.min(100, Math.max(0, ((currentExp - expTable[currentLevel]) / (nextLevelExp - expTable[currentLevel])) * 100))
+            : 100;
 
-    // Добавляем обработчики для кнопок
+        // Хиты
+        const currentHP = char.currentHP || 0;
+        const maxHP = char.maxHP || 1;
+        const hpPercent = Math.min(100, Math.max(0, (currentHP / maxHP) * 100));
+
+        // Временные хиты
+        const tempHP = char.tempHP || 0;
+
+        return `
+            <div class="char-card-discord">
+                <div class="char-avatar-container">
+                    ${char.portrait 
+                        ? `<img src="${char.portrait}" alt="Портрет">` 
+                        : `<div class="char-avatar-fallback">${char.name?.charAt(0) || '?'}</div>`
+                    }
+                </div>
+                <div class="char-info">
+                    <div class="char-name">${char.name || 'Безымянный'}</div>
+                    
+                    <!-- Полоска опыта -->
+                    <div class="char-level-exp">
+                        <div class="level-text">Уровень ${currentLevel}</div>
+                        <div class="exp-bar">
+                            <div class="exp-fill" style="width: ${expProgress}%"></div>
+                        </div>
+                        <div class="exp-text">${currentExp} / ${nextLevelExp} XP</div>
+                    </div>
+                    
+                    <div class="char-class-race">
+                        ${char.class || '—'} / ${char.race || '—'}
+                    </div>
+                    
+                    <!-- Полоска хитов -->
+                    <div class="char-hp-section">
+                        <div class="hp-bar">
+                            <div class="hp-fill" style="width: ${hpPercent}%"></div>
+                        </div>
+                        <div class="hp-text">${currentHP} / ${maxHP} HP</div>
+                    </div>
+                    
+                    ${tempHP > 0 ? `
+                        <div class="char-temp-hp">
+                            Временные HP: <strong>${tempHP}</strong>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="char-actions">
+                        <button class="char-btn edit-btn" data-id="${char.id}">Редактировать</button>
+                        <button class="char-btn delete-btn" data-id="${char.id}">Удалить</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Обработчики кнопок
     document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const charId = this.getAttribute('data-id');
@@ -553,7 +601,7 @@ function initSheetEventListeners() {
     });
 }
 
-// Сохранение персонажа
+// Сохранение персонажа — ОБНОВЛЕНО: сохраняем изображение
 function saveCharacter() {
     const characterData = getCharacterData();
     
@@ -590,8 +638,14 @@ function exportToJson() {
     URL.revokeObjectURL(url);
 }
 
-// Получение данных персонажа
+// Получение данных персонажа — ОБНОВЛЕНО: сохраняем изображение
 function getCharacterData() {
+    // Получаем data URL изображения
+    const portraitPreview = document.getElementById('portraitPreview');
+    const portrait = portraitPreview.src && !portraitPreview.src.includes('placehold') 
+        ? portraitPreview.src 
+        : null;
+
     return {
         name: document.getElementById('charName').value,
         background: document.getElementById('charBackground').value,
@@ -606,7 +660,8 @@ function getCharacterData() {
         maxHP: parseInt(document.getElementById('maxHP').value) || 0,
         hitDice: document.getElementById('hitDiceCount').value + document.getElementById('hitDiceType').value,
         speed: parseInt(document.getElementById('speedValue').value) || 30,
-        // Добавьте остальные поля по необходимости
+        portrait: portrait, // ← сохраняем изображение
+        // Остальные поля можно добавить по мере необходимости
     };
 }
 
