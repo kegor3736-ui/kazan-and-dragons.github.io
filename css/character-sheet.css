@@ -627,3 +627,190 @@
     grid-template-columns: 1fr;
   }
 }
+/* =============== КАРТОЧКА ПЕРСОНАЖА В СТИЛЕ DISCORD =============== */
+
+.char-card-discord {
+  background: rgba(26, 20, 45, 0.8);
+  border-radius: 16px;
+  padding: 1.4rem;
+  display: flex;
+  gap: 1.4rem;
+  align-items: flex-start;
+  border: 1px solid rgba(138, 43, 226, 0.3);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(6px);
+}
+
+.char-card-discord:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(138, 43, 226, 0.4);
+  border-color: var(--primary-light);
+}
+
+.char-avatar-container {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.char-avatar-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid var(--primary);
+}
+
+.char-avatar-fallback {
+  width: 100%;
+  height: 100%;
+  background: var(--primary);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 2rem;
+  color: white;
+}
+
+.char-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.char-name {
+  font-size: 1.4rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Полоска опыта */
+.char-level-exp {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.level-text {
+  font-size: 1rem;
+  color: #c9a0dc;
+  font-weight: 600;
+}
+
+.exp-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(10, 8, 29, 0.7);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(138, 43, 226, 0.4);
+}
+
+.exp-fill {
+  height: 100%;
+  background: linear-gradient(to right, #8a2be2, #e0b0ff);
+  transition: width 0.3s ease;
+}
+
+.exp-text {
+  font-size: 0.85rem;
+  color: var(--accent);
+  opacity: 0.9;
+}
+
+/* Класс и раса */
+.char-class-race {
+  font-size: 1.1rem;
+  color: #c9a0dc;
+  font-weight: 600;
+}
+
+/* Полоска хитов */
+.char-hp-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.hp-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(10, 8, 29, 0.7);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+}
+
+.hp-fill {
+  height: 100%;
+  background: linear-gradient(to right, #f87171, #fca5a5);
+  transition: width 0.3s ease;
+}
+
+.hp-text {
+  font-size: 0.85rem;
+  color: #f87171;
+  font-weight: 600;
+}
+
+/* Временные хиты */
+.char-temp-hp {
+  font-size: 0.9rem;
+  color: #4ade80;
+  font-weight: 600;
+}
+
+/* Кнопки */
+.char-actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.char-btn {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.edit-btn {
+  background: rgba(138, 43, 226, 0.3);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.edit-btn:hover {
+  background: rgba(138, 43, 226, 0.5);
+}
+
+.delete-btn {
+  background: rgba(248, 113, 113, 0.2);
+  color: #f87171;
+  border: 1px solid #f87171;
+}
+
+.delete-btn:hover {
+  background: rgba(248, 113, 113, 0.4);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .char-card-discord {
+    flex-direction: column;
+    text-align: center;
+  }
+  .char-avatar-container {
+    margin: 0 auto;
+  }
+  .char-actions {
+    justify-content: center;
+  }
+}
